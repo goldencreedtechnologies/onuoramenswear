@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { X } from "lucide-react";
-import { Cta } from "@/components/cta";
+import { Check, ShoppingBag, X } from "lucide-react";
+import { addCartItem, productToCartItem } from "@/lib/cart";
 import { cn } from "@/lib/cn";
+import type { StoreProduct } from "@/lib/backend/types";
 
 const sizes = [
   { label: "S", chest: "36-40", waist: "28-32", trouser: "30" },
@@ -13,9 +14,20 @@ const sizes = [
   { label: "XXL", chest: "50-55", waist: "42-48", trouser: "40" }
 ];
 
-export function ProductOptions() {
+type ProductOptionsProps = {
+  product: StoreProduct;
+};
+
+export function ProductOptions({ product }: ProductOptionsProps) {
   const [selectedSize, setSelectedSize] = useState("M");
   const [open, setOpen] = useState(false);
+  const [added, setAdded] = useState(false);
+
+  function handleAddToBag() {
+    addCartItem(productToCartItem(product, selectedSize));
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1800);
+  }
 
   return (
     <>
@@ -43,7 +55,14 @@ export function ProductOptions() {
       </div>
 
       <div className="mt-8 grid gap-3 sm:grid-cols-2">
-        <Cta href="/cart">Add {selectedSize} to bag</Cta>
+        <button
+          type="button"
+          onClick={handleAddToBag}
+          className="gold-focus inline-flex min-h-12 items-center justify-center gap-3 rounded-[3px] bg-gold px-5 py-3 text-xs font-bold uppercase tracking-[0] text-obsidian transition hover:-translate-y-0.5 hover:bg-gold-soft"
+        >
+          {added ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
+          {added ? "Added to bag" : `Add ${selectedSize} to bag`}
+        </button>
         <button
           type="button"
           onClick={() => setOpen(true)}

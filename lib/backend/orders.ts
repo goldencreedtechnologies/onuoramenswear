@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
-import { getRequiredEnv, hasSupabaseConfig } from "@/lib/backend/env";
+import { getSupabaseServiceRoleKey, getSupabaseUrl, hasSupabaseConfig } from "@/lib/backend/env";
 
 export const checkoutDraftSchema = z.object({
   email: z.string().email(),
@@ -25,11 +25,14 @@ export const checkoutDraftSchema = z.object({
 export type CheckoutDraftInput = z.infer<typeof checkoutDraftSchema>;
 
 function createServiceClient() {
-  if (!hasSupabaseConfig() || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  const url = getSupabaseUrl();
+  const serviceRoleKey = getSupabaseServiceRoleKey();
+
+  if (!hasSupabaseConfig() || !url || !serviceRoleKey) {
     return null;
   }
 
-  return createClient(getRequiredEnv("NEXT_PUBLIC_SUPABASE_URL"), getRequiredEnv("SUPABASE_SERVICE_ROLE_KEY"), {
+  return createClient(url, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false }
   });
 }

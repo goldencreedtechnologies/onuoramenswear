@@ -59,7 +59,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <p className="mt-4 text-xl" style={{ color: product.pageMuted }}>{product.meaning}</p>
           <p className="mt-8 text-3xl font-semibold">{product.price}</p>
           <CurrencyConverter priceUsd={100} accentText={product.pageText} panelText={product.pageMuted} />
-          <ProductOptions />
+          <ProductOptions product={product} />
           <div className="mt-8 divide-y divide-gold/20 border-y border-gold/25 text-sm">
             {[
               ["Fabric", "Smooth, breathable 4-way stretch fabric with a tailored drape."],

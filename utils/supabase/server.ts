@@ -1,6 +1,5 @@
-import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
-import { getSupabasePublishableKey, getSupabaseUrl, hasSupabaseConfig } from "@/lib/backend/env";
+import { cookies } from "next/headers";
 
 type CookieToSet = {
   name: string;
@@ -8,16 +7,14 @@ type CookieToSet = {
   options?: Parameters<Awaited<ReturnType<typeof cookies>>["set"]>[2];
 };
 
-export async function createSupabaseServerClient() {
-  if (!hasSupabaseConfig()) {
-    throw new Error("Supabase is not configured yet.");
-  }
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.NEXT_PUBLIC_ONUORAMENSWEAR_SUPABASE_URL;
+const supabaseKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
+  process.env.NEXT_PUBLIC_ONUORAMENSWEAR_SUPABASE_ANON_KEY;
 
-  const cookieStore = await cookies();
-  const url = getSupabaseUrl();
-  const publishableKey = getSupabasePublishableKey();
-
-  return createServerClient(url, publishableKey, {
+export const createClient = (cookieStore: Awaited<ReturnType<typeof cookies>>) => {
+  return createServerClient(supabaseUrl!, supabaseKey!, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
@@ -31,4 +28,4 @@ export async function createSupabaseServerClient() {
       }
     }
   });
-}
+};

@@ -1,12 +1,34 @@
 import { createClient } from "@supabase/supabase-js";
 import { products as localProducts } from "@/data/catalog";
-import { getOptionalEnv, hasSupabaseConfig } from "@/lib/backend/env";
+import { getSupabasePublishableKey, getSupabaseUrl, hasSupabaseConfig } from "@/lib/backend/env";
 import type { StoreProduct } from "@/lib/backend/types";
 
 const productColumns =
   "id, slug, name, edition, meaning, price, image, images, palette, page_text, page_muted, page_panel, dark_page, story, story_kicker, story_title, occasion, sort_order, updated_at";
 
-function mapRow(row: any): StoreProduct {
+type ProductRow = {
+  id?: string;
+  slug: string;
+  name: string;
+  edition: string;
+  meaning: string;
+  price: string;
+  image: string;
+  images: string[] | null;
+  palette: string;
+  page_text: string;
+  page_muted: string;
+  page_panel: string;
+  dark_page: boolean;
+  story: string;
+  story_kicker: string;
+  story_title: string;
+  occasion: string;
+  sort_order?: number;
+  updated_at?: string;
+};
+
+function mapRow(row: ProductRow): StoreProduct {
   return {
     slug: row.slug,
     name: row.name,
@@ -31,14 +53,14 @@ function mapRow(row: any): StoreProduct {
 }
 
 function createReadClient() {
-  const url = getOptionalEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const anonKey = getOptionalEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  const url = getSupabaseUrl();
+  const publishableKey = getSupabasePublishableKey();
 
-  if (!url || !anonKey) {
+  if (!url || !publishableKey) {
     return null;
   }
 
-  return createClient(url, anonKey, {
+  return createClient(url, publishableKey, {
     auth: { persistSession: false, autoRefreshToken: false }
   });
 }

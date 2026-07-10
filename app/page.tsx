@@ -1,7 +1,7 @@
 import { BrandIcon } from "@/components/brand-icon";
 import { Cta } from "@/components/cta";
+import { EditorialLookbookCarousel } from "@/components/editorial-lookbook-carousel";
 import { ProductCard } from "@/components/product-card";
-import { RotatingHeroCard } from "@/components/rotating-hero-card";
 import { SectionHeading } from "@/components/section-heading";
 import { craftSteps, journalPosts, trustSignals, valuePillars } from "@/data/catalog";
 import { getStoreProducts } from "@/lib/backend/catalog";
@@ -36,7 +36,6 @@ export default async function HomePage() {
               <Cta href="/about" variant="ghost">Discover the craft</Cta>
             </div>
           </div>
-          <RotatingHeroCard />
         </div>
       </section>
 
@@ -117,38 +116,8 @@ export default async function HomePage() {
       </section>
 
       <section className="bg-panel-muted py-20 md:py-28">
-        <div className="container-luxe grid gap-10 md:grid-cols-[0.9fr_1.1fr] md:items-center">
-          <div className="relative mx-auto w-full max-w-[330px] rounded-[42px] border border-gold/30 bg-obsidian p-3 shadow-2xl shadow-black/25">
-            <div className="overflow-hidden rounded-[34px] bg-wine">
-              <div className="garment-frame aspect-[9/16] rounded-[34px]">
-                <img
-                  src="https://onuoramenswear.com/wp-content/uploads/2025/11/Untitled-design-28.png"
-                  alt="NDỤ burgundy edition in editorial phone frame"
-                  className="garment-image h-full w-full"
-                />
-              </div>
-            </div>
-            <div className="absolute -right-5 top-16 hidden rounded-[28px] border border-gold/25 bg-panel px-5 py-4 text-copy shadow-xl md:block">
-              <p className="text-[10px] font-bold uppercase text-gold">NDỤ</p>
-              <p className="text-xs text-copy-muted">Life · Burgundy Edition</p>
-            </div>
-          </div>
-          <div className="rounded-[35px] border border-gold/20 bg-panel p-8 md:p-12">
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold">Editorial lookbook</p>
-            <h2 className="font-display text-5xl leading-[0.96] text-copy md:text-6xl">A modern screen for an ancestral signal.</h2>
-            <p className="mt-7 max-w-xl text-base leading-8 text-copy-muted">
-              The burgundy NDỤ edition carries the language of life, lineage, and arrival.
-              This lookbook module is designed to feel like a private campaign preview: close,
-              cinematic, and made for the customer to imagine the garment in motion.
-            </p>
-            <p className="mt-5 max-w-xl text-base leading-8 text-copy-muted">
-              Use this area later for new campaign footage, model angles, fabric detail clips,
-              and shoppable editorial stories.
-            </p>
-            <div className="mt-8">
-              <Cta href="/products/ndu" variant="dark">Explore NDỤ</Cta>
-            </div>
-          </div>
+        <div className="container-luxe">
+          <EditorialLookbookCarousel products={products} />
         </div>
       </section>
 

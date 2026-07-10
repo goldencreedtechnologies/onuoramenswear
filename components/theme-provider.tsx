@@ -24,7 +24,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const stored = window.localStorage.getItem("onuora-theme") as ThemeMode | null;
     const nextMode = stored === "light" || stored === "dark" || stored === "system" ? stored : "system";
-    setModeState(nextMode);
+    queueMicrotask(() => {
+      setModeState(nextMode);
+    });
     applyTheme(nextMode);
 
     const media = window.matchMedia("(prefers-color-scheme: dark)");
