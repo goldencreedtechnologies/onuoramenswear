@@ -1,14 +1,15 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Instagram, Mail, MessageCircle } from "lucide-react";
 import { Cta } from "@/components/cta";
 
 export function Footer() {
   return (
     <footer className="bg-obsidian text-ivory">
-      <div className="container-luxe grid gap-12 border-t border-gold/20 py-16 md:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
+      <div className="container-luxe grid gap-5 border-t border-gold/20 py-16 md:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
         <div>
           <Link href="/" className="inline-flex">
-            <img src="/brand/onuora-logo-gold.png" alt="Onuora Menswear" className="h-24 w-auto object-contain" />
+            <Image src="/brand/onuora-logo-gold.png" alt="Onuora Menswear" width={220} height={96} className="h-24 w-auto object-contain" />
           </Link>
           <p className="mt-5 max-w-sm text-sm leading-7 text-ivory/62">
             Modern African stretch tailoring. Handmade in Nigeria, designed for global movement.

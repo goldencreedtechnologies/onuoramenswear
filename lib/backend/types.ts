@@ -21,5 +21,11 @@ export type CheckoutDraft = {
   items: OrderItem[];
   shippingCountry?: string;
   shippingCity?: string;
+  shippingState?: string;
+  postalCode?: string;
   shippingAddress?: string;
+  destinationLatitude?: number;
+  destinationLongitude?: number;
+  deliveryQuoteId?: string;
+  customerProfileId?: string;
 };

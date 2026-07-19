@@ -51,16 +51,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
         } as React.CSSProperties
       }
     >
-      <section className="container-luxe grid gap-10 py-12 md:grid-cols-[1.02fr_0.98fr] md:py-20">
+      <section className="container-luxe grid gap-7 py-10 md:grid-cols-[0.9fr_0.78fr] md:py-14">
         <ProductGallery images={product.images} productName={product.name} darkPage={product.darkPage} />
         <aside className="md:sticky md:top-28 md:self-start">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0] text-gold">{product.edition}</p>
-          <h1 className="product-title font-display text-6xl leading-[0.9] md:text-8xl">{product.name}</h1>
-          <p className="mt-4 text-xl" style={{ color: product.pageMuted }}>{product.meaning}</p>
-          <p className="mt-8 text-3xl font-semibold">{product.price}</p>
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0] text-gold">{product.edition}</p>
+          <h1 className="product-title font-display text-4xl leading-[0.96] md:text-5xl">{product.name}</h1>
+          <p className="mt-3 text-lg" style={{ color: product.pageMuted }}>{product.meaning}</p>
+          <p className="mt-6 text-2xl font-semibold">{product.price}</p>
           <CurrencyConverter priceUsd={100} accentText={product.pageText} panelText={product.pageMuted} />
           <ProductOptions product={product} />
-          <div className="mt-8 divide-y divide-gold/20 border-y border-gold/25 text-sm">
+          <div className="mt-6 divide-y divide-gold/20 border-y border-gold/25 text-sm">
             {[
               ["Fabric", "Smooth, breathable 4-way stretch fabric with a tailored drape."],
               ["Fit", "Designed to flex with the body while maintaining a sharp silhouette."],
@@ -76,23 +76,23 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </aside>
       </section>
 
-      <section className="py-20 md:py-28" style={{ backgroundColor: product.pagePanel, color: product.pageText }}>
-          <div className="container-luxe grid gap-10 md:grid-cols-[0.85fr_1.15fr] md:items-center">
+      <section className="py-12 md:py-16" style={{ backgroundColor: product.pagePanel, color: product.pageText }}>
+          <div className="container-luxe grid gap-5 md:grid-cols-[0.82fr_1.05fr] md:items-center">
             <div>
               <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold-soft">{product.storyKicker}</p>
-              <h2 className="font-display text-5xl leading-[0.95] md:text-7xl">{product.storyTitle}</h2>
+              <h2 className="font-display text-3xl leading-[1.05] md:text-4xl">{product.storyTitle}</h2>
             </div>
-            <p className="text-base leading-8" style={{ color: product.pageMuted }}>
+            <p className="text-sm leading-7" style={{ color: product.pageMuted }}>
               {product.story}
             </p>
           </div>
         </section>
 
-      <section className="container-luxe py-20 md:py-28">
-        <div className="mb-10 flex items-end justify-between gap-8">
+      <section className="container-luxe py-12 md:py-16">
+        <div className="mb-7 flex items-end justify-between gap-5">
           <div>
             <p className="mb-4 text-xs font-bold uppercase tracking-[0] text-gold">Complete the wardrobe</p>
-            <h2 className="font-display text-5xl">You may also like</h2>
+            <h2 className="font-display text-4xl">You may also like</h2>
           </div>
         </div>
         <div className="grid gap-5 md:grid-cols-3">

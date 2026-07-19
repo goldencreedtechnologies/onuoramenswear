@@ -33,28 +33,28 @@ export function CartClient() {
   }
 
   return (
-    <div className="mt-12 grid gap-8 md:grid-cols-[1fr_380px]">
+    <div className="mt-8 grid gap-5 md:grid-cols-[1fr_340px]">
       <div className="space-y-4">
         {items.length ? (
           items.map((item) => (
             <article
               key={`${item.productSlug}-${item.size}`}
-              className="grid gap-5 rounded-[35px] border border-gold/20 bg-panel-muted p-4 shadow-sm shadow-black/5 sm:grid-cols-[132px_1fr] sm:p-5"
+              className="grid gap-4 rounded-[26px] border border-gold/20 bg-panel-muted p-3 shadow-sm shadow-black/5 sm:grid-cols-[112px_1fr] sm:p-4"
             >
-              <Link href={`/products/${item.productSlug}`} className="block overflow-hidden rounded-[28px] bg-panel">
+              <Link href={`/products/${item.productSlug}`} className="block overflow-hidden rounded-[22px] bg-panel">
                 <Image
                   src={item.image}
                   alt={item.name}
                   width={360}
                   height={420}
-                  className="aspect-[4/5] h-full w-full object-contain p-4"
+                  className="aspect-[4/5] h-full w-full object-contain p-3"
                 />
               </Link>
               <div className="flex flex-col justify-between gap-5">
                 <div className="flex items-start justify-between gap-5">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-[0] text-gold">{item.edition}</p>
-                    <h2 className="mt-2 font-display text-4xl leading-none">{item.name}</h2>
+                    <h2 className="mt-2 font-display text-3xl leading-none">{item.name}</h2>
                     <p className="mt-2 text-sm text-copy-muted">Size {item.size}</p>
                   </div>
                   <p className="text-sm font-bold">{money(item.unitPriceUsd * item.quantity)}</p>
@@ -92,15 +92,15 @@ export function CartClient() {
             </article>
           ))
         ) : (
-          <div className="rounded-[35px] border border-gold/20 bg-panel-muted p-8">
+          <div className="rounded-[26px] border border-gold/20 bg-panel-muted p-5">
             <p className="text-copy-muted">Your bag is empty. Choose a signature set to begin your edit.</p>
             <Cta href="/collections" className="mt-6">Shop collections</Cta>
           </div>
         )}
       </div>
-      <aside className="h-fit rounded-[35px] border border-gold/20 bg-obsidian p-7 text-ivory">
-        <h2 className="font-display text-4xl">Order summary</h2>
-        <div className="my-7 space-y-4 text-sm text-ivory/70">
+      <aside className="h-fit rounded-[26px] border border-gold/20 bg-obsidian p-5 text-ivory">
+        <h2 className="font-display text-3xl">Order summary</h2>
+        <div className="my-5 space-y-3 text-sm text-ivory/70">
           <div className="flex justify-between">
             <span>Subtotal</span>
             <span>{money(subtotal)}</span>

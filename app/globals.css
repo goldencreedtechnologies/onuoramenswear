@@ -109,12 +109,12 @@ textarea {
 }
 
 .container-luxe {
-  width: min(100% - 40px, 1180px);
+  width: min(100% - 32px, 1080px);
   margin-inline: auto;
 }
 
 .plush-card {
-  border-radius: 35px;
+  border-radius: 26px;
 }
 
 .hairline {
@@ -178,7 +178,7 @@ textarea {
 }
 
 .garment-frame {
-  border-radius: 35px;
+  border-radius: 26px;
   background:
     radial-gradient(circle at 50% 24%, rgb(201 162 62 / 18%), transparent 18rem),
     linear-gradient(145deg, rgb(226 210 177 / 85%), rgb(247 243 232 / 92%));
@@ -193,7 +193,7 @@ html[data-theme="dark"] .garment-frame {
 .garment-image {
   object-fit: contain;
   object-position: center;
-  padding: clamp(1rem, 4vw, 2.5rem);
+  padding: clamp(0.75rem, 2.6vw, 1.75rem);
 }
 
 .product-title {

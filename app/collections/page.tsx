@@ -12,13 +12,13 @@ export default async function CollectionsPage() {
 
   return (
     <main className="bg-page pt-28 text-copy">
-      <section className="container-luxe py-20 md:py-28">
+      <section className="container-luxe py-14 md:py-14">
         <SectionHeading
           eyebrow="Collections"
           title="Choose the mood you want to carry."
           copy="A focused house collection organized by name, color, and occasion."
         />
-        <div className="mb-10 flex flex-wrap gap-3 text-xs font-bold uppercase tracking-[0]">
+        <div className="mb-7 flex flex-wrap gap-2 text-[11px] font-bold uppercase tracking-[0]">
           {["All", "Black", "Cream", "Burgundy", "Blue", "Forest", "White"].map((filter) => (
             <button key={filter} className="gold-focus rounded-full border border-gold/20 bg-panel px-4 py-2 text-copy-muted transition hover:border-gold hover:text-gold">
               {filter}

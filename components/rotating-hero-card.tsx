@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { products } from "@/data/catalog";
 
@@ -16,12 +17,14 @@ export function RotatingHeroCard() {
   }, []);
 
   return (
-    <div className="floating hidden w-[270px] rounded-[32px] border border-gold/25 bg-obsidian/55 p-3 text-ivory shadow-2xl shadow-black/25 backdrop-blur-2xl md:block">
+    <div className="floating hidden w-[270px] rounded-[24px] border border-gold/25 bg-obsidian/55 p-3 text-ivory shadow-2xl shadow-black/25 backdrop-blur-2xl md:block">
       <div className="garment-frame relative aspect-[4/5] overflow-hidden">
-        <img
+        <Image
           key={product.slug}
           src={product.image}
           alt={`${product.name} ${product.edition}`}
+          fill
+          sizes="270px"
           className="garment-image h-full w-full transition duration-500"
         />
       </div>

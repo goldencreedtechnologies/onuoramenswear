@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { StoreProduct } from "@/lib/backend/types";
@@ -27,7 +28,7 @@ function ProductScreen({
       className="relative h-full w-full overflow-hidden"
       style={{ backgroundColor: product.palette, color: product.pageText }}
     >
-      <div className={cn("relative z-10", compact ? "px-3 pt-3" : "px-5 pt-5")}>
+      <div className={cn("relative z-10", compact ? "px-3 pt-3" : "px-4 pt-5")}>
         <p className={cn("font-bold uppercase tracking-[0]", compact ? "text-[8px]" : "text-[10px]")} style={{ color: product.pageMuted }}>
           {product.name}
         </p>
@@ -36,9 +37,11 @@ function ProductScreen({
         </p>
       </div>
       <div className="absolute inset-0 flex items-center justify-center">
-        <img
+        <Image
           src={product.image}
           alt={`${product.name} ${product.edition}`}
+          fill
+          sizes={compact ? "140px" : "120px"}
           className={cn("h-full w-full object-contain object-center", compact ? "p-4" : "p-5")}
         />
       </div>
@@ -61,12 +64,12 @@ function OrbitCard({
       type="button"
       onClick={onClick}
       className={cn(
-        "absolute h-[218px] w-[148px] overflow-hidden rounded-[24px] border-2 border-[#161412] bg-[#161412] p-[3px] shadow-[0_18px_34px_rgba(0,0,0,0.22)] transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-[0_26px_48px_rgba(0,0,0,0.26)] md:h-[246px] md:w-[166px]",
+        "absolute h-[178px] w-[122px] overflow-hidden rounded-[20px] border border-[#161412] bg-[#161412] p-[3px] shadow-[0_18px_34px_rgba(0,0,0,0.18)] transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-[0_24px_42px_rgba(0,0,0,0.22)] md:h-[206px] md:w-[140px]",
         className
       )}
       aria-label={`Show ${product.name}`}
     >
-      <div className="h-full w-full overflow-hidden rounded-[20px]">
+      <div className="h-full w-full overflow-hidden rounded-[17px]">
         <ProductScreen product={product} compact />
       </div>
     </button>
@@ -95,13 +98,15 @@ export function EditorialLookbookCarousel({ products }: EditorialLookbookCarouse
   const goNext = () => setIndex((current) => (current + 1) % products.length);
 
   return (
-    <div className="grid gap-10 overflow-hidden md:grid-cols-[1.08fr_0.92fr] md:items-center">
-      <div className="relative mx-auto h-[660px] w-full max-w-[610px] md:h-[720px]">
-        <div className="absolute left-1/2 top-[2%] z-10 h-[560px] w-[560px] -translate-x-1/2 md:h-[620px] md:w-[620px]">
+    <div className="grid gap-5 overflow-hidden md:grid-cols-[1fr_0.92fr] md:items-center">
+      <div className="relative mx-auto h-[540px] w-full max-w-[520px] md:h-[590px]">
+        <div className="absolute left-1/2 top-[2%] z-10 h-[460px] w-[460px] -translate-x-1/2 md:h-[520px] md:w-[520px]">
           <div className="absolute inset-x-[18%] bottom-[4%] h-16 rounded-full bg-black/18 blur-2xl" />
-          <img
+          <Image
             src="/brand/phone-screen.png"
             alt="Tilted phone lookbook screen"
+            width={620}
+            height={620}
             className="relative z-10 h-full w-full object-contain"
           />
 
@@ -110,7 +115,7 @@ export function EditorialLookbookCarousel({ products }: EditorialLookbookCarouse
           </div>
         </div>
 
-        <div className="absolute inset-x-0 top-[12%] z-30 h-[430px] md:top-[14%]">
+        <div className="absolute inset-x-0 top-[13%] z-30 h-[340px] md:top-[14%]">
           {orbitProducts.map((product, productIndex) => (
             <OrbitCard
               key={`${product.slug}-${productIndex}`}
@@ -141,10 +146,10 @@ export function EditorialLookbookCarousel({ products }: EditorialLookbookCarouse
 
       <div className="max-w-2xl md:pl-6">
         <p className="text-[10px] font-bold uppercase tracking-[0] text-gold">Editorial lookbook</p>
-        <h3 className="mt-4 font-display text-4xl leading-[0.95] text-copy md:text-5xl">
+        <h3 className="mt-4 font-display text-3xl leading-[1] text-copy md:text-4xl">
           A modern screen for an ancestral signal.
         </h3>
-        <p className="mt-5 max-w-xl text-base leading-8 text-copy-muted">
+        <p className="mt-5 max-w-xl text-sm leading-7 text-copy-muted">
           The lookbook now rotates through every signature, one chapter at a time, so each story can breathe before the next one arrives
         </p>
       </div>

@@ -14,7 +14,7 @@ export function Cta({ href, children, variant = "gold", className }: CtaProps) {
     <Link
       href={href}
       className={cn(
-        "gold-focus group inline-flex min-h-12 items-center justify-center gap-3 rounded-[3px] px-5 py-3 text-xs font-bold uppercase tracking-[0] transition duration-300 hover:-translate-y-0.5",
+        "gold-focus group inline-flex min-h-10 items-center justify-center gap-2 rounded-[3px] px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0] transition duration-300 hover:-translate-y-0.5",
         variant === "gold" && "bg-gold text-obsidian hover:bg-gold-soft",
         variant === "dark" && "bg-obsidian text-ivory hover:bg-charcoal",
         variant === "light" && "bg-panel text-copy hover:bg-panel-muted",
@@ -23,7 +23,7 @@ export function Cta({ href, children, variant = "gold", className }: CtaProps) {
       )}
     >
       {children}
-      <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+      <ArrowUpRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
     </Link>
   );
 }
