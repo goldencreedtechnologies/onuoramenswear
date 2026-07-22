@@ -4,24 +4,6 @@ import { getSiteUrl, hasStripeConfig, hasSupabaseConfig } from "@/lib/backend/en
 import { ensureCustomerProfile, getAuthenticatedAccountUser } from "@/lib/backend/account";
 import { createStripeClient } from "@/lib/stripe";
 
-const allowedShippingCountries = [
-  "US",
-  "CA",
-  "GB",
-  "NG",
-  "GH",
-  "ZA",
-  "KE",
-  "AE",
-  "AU",
-  "DE",
-  "FR",
-  "IT",
-  "ES",
-  "NL",
-  "IE"
-] as const;
-
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const parsed = checkoutDraftSchema.safeParse(body);
@@ -78,27 +60,35 @@ export async function POST(request: Request) {
     });
   }
 
-  const session = await stripe.checkout.sessions
-    .create({
+  let session;
+
+  try {
+    session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: parsed.data.email,
       client_reference_id: order.orderId,
       billing_address_collection: "auto",
-      shipping_address_collection: {
-        allowed_countries: [...allowedShippingCountries]
-      },
       metadata: {
         order_id: order.orderId,
         source: "onuoramenswear"
       },
+      payment_intent_data: {
+        metadata: {
+          order_id: order.orderId,
+          source: "onuoramenswear"
+        }
+      },
       line_items: lineItems,
+      expires_at: Math.floor(Date.now() / 1000) + 31 * 60,
       success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/checkout/cancel?order_id=${order.orderId}`
-    })
-    .catch(async (error: Error) => {
-      await releasePendingOrderInventory(order.orderId);
-      throw error;
+    }, {
+      idempotencyKey: `checkout-session-${order.orderId}`
     });
+  } catch {
+    await releasePendingOrderInventory(order.orderId);
+    return NextResponse.json({ error: "Unable to start secure payment right now." }, { status: 502 });
+  }
 
   if (!session.url) {
     await releasePendingOrderInventory(order.orderId);

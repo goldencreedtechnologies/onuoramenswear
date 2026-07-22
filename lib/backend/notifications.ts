@@ -70,6 +70,12 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
     return { subject, ...baseEmail({ title: "Checkout expired.", body, action: "You can return to your bag and start checkout again when ready." }) };
   }
 
+  if (row.template === "payment_failed") {
+    const subject = row.subject ?? "Your ỌNUỌRA payment was not completed";
+    const body = `Dear ${fullName}, Stripe could not complete your payment. No charge has been confirmed, and the reserved pieces have been returned to availability.`;
+    return { subject, ...baseEmail({ title: "Payment not completed.", body, action: "Review your payment method and begin checkout again when ready." }) };
+  }
+
   const subject = row.subject ?? "Your ỌNUỌRA order has been started";
   const body = `Dear ${fullName}, your private order has been created and your selected size has been reserved while payment is pending.`;
   return { subject, ...baseEmail({ title: "Order started.", body, action: "Complete payment to move your order into fulfilment." }) };

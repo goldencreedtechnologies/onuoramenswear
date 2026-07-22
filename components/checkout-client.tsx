@@ -27,6 +27,14 @@ type DeliveryQuote = {
   note: string;
 };
 
+const deliveryFields = new Set([
+  "shippingAddress",
+  "shippingCity",
+  "shippingState",
+  "postalCode",
+  "shippingCountry"
+]);
+
 function money(amount: number) {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
 }
@@ -40,6 +48,15 @@ export function CheckoutClient() {
   const subtotal = useMemo(() => cartSubtotal(items), [items]);
   const shipping = deliveryQuote?.shippingUsd ?? 0;
   const total = subtotal + shipping;
+
+  function handleFormChange(event: React.FormEvent<HTMLFormElement>) {
+    const target = event.target as HTMLInputElement;
+
+    if (deliveryQuote && deliveryFields.has(target.name)) {
+      setDeliveryQuote(null);
+      setQuoteStatus({ type: "idle" });
+    }
+  }
 
   async function handleDeliveryQuote() {
     if (!formRef.current) {
@@ -80,6 +97,7 @@ export function CheckoutClient() {
 
     setDeliveryQuote(result.quote);
     setQuoteStatus({ type: "idle" });
+    setStatus({ type: "idle" });
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -87,6 +105,11 @@ export function CheckoutClient() {
 
     if (!items.length) {
       setStatus({ type: "error", message: "Your bag is empty." });
+      return;
+    }
+
+    if (!deliveryQuote) {
+      setStatus({ type: "error", message: "Estimate delivery before continuing to secure payment." });
       return;
     }
 
@@ -138,7 +161,7 @@ export function CheckoutClient() {
       <div>
         <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold">Secure checkout</p>
         <h1 className="font-display text-4xl md:text-5xl">Finish with confidence.</h1>
-        <form ref={formRef} onSubmit={handleSubmit} className="mt-7 grid gap-3">
+        <form ref={formRef} onSubmit={handleSubmit} onChange={handleFormChange} className="mt-7 grid gap-3">
             <label className="grid gap-2 text-xs font-bold uppercase tracking-[0]">
               Email
               <input name="email" type="email" required className="gold-focus min-h-10 border border-gold/15 bg-panel px-4 text-sm font-normal normal-case text-copy" />
@@ -204,7 +227,7 @@ export function CheckoutClient() {
             {status.type === "error" ? <p className="text-sm font-semibold text-red-600">{status.message}</p> : null}
             <button
               type="submit"
-              disabled={status.type === "loading" || !items.length}
+              disabled={status.type === "loading" || !items.length || !deliveryQuote}
               className="gold-focus mt-4 inline-flex min-h-10 items-center justify-center gap-3 bg-gold px-4 text-xs font-bold uppercase tracking-[0] text-obsidian transition hover:bg-gold-soft disabled:cursor-not-allowed disabled:opacity-50"
             >
               {status.type === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}

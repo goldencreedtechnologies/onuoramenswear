@@ -49,6 +49,10 @@ export function getStripeSecretKey() {
   return getOptionalEnv("STRIPE_SECRET_KEY");
 }
 
+export function getStripePublishableKey() {
+  return getOptionalEnv("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY");
+}
+
 export function getStripeWebhookSecret() {
   return getOptionalEnv("STRIPE_WEBHOOK_SECRET");
 }
@@ -59,6 +63,14 @@ export function getSiteUrl() {
 
 export function hasStripeConfig() {
   return Boolean(getStripeSecretKey());
+}
+
+export function hasStripePublishableConfig() {
+  return Boolean(getStripePublishableKey());
+}
+
+export function hasStripeWebhookConfig() {
+  return Boolean(getStripeWebhookSecret());
 }
 
 export function getNotificationWorkerSecret() {

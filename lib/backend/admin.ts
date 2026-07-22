@@ -6,7 +6,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const orderStatusSchema = z.object({
   status: z
-    .enum(["pending_payment", "paid", "processing", "fulfilled", "cancelled", "payment_expired"])
+    .enum(["pending_payment", "paid", "processing", "fulfilled", "cancelled", "payment_expired", "payment_failed"])
     .optional(),
   paymentStatus: z.enum(["unpaid", "paid", "expired", "refunded", "failed"]).optional(),
   shippingStatus: z

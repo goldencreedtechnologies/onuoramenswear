@@ -6,3 +6,5 @@ index.html
 .env
 .env.local
 .env.*.local
+
+.vercel

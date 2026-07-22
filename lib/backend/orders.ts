@@ -11,11 +11,11 @@ export const checkoutDraftSchema = z.object({
   fullName: z.string().min(2),
   phone: z.string().optional(),
   currency: z.string().default("USD"),
-  shippingCountry: z.string().optional(),
-  shippingCity: z.string().optional(),
+  shippingCountry: z.string().trim().min(2),
+  shippingCity: z.string().trim().min(2),
   shippingState: z.string().optional(),
   postalCode: z.string().optional(),
-  shippingAddress: z.string().optional(),
+  shippingAddress: z.string().trim().min(4),
   destinationLatitude: z.number().min(-90).max(90).optional(),
   destinationLongitude: z.number().min(-180).max(180).optional(),
   deliveryQuoteId: z.string().uuid().optional(),
@@ -75,11 +75,11 @@ export async function createOrder(draft: CheckoutDraftInput) {
   const subtotalUsd = pricedItems.reduce((total, item) => total + item.unitPriceUsd * item.quantity, 0);
   const deliveryQuote = await resolveDeliveryQuote({
     email: draft.email,
-    shippingCountry: draft.shippingCountry ?? "NG",
-    shippingCity: draft.shippingCity ?? "Lagos",
+    shippingCountry: draft.shippingCountry,
+    shippingCity: draft.shippingCity,
     shippingState: draft.shippingState,
     postalCode: draft.postalCode,
-    shippingAddress: draft.shippingAddress ?? "Address pending",
+    shippingAddress: draft.shippingAddress,
     destinationLatitude: draft.destinationLatitude,
     destinationLongitude: draft.destinationLongitude,
     itemCount: pricedItems.reduce((total, item) => total + item.quantity, 0),
@@ -97,11 +97,11 @@ export async function createOrder(draft: CheckoutDraftInput) {
       full_name: draft.fullName,
       phone: draft.phone ?? null,
       currency: draft.currency,
-      shipping_country: draft.shippingCountry ?? null,
-      shipping_city: draft.shippingCity ?? null,
+      shipping_country: draft.shippingCountry,
+      shipping_city: draft.shippingCity,
       shipping_state: draft.shippingState ?? null,
       shipping_postal_code: draft.postalCode ?? null,
-      shipping_address: draft.shippingAddress ?? null,
+      shipping_address: draft.shippingAddress,
       delivery_quote_id: deliveryQuote.id ?? null,
       delivery_zone_code: deliveryQuote.zoneCode,
       delivery_method_code: deliveryQuote.methodCode,
@@ -242,29 +242,42 @@ export async function markOrderPaid({
     return { ok: false as const, reason: "Supabase is not configured yet." };
   }
 
-  const { error } = await client
+  const { data: order, error: orderError } = await client
     .from("orders")
-    .update({
-      status: "paid",
-      payment_status: "paid",
-      stripe_payment_intent_id: paymentIntentId ?? null,
-      paid_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    })
-    .eq("stripe_checkout_session_id", checkoutSessionId);
-
-  if (error) {
-    return { ok: false as const, reason: error.message };
-  }
-
-  const { data: order } = await client
-    .from("orders")
-    .select("id, email, customer_profile_id, full_name, status, payment_status, shipping_status, inventory_status, total_usd")
+    .select("id, email, customer_profile_id, full_name, payment_status, shipping_status, total_usd")
     .eq("stripe_checkout_session_id", checkoutSessionId)
     .maybeSingle();
 
-  if (order?.id) {
-    await markOrderInventorySold(order.id as string);
+  if (orderError || !order) {
+    return { ok: false as const, reason: orderError?.message ?? "Stripe order was not found." };
+  }
+
+  const inventory = await markOrderInventorySold(order.id as string);
+
+  if (!inventory.ok) {
+    return inventory;
+  }
+
+  const wasAlreadyPaid = order.payment_status === "paid";
+  const paymentUpdate = wasAlreadyPaid
+    ? {
+        ...(paymentIntentId ? { stripe_payment_intent_id: paymentIntentId } : {}),
+        updated_at: new Date().toISOString()
+      }
+    : {
+        status: "paid",
+        payment_status: "paid",
+        stripe_payment_intent_id: paymentIntentId ?? null,
+        paid_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+  const { error: updateError } = await client.from("orders").update(paymentUpdate).eq("id", order.id);
+
+  if (updateError) {
+    return { ok: false as const, reason: updateError.message };
+  }
+
+  if (!wasAlreadyPaid) {
     await recordOrderEvent({
       orderId: order.id as string,
       eventType: "payment_confirmed",
@@ -295,50 +308,68 @@ export async function markOrderPaid({
   return { ok: true as const };
 }
 
-export async function markOrderPaymentExpired(checkoutSessionId: string) {
+async function closeUnpaidOrder(checkoutSessionId: string, outcome: "expired" | "failed") {
   const client = createSupabaseServiceClient();
 
   if (!client) {
     return { ok: false as const, reason: "Supabase is not configured yet." };
   }
 
-  const { error } = await client
+  const { data: order, error: orderError } = await client
     .from("orders")
-    .update({
-      status: "payment_expired",
-      payment_status: "expired",
-      updated_at: new Date().toISOString()
-    })
-    .eq("stripe_checkout_session_id", checkoutSessionId)
-    .eq("payment_status", "unpaid");
-
-  if (error) {
-    return { ok: false as const, reason: error.message };
-  }
-
-  const { data: order } = await client
-    .from("orders")
-    .select("id, email, customer_profile_id, full_name")
+    .select("id, email, customer_profile_id, full_name, payment_status")
     .eq("stripe_checkout_session_id", checkoutSessionId)
     .maybeSingle();
 
-  if (order?.id) {
-    await releaseOrderInventory(order.id as string);
+  if (orderError || !order) {
+    return { ok: false as const, reason: orderError?.message ?? "Stripe order was not found." };
+  }
+
+  if (order.payment_status === "paid") {
+    return { ok: true as const };
+  }
+
+  const paymentStatus = outcome === "expired" ? "expired" : "failed";
+  const orderStatus = outcome === "expired" ? "payment_expired" : "payment_failed";
+  const wasAlreadyClosed = order.payment_status === paymentStatus;
+  const released = await releaseOrderInventory(order.id as string);
+
+  if (!released.ok) {
+    return released;
+  }
+
+  const { error: updateError } = await client
+    .from("orders")
+    .update({
+      status: orderStatus,
+      payment_status: paymentStatus,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", order.id);
+
+  if (updateError) {
+    return { ok: false as const, reason: updateError.message };
+  }
+
+  if (!wasAlreadyClosed) {
     await recordOrderEvent({
       orderId: order.id as string,
-      eventType: "payment_expired",
-      status: "payment_expired",
-      paymentStatus: "expired",
+      eventType: orderStatus,
+      status: orderStatus,
+      paymentStatus,
       inventoryStatus: "released",
-      note: "Payment session expired and inventory reservation was released.",
+      note:
+        outcome === "expired"
+          ? "Payment session expired and inventory reservation was released."
+          : "Payment failed and inventory reservation was released.",
       source: "stripe"
     });
     await queueOrderNotification({
       orderId: order.id as string,
       customerProfileId: order.customer_profile_id as string | null,
-      template: "payment_expired",
+      template: orderStatus,
       recipient: order.email as string,
-      subject: "Your ỌNUỌRA checkout expired",
+      subject: outcome === "expired" ? "Your ỌNUỌRA checkout expired" : "Your ỌNUỌRA payment was not completed",
       payload: {
         fullName: order.full_name
       }
@@ -346,4 +377,12 @@ export async function markOrderPaymentExpired(checkoutSessionId: string) {
   }
 
   return { ok: true as const };
+}
+
+export async function markOrderPaymentExpired(checkoutSessionId: string) {
+  return closeUnpaidOrder(checkoutSessionId, "expired");
+}
+
+export async function markOrderPaymentFailed(checkoutSessionId: string) {
+  return closeUnpaidOrder(checkoutSessionId, "failed");
 }

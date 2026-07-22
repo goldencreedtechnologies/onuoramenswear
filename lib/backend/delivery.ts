@@ -107,6 +107,13 @@ type DeliveryMethod = {
 
 type DeliveryQuoteRow = {
   id: string;
+  shipping_country?: string;
+  shipping_city?: string;
+  shipping_state?: string | null;
+  shipping_postal_code?: string | null;
+  shipping_address?: string;
+  item_count?: number;
+  subtotal_usd?: number;
   delivery_zone_code: string;
   delivery_method_code: string;
   delivery_method_name: string;
@@ -172,6 +179,22 @@ function normalizeCountry(country: string) {
 
 function normalizeCity(city: string) {
   return city.trim().toLowerCase();
+}
+
+function normalizeQuoteText(value?: string | null) {
+  return (value ?? "").trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function quoteMatchesInput(row: DeliveryQuoteRow, input: DeliveryQuoteRequest) {
+  return (
+    normalizeCountry(row.shipping_country ?? "") === normalizeCountry(input.shippingCountry) &&
+    normalizeQuoteText(row.shipping_city) === normalizeQuoteText(input.shippingCity) &&
+    normalizeQuoteText(row.shipping_state) === normalizeQuoteText(input.shippingState) &&
+    normalizeQuoteText(row.shipping_postal_code) === normalizeQuoteText(input.postalCode) &&
+    normalizeQuoteText(row.shipping_address) === normalizeQuoteText(input.shippingAddress) &&
+    Number(row.item_count) === input.itemCount &&
+    Math.abs(Number(row.subtotal_usd) - input.subtotalUsd) < 0.01
+  );
 }
 
 function asCoordinates(input: DeliveryQuoteRequest): Coordinates | undefined {
@@ -476,7 +499,7 @@ export async function createDeliveryQuote(input: DeliveryQuoteRequest) {
   return mapQuoteRow(data as DeliveryQuoteRow);
 }
 
-export async function getDeliveryQuoteById(id: string) {
+export async function getDeliveryQuoteById(id: string, expectedInput?: DeliveryQuoteRequest) {
   const client = createSupabaseServiceClient();
 
   if (!client) {
@@ -486,7 +509,7 @@ export async function getDeliveryQuoteById(id: string) {
   const { data, error } = await client
     .from("delivery_quotes")
     .select(
-      "id, delivery_zone_code, delivery_method_code, delivery_method_name, carrier_code, shipping_usd, currency, estimated_min_days, estimated_max_days, distance_km, route_provider, route_duration_seconds, route_confidence, map_url, quote_source, requires_manual_review, note"
+      "id, shipping_country, shipping_city, shipping_state, shipping_postal_code, shipping_address, item_count, subtotal_usd, delivery_zone_code, delivery_method_code, delivery_method_name, carrier_code, shipping_usd, currency, estimated_min_days, estimated_max_days, distance_km, route_provider, route_duration_seconds, route_confidence, map_url, quote_source, requires_manual_review, note"
     )
     .eq("id", id)
     .gt("expires_at", new Date().toISOString())
@@ -496,12 +519,18 @@ export async function getDeliveryQuoteById(id: string) {
     return null;
   }
 
-  return mapQuoteRow(data as DeliveryQuoteRow);
+  const row = data as DeliveryQuoteRow;
+
+  if (expectedInput && !quoteMatchesInput(row, expectedInput)) {
+    return null;
+  }
+
+  return mapQuoteRow(row);
 }
 
 export async function resolveDeliveryQuote(input: DeliveryQuoteRequest & { deliveryQuoteId?: string }) {
   if (input.deliveryQuoteId) {
-    const storedQuote = await getDeliveryQuoteById(input.deliveryQuoteId);
+    const storedQuote = await getDeliveryQuoteById(input.deliveryQuoteId, input);
 
     if (storedQuote) {
       return storedQuote;
