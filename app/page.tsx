@@ -29,7 +29,7 @@ export default async function HomePage() {
           fill
           priority
           quality={95}
-          sizes="100vw"
+          sizes="(max-width: 639px) 100vw, 1px"
           className="object-cover object-center sm:hidden"
         />
         <Image
@@ -39,7 +39,7 @@ export default async function HomePage() {
           fill
           priority
           quality={95}
-          sizes="100vw"
+          sizes="(min-width: 640px) 100vw, 1px"
           className="hidden object-cover object-center sm:block"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,243,232,0)_0%,rgba(247,243,232,.12)_28%,rgba(247,243,232,.94)_48%,rgba(247,243,232,1)_100%)] sm:bg-[linear-gradient(90deg,rgba(247,243,232,.92)_0%,rgba(247,243,232,.56)_36%,rgba(247,243,232,0)_64%)]" />
