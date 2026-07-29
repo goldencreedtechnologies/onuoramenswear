@@ -54,6 +54,14 @@ export const productAdminSchema = z.object({
   storyKicker: z.string().trim().min(2).max(160),
   storyTitle: z.string().trim().min(2).max(220),
   occasion: z.string().trim().min(2).max(180),
+  family: z.enum(["original", "button", "buttonless"]),
+  colorName: z.string().trim().min(2).max(80),
+  colorValue: z.string().trim().min(4).max(40),
+  modelName: z.string().trim().min(2).max(120),
+  details: z.string().trim().min(10),
+  fit: z.string().trim().min(10),
+  fabricCare: z.string().trim().min(10),
+  delivery: z.string().trim().min(10),
   sortOrder: z.number().int().min(0).default(0)
 });
 
@@ -736,7 +744,7 @@ export async function getAdminProducts() {
 
   const { data, error } = await serviceClient
     .from("products")
-    .select("id, slug, name, edition, meaning, price, image, images, palette, page_text, page_muted, page_panel, dark_page, story, story_kicker, story_title, occasion, sort_order, updated_at")
+    .select("id, slug, name, edition, meaning, price, image, images, palette, page_text, page_muted, page_panel, dark_page, story, story_kicker, story_title, occasion, family, color_name, color_value, model_name, details, fit, fabric_care, delivery, sort_order, updated_at")
     .order("sort_order", { ascending: true });
 
   if (error) {
@@ -777,6 +785,14 @@ export async function upsertAdminProduct(admin: AdminSession, input: z.infer<typ
       story_kicker: input.storyKicker,
       story_title: input.storyTitle,
       occasion: input.occasion,
+      family: input.family,
+      color_name: input.colorName,
+      color_value: input.colorValue,
+      model_name: input.modelName,
+      details: input.details,
+      fit: input.fit,
+      fabric_care: input.fabricCare,
+      delivery: input.delivery,
       sort_order: input.sortOrder,
       updated_at: new Date().toISOString()
     },

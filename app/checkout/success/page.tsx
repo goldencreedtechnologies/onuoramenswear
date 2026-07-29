@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Check } from "lucide-react";
 import { ClearCartOnMount } from "@/components/clear-cart-on-mount";
 
 export const metadata = {
@@ -13,17 +14,28 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
   const { session_id } = await searchParams;
 
   return (
-    <main className="bg-page pt-28 text-copy">
+    <main className="min-h-screen bg-page pt-[104px] text-copy">
       <ClearCartOnMount />
-      <section className="container-luxe grid min-h-[70vh] place-items-center py-14">
-        <div className="max-w-2xl rounded-[26px] border border-gold/20 bg-panel p-5 text-center md:p-12">
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold">Payment received</p>
-          <h1 className="font-display text-4xl leading-[0.96] md:text-5xl">Your order is in motion.</h1>
-          <p className="mx-auto mt-6 max-w-xl text-sm leading-7 text-copy-muted">
-            Thank you for choosing ỌNUỌRA. Your payment is being confirmed by Stripe, and your order will move into fulfilment once the payment webhook is received.
+      <section className="container-luxe grid min-h-[72vh] place-items-center py-14">
+        <div className="max-w-2xl text-center">
+          <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-gold text-obsidian">
+            <Check className="h-5 w-5" />
+          </span>
+          <p className="mt-6 text-[10px] font-semibold uppercase text-gold">Payment received</p>
+          <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-5xl">
+            Your order is in motion.
+          </h1>
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-copy-muted">
+            Thank you for choosing ONUORA. Stripe is confirming the payment and the house will
+            begin fulfilment as soon as that confirmation arrives.
           </p>
-          {session_id ? <p className="mt-5 break-all text-xs text-copy-muted">Stripe session: {session_id}</p> : null}
-          <Link href="/collections" className="gold-focus mt-8 inline-flex min-h-10 items-center justify-center rounded-[3px] bg-gold px-4 py-2.5 text-xs font-bold uppercase tracking-[0] text-obsidian transition hover:bg-gold-soft">
+          {session_id ? (
+            <p className="mt-4 break-all text-[10px] text-copy-muted">Session {session_id}</p>
+          ) : null}
+          <Link
+            href="/collection"
+            className="gold-focus mt-7 inline-flex min-h-12 items-center justify-center bg-obsidian px-6 text-xs font-semibold uppercase text-ivory hover:bg-gold hover:text-obsidian"
+          >
             Continue shopping
           </Link>
         </div>

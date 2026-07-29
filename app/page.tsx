@@ -1,179 +1,192 @@
-import { BrandIcon } from "@/components/brand-icon";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, BadgeCheck, Globe2, Ruler, Scissors, ShieldCheck } from "lucide-react";
+import { CollectionImageSwap } from "@/components/collection-image-swap";
 import { Cta } from "@/components/cta";
-import { EditorialLookbookCarousel } from "@/components/editorial-lookbook-carousel";
+import { LimitedOfferCarousel } from "@/components/limited-offer-carousel";
 import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
-import { craftSteps, journalPosts, trustSignals, valuePillars } from "@/data/catalog";
+import { homepageCollectionCards } from "@/data/phase-one-collections";
 import { getStoreProducts } from "@/lib/backend/catalog";
 
-const iconMap = ["heritage", "stretch", "shipping", "limited"] as const;
-const trustIconMap = ["secure", "shipping", "craft", "stretch", "fabric"] as const;
+const serviceSignals = [
+  { icon: Scissors, title: "Made in Nigeria", copy: "Cut and hand-finished by skilled makers." },
+  { icon: Ruler, title: "Stretch tailored", copy: "Structure with freedom of movement." },
+  { icon: Globe2, title: "Worldwide service", copy: "Tracked delivery across the UK, USA, Europe, and beyond." },
+  { icon: ShieldCheck, title: "Secure checkout", copy: "Protected payment through Stripe." }
+];
 
 export default async function HomePage() {
   const products = await getStoreProducts();
+  const originals = products.filter((product) => product.family === "original");
 
   return (
     <main className="bg-page text-copy">
-      <section className="grain relative isolate min-h-[86svh] overflow-hidden bg-obsidian pt-28 text-ivory">
-        <div
-          className="absolute inset-0 -z-10 bg-cover bg-[center_28%] opacity-72"
-          style={{
-            backgroundImage:
-              "linear-gradient(90deg, rgb(31 31 31 / 92%), rgb(31 31 31 / 56%) 48%, rgb(31 31 31 / 16%)), url('https://onuoramenswear.com/wp-content/uploads/2025/11/97495CD6-4501-4C8D-BAC1-E73430AAE7D2-scaled.jpg')"
-          }}
+      <section className="relative min-h-[min(680px,calc(100svh-56px))] overflow-hidden bg-[#f4eee6] text-[#171717] md:min-h-[min(820px,calc(100svh-72px))]">
+        <Image
+          src="/brand/campaign/hero-phase-2-mobile-studio.webp"
+          alt="Edson, Idris, and Charlie wearing ONUORA New Designs in the studio"
+          fill
+          priority
+          quality={95}
+          sizes="100vw"
+          className="object-cover object-center sm:hidden"
         />
-        <div className="container-luxe grid min-h-[calc(86svh-7rem)] items-end gap-5 pb-10 md:grid-cols-[minmax(0,1fr)_260px]">
-          <div className="max-w-3xl pb-4">
-            <h1 className="reveal reveal-delay-1 font-display text-4xl leading-[0.96] text-balance md:text-5xl lg:text-6xl">
+        <Image
+          src="/brand/campaign/hero-phase-2-studio-framed-v2-6k.webp"
+          alt=""
+          aria-hidden="true"
+          fill
+          priority
+          quality={95}
+          sizes="100vw"
+          className="hidden object-cover object-center sm:block"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,243,232,0)_0%,rgba(247,243,232,.12)_28%,rgba(247,243,232,.94)_48%,rgba(247,243,232,1)_100%)] sm:bg-[linear-gradient(90deg,rgba(247,243,232,.92)_0%,rgba(247,243,232,.56)_36%,rgba(247,243,232,0)_64%)]" />
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-white/70 to-transparent" />
+        <div className="container-luxe relative flex min-h-[min(680px,calc(100svh-56px))] items-end pb-12 pt-32 md:min-h-[min(820px,calc(100svh-72px))] md:pb-16">
+          <div className="max-w-xl">
+            <p className="text-[10px] font-semibold uppercase text-[#9f751d]">New Design / 2026</p>
+            <h1 className="mt-3 text-4xl font-semibold leading-[1.04] text-balance sm:text-5xl md:text-6xl">
               Shop Nigerian-Made Stretch Menswear.
             </h1>
-            <p className="reveal reveal-delay-2 mt-6 max-w-xl text-sm leading-7 text-ivory/76 md:mt-8 md:text-base">
-              Onuora brings heritage, stretch-fit comfort, and modern masculine presence into one
-              clean silhouette. Handmade in Nigeria, refined for the global wardrobe.
+            <p className="mt-4 max-w-md text-sm leading-6 text-black/68">
+              Modern African tailoring for ceremony, work, travel, and a global wardrobe.
+              Delivered across the UK, USA, Europe, and worldwide.
             </p>
-            <div className="reveal reveal-delay-3 mt-8 flex flex-wrap gap-3">
-              <Cta href="/collections">Shop the collection</Cta>
-              <Cta href="/about" variant="ghost">Discover the craft</Cta>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Cta href="/collection#without-button" variant="dark">
+                Shop new arrivals
+              </Cta>
+              <Cta href="/collection#original" variant="ghost">
+                Shop originals
+              </Cta>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="border-b border-gold/15 bg-panel py-0">
-        <div className="container-luxe grid divide-y divide-gold/15 md:grid-cols-4 md:divide-x md:divide-y-0">
-          {valuePillars.map((pillar, index) => (
-            <div key={pillar.title} className="rounded-[26px] p-5">
-              <BrandIcon type={iconMap[index]} className="mb-5 h-8 w-8" />
-              <h2 className="text-sm font-bold uppercase tracking-[0] text-copy">{pillar.title}</h2>
-              <p className="mt-3 text-sm leading-7 text-copy-muted">{pillar.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-page py-12 md:py-16">
+      <section className="bg-[#f4eee6] py-12 md:py-16">
         <div className="container-luxe">
           <SectionHeading
-            eyebrow="Featured collections"
-            title="Six signatures. One inheritance."
-            copy="Each edition carries a name, a color story, and a modern masculine mood."
+            eyebrow="The collection"
+            title="Choose your silhouette."
+            href="/collection"
+            linkLabel="Shop all"
           />
-          <div className="grid gap-4 md:grid-cols-3">
-            {products.slice(0, 6).map((product, index) => (
-              <ProductCard key={product.slug} product={product} priority={index < 2} />
+          <div className="grid gap-3 sm:grid-cols-3 md:gap-5">
+            {homepageCollectionCards.map((collection, index) => (
+              <Link
+                key={collection.id}
+                href={collection.href}
+                data-collection={collection.id}
+                className="collection-image-pair home-collection-card gold-focus group relative block aspect-[4/5] overflow-hidden bg-[#f4eee6]"
+              >
+                <CollectionImageSwap
+                  images={collection.images}
+                  alt={`${collection.eyebrow}: ${collection.title}`}
+                  sizes="(min-width: 640px) 33vw, 100vw"
+                  priority={index === 0}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/76 via-transparent to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
+                  <div>
+                    <p className="text-[9px] font-semibold uppercase text-gold-soft">
+                      {collection.eyebrow}
+                    </p>
+                    <h2 className="mt-1.5 text-xl font-semibold">{collection.title}</h2>
+                  </div>
+                  <ArrowRight className="h-5 w-5 shrink-0 transition group-hover:translate-x-1" />
+                </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="overflow-hidden bg-obsidian py-3 text-ivory">
-        <div className="marquee-track flex w-[200%] gap-5 whitespace-nowrap text-xs font-bold uppercase tracking-[0] text-gold-soft/85">
-          {Array.from({ length: 2 }).map((_, loop) => (
-            <div key={loop} className="flex gap-5">
-              <span>Handmade in Nigeria</span>
-              <span>Premium stretch tailoring</span>
-              <span>Limited runs</span>
-              <span>Global dispatch</span>
-              <span>Modern African luxury</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-obsidian py-12 text-ivory md:py-16">
-        <div className="container-luxe grid gap-5 md:grid-cols-[0.9fr_1.1fr] md:items-center">
-          <div className="min-h-[420px] rounded-[26px] bg-cover bg-[center_35%]" style={{ backgroundImage: "url('https://onuoramenswear.com/wp-content/uploads/2025/11/IMG_5179-scaled-e1764315433440.png')" }} />
-          <div>
-            <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold-soft">The craftsmanship process</p>
-            <h2 className="font-display text-4xl leading-[0.96] text-balance md:text-5xl">Cut for heritage. Engineered for movement.</h2>
-            <p className="mt-5 max-w-xl text-sm leading-7 text-ivory/70">
-              Onuora begins with the familiar elegance of African menswear, then removes the discomfort:
-              breathable stretch fabric, clean proportion, gold embroidery, and a silhouette that moves
-              through ceremony, work, travel, and evening.
-            </p>
-            <div className="mt-7 grid gap-4 md:grid-cols-3">
-              {craftSteps.slice(0, 3).map((step, index) => (
-                <div key={step.label} className="rounded-[26px] border border-gold/20 p-5 md:min-h-[190px]">
-                  <BrandIcon type={index === 1 ? "fabric" : index === 2 ? "craft" : "heritage"} className="mb-5 h-7 w-7" />
-                  <span className="text-xs font-bold text-gold-soft">0{index + 1}</span>
-                  <h3 className="mt-2 font-display text-2xl">{step.label}</h3>
-                  <p className="mt-3 text-sm leading-6 text-ivory/58">{step.text}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 grid gap-4 md:grid-cols-2">
-              {craftSteps.slice(3).map((step, index) => (
-                <div key={step.label} className="rounded-[26px] border border-gold/20 p-5 md:min-h-[180px]">
-                  <BrandIcon type={index === 0 ? "craft" : "fabric"} className="mb-5 h-7 w-7" />
-                  <span className="text-xs font-bold text-gold-soft">0{index + 4}</span>
-                  <h3 className="mt-2 font-display text-2xl">{step.label}</h3>
-                  <p className="mt-3 text-sm leading-6 text-ivory/58">{step.text}</p>
-                </div>
-              ))}
-            </div>
+      <section className="pb-14 md:pb-20">
+        <div className="container-luxe">
+          <SectionHeading
+            eyebrow="House originals"
+            title="Six names. Six ways to arrive."
+            copy="Each edition carries an Igbo name, a distinct mood, and the same easy stretch-tailored line."
+            href="/collection#original"
+          />
+          <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 lg:grid-cols-4">
+            {originals.slice(0, 4).map((product, index) => (
+              <ProductCard key={product.slug} product={product} priority={index < 2} badge="Original" />
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-panel-muted py-12 md:py-16">
-        <div className="container-luxe">
-          <EditorialLookbookCarousel products={products} />
+      <LimitedOfferCarousel />
+
+      <section className="py-14 md:py-20">
+        <div className="container-luxe grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+          <div className="relative aspect-[16/11] overflow-hidden bg-surface-subtle">
+            <Image
+              src="/brand/heritage-draft.png"
+              alt="The ONUORA house wearing New Designs in Lagos"
+              fill
+              quality={94}
+              sizes="(min-width: 1024px) 58vw, 100vw"
+              className="object-cover object-[50%_18%]"
+            />
+          </div>
+          <div className="max-w-lg lg:pl-8">
+            <p className="text-[10px] font-semibold uppercase text-gold">The house</p>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
+              Heritage, redrawn for a man in motion.
+            </h2>
+            <p className="mt-5 text-sm leading-7 text-copy-muted">
+              ONUORA pairs the visual authority of African menswear with breathable stretch,
+              considered proportion, and a signature gold mark. Made at home. Ready for the world.
+            </p>
+            <Link
+              href="/about"
+              className="gold-focus mt-7 inline-flex items-center gap-2 border-b border-copy/40 pb-1 text-[10px] font-semibold uppercase"
+            >
+              Discover our heritage
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </div>
       </section>
 
-      <section className="bg-page py-12 md:py-16">
-        <div className="container-luxe">
-          <SectionHeading
-            eyebrow="Client confidence"
-            title="Luxury should feel certain before checkout."
-            copy="Trust moves closer to the purchase moment with fit help, shipping clarity, and material proof."
-          />
-          <div className="grid gap-5 md:grid-cols-5">
-            {trustSignals.map((signal, index) => (
-              <div key={signal.title} className="rounded-[26px] border border-gold/20 bg-transparent p-5">
-                <BrandIcon type={trustIconMap[index]} className="mb-8 h-8 w-8" />
-                <p className="text-sm font-bold uppercase tracking-[0] text-copy">{signal.title}</p>
+      <section className="border-y border-line">
+        <div className="container-luxe grid sm:grid-cols-2 lg:grid-cols-4">
+          {serviceSignals.map((signal) => {
+            const Icon = signal.icon;
+            return (
+              <div
+                key={signal.title}
+                className="border-b border-line py-7 sm:px-6 sm:[&:nth-child(odd)]:border-r lg:border-b-0 lg:border-r lg:first:pl-0 lg:last:border-r-0"
+              >
+                <Icon className="h-5 w-5 text-gold" aria-hidden="true" />
+                <h3 className="mt-4 text-xs font-semibold uppercase">{signal.title}</h3>
+                <p className="mt-2 text-xs leading-5 text-copy-muted">{signal.copy}</p>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </section>
 
-      <section className="bg-obsidian py-12 text-ivory md:py-16">
-        <div className="container-luxe">
-          <SectionHeading
-            eyebrow="Journal"
-            title="The house speaks beyond the product."
-            copy="Editorial content builds authority, SEO depth, and emotional memory."
-            light
-          />
-          <div className="grid gap-5 md:grid-cols-3">
-            {journalPosts.map((post) => (
-              <article key={post.title} className="rounded-[26px] border border-gold/15 p-5 transition hover:border-gold/60">
-                <p className="mb-7 text-xs font-bold uppercase tracking-[0] text-gold-soft">{post.tag}</p>
-                <h3 className="font-display text-3xl leading-tight">{post.title}</h3>
-                <p className="mt-5 text-sm leading-7 text-ivory/62">{post.excerpt}</p>
-              </article>
-            ))}
+      <section className="bg-obsidian py-14 text-ivory md:py-20">
+        <div className="container-luxe grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+          <div className="max-w-2xl">
+            <BadgeCheck className="h-6 w-6 text-gold" />
+            <p className="mt-5 text-[10px] font-semibold uppercase text-gold-soft">ONUORA Circle</p>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
+              Enter before the next chapter arrives.
+            </h2>
+            <p className="mt-4 max-w-xl text-sm leading-6 text-white/58">
+              Private previews, fit notes, and first access to limited releases.
+            </p>
           </div>
-        </div>
-      </section>
-
-      <section className="grain relative overflow-hidden bg-obsidian py-14 text-ivory md:py-16">
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-28"
-          style={{ backgroundImage: "url('/brand/onuora-mark-gold.png')" }}
-        />
-        <div className="container-luxe relative max-w-3xl">
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold-soft">Onuora Circle</p>
-          <h2 className="font-display text-4xl leading-[1] text-balance md:text-5xl">Step into the Circle.</h2>
-          <p className="mt-5 text-sm leading-7 text-ivory/74 md:text-base">
-            Early access to limited drops, private styling notes, member-only previews,
-            and stories from the artisans shaping the next expression of African luxury.
-          </p>
-          <div className="mt-8">
-            <Cta href="/contact">Join the Circle</Cta>
-          </div>
+          <Cta href="/contact" variant="light">
+            Join the Circle
+          </Cta>
         </div>
       </section>
     </main>

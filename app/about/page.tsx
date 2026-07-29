@@ -1,55 +1,196 @@
 import Image from "next/image";
-import { SectionHeading } from "@/components/section-heading";
+import { ArrowRight, Globe2, Move3D, Scissors, ShieldCheck } from "lucide-react";
+import Link from "next/link";
 import { craftSteps } from "@/data/catalog";
 
 export const metadata = {
-  title: "Heritage",
-  description: "The story, craft, and stretch-fit philosophy behind ỌNUỌRA."
+  title: "Our Heritage",
+  description: "The story, mission, craft, and stretch-fit philosophy behind ONUORA."
 };
+
+const principles = [
+  {
+    icon: Scissors,
+    title: "African craft",
+    text: "Made in Nigeria with a clear respect for line, finish, and the meaning carried by dress."
+  },
+  {
+    icon: Move3D,
+    title: "Freedom in form",
+    text: "Premium stretch construction keeps the silhouette composed while the body remains free."
+  },
+  {
+    icon: Globe2,
+    title: "A global wardrobe",
+    text: "Designed for men moving between cultures, cities, ceremonies, and everyday life."
+  },
+  {
+    icon: ShieldCheck,
+    title: "Considered finish",
+    text: "Every garment is inspected so the house signature arrives with confidence."
+  }
+];
 
 export default function AboutPage() {
   return (
-    <main className="bg-page pt-28 text-copy">
-      <section className="container-luxe grid gap-5 py-12 md:grid-cols-[0.9fr_1.1fr] md:items-end md:py-16">
-        <div>
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold">Our heritage</p>
-          <h1 className="font-display text-4xl leading-[0.94] text-balance md:text-5xl">The voice of the people, cut for now.</h1>
+    <main className="bg-page pt-[104px] text-copy">
+      <section className="relative min-h-[690px] overflow-hidden bg-obsidian text-white md:min-h-[760px]">
+        <Image
+          src="/brand/heritage-draft.png"
+          alt="The ONUORA house wearing New Designs in Lagos"
+          fill
+          priority
+          loading="eager"
+          quality={94}
+          sizes="100vw"
+          className="object-cover object-[50%_25%]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/26 to-black/8" />
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-white/16 to-transparent" />
+        <div className="container-luxe relative flex min-h-[690px] items-end pb-12 md:min-h-[760px] md:pb-16">
+          <div className="max-w-2xl">
+            <p className="text-[10px] font-semibold uppercase text-gold-soft">Our Heritage</p>
+            <h1 className="mt-3 text-4xl font-semibold leading-tight sm:text-5xl">
+              The voice of the people, cut for now.
+            </h1>
+            <p className="mt-4 max-w-lg text-sm leading-6 text-white/72">
+              ONUORA creates for men across Africa and the diaspora who refuse to choose between
+              cultural presence, modern comfort, and a global point of view.
+            </p>
+          </div>
         </div>
-        <p className="max-w-xl text-sm leading-7 text-copy-muted">
-          ỌNUỌRA was created for men across Africa and the diaspora who want to dress sharply
-          without rigid fabrics, repeated alterations, or compromise between culture and comfort.
-        </p>
       </section>
-      <section className="bg-obsidian py-12 text-ivory md:py-16">
+
+      <section className="py-14 md:py-20">
+        <div className="container-luxe grid gap-9 md:grid-cols-[0.72fr_1.28fr] md:gap-16">
+          <div>
+            <p className="text-[10px] font-semibold uppercase text-gold">Brand Story</p>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
+              Meaning before garment.
+            </h2>
+          </div>
+          <div className="grid gap-5 text-sm leading-7 text-copy-muted sm:grid-cols-2">
+            <p>
+              ONUORA is an Igbo expression of communal voice and identity. That idea guides a
+              house where every name, colour, and gold mark carries intention before it becomes
+              clothing.
+            </p>
+            <p>
+              The original silhouette brought the visual authority of African occasion wear into
+              an easier stretch-tailored form. The New Designs extend that language through
+              buttoned and uninterrupted fronts made for contemporary movement.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-line bg-panel-muted py-12 md:py-16">
         <div className="container-luxe">
-          <SectionHeading eyebrow="Process" title="Craft is the quiet proof." light />
-          <div className="grid gap-5 md:grid-cols-5">
-            {craftSteps.map((step, index) => (
-              <div key={step.label} className="rounded-[26px] border border-gold/20 p-5">
-                <p className="text-xs font-bold text-gold-soft">0{index + 1}</p>
-                <h2 className="mt-6 font-display text-2xl">{step.label}</h2>
-                <p className="mt-3 text-sm leading-7 text-ivory/62">{step.text}</p>
-              </div>
+          <header className="max-w-2xl">
+            <p className="text-[10px] font-semibold uppercase text-gold">About ONUORA</p>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight">
+              Luxury should carry identity without asking the body to stand still.
+            </h2>
+          </header>
+          <div className="mt-9 grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
+            {principles.map((principle) => {
+              const Icon = principle.icon;
+              return (
+                <article key={principle.title} className="min-h-56 bg-page p-6">
+                  <Icon className="h-5 w-5 text-gold" aria-hidden="true" />
+                  <h3 className="mt-10 text-lg font-semibold">{principle.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-copy-muted">{principle.text}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-14 md:py-20">
+        <div className="container-luxe grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-stretch">
+          <div className="relative min-h-[500px] overflow-hidden bg-surface-subtle">
+            <Image
+              src="/brand/heritage-draft.png"
+              alt="ONUORA founder with Idris and Edson"
+              fill
+              quality={94}
+              sizes="(min-width: 1024px) 55vw, 100vw"
+              className="object-cover object-[50%_40%]"
+            />
+          </div>
+          <div className="flex flex-col justify-center bg-obsidian p-7 text-ivory sm:p-10 lg:p-12">
+            <p className="text-[10px] font-semibold uppercase text-gold-soft">From the CEO</p>
+            <blockquote className="mt-5 text-2xl font-semibold leading-snug sm:text-3xl">
+              “We are building more than an outfit. We are giving modern men a way to wear where
+              they come from without compromising how they need to move.”
+            </blockquote>
+            <p className="mt-6 text-sm leading-7 text-white/58">
+              The house is led by a belief that African luxury can be emotionally rooted,
+              technically modern, and internationally fluent at the same time.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f5e6c8] py-14 text-[#171717] md:py-20">
+        <div className="container-luxe grid gap-8 md:grid-cols-[0.7fr_1.3fr] md:items-start">
+          <div>
+            <p className="text-[10px] font-semibold uppercase text-[#9f751d]">Our Mission</p>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight">Carry heritage forward.</h2>
+          </div>
+          <p className="max-w-3xl text-base leading-8 text-black/66">
+            To create precise, comfortable menswear that strengthens confidence, celebrates
+            African authorship, supports skilled making at home, and belongs naturally in wardrobes
+            from Lagos to London, New York, Paris, and beyond.
+          </p>
+        </div>
+      </section>
+
+      <section className="bg-obsidian py-14 text-ivory md:py-20">
+        <div className="container-luxe">
+          <header className="mb-8 max-w-2xl">
+            <p className="text-[10px] font-semibold uppercase text-gold-soft">Craftsmanship</p>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
+              Craft is the quiet proof.
+            </h2>
+          </header>
+          <div className="grid gap-px bg-white/12 md:grid-cols-3">
+            {craftSteps.slice(0, 3).map((step, index) => (
+              <article key={step.label} className="min-h-64 bg-obsidian p-7">
+                <p className="text-[10px] font-semibold text-gold">0{index + 1}</p>
+                <h3 className="mt-16 text-xl font-semibold">{step.label}</h3>
+                <p className="mt-3 text-sm leading-6 text-white/55">{step.text}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-px grid gap-px bg-white/12 md:grid-cols-2">
+            {craftSteps.slice(3).map((step, index) => (
+              <article key={step.label} className="min-h-56 bg-obsidian p-7">
+                <p className="text-[10px] font-semibold text-gold">0{index + 4}</p>
+                <h3 className="mt-14 text-xl font-semibold">{step.label}</h3>
+                <p className="mt-3 max-w-lg text-sm leading-6 text-white/55">{step.text}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
-      <section className="container-luxe grid gap-5 py-12 md:grid-cols-2 md:py-16">
-        <Image
-          src="https://onuoramenswear.com/wp-content/uploads/2025/12/onu-ora.png"
-          alt="Onuora fabric and brand story"
-          width={900}
-          height={1100}
-          className="min-h-[420px] rounded-[26px] object-cover"
-        />
-        <div className="flex flex-col justify-center">
-          <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold">Behind the fabric</p>
-          <h2 className="font-display text-4xl leading-[1] md:text-5xl">Movement is part of the luxury.</h2>
-          <p className="mt-5 text-sm leading-7 text-copy-muted">
-            The stretch-fit idea is simple: a garment should hold its shape while allowing the
-            body to breathe, sit, reach, walk, and arrive. That is the difference between costume
-            and clothing you live in.
-          </p>
+
+      <section className="py-14 md:py-20">
+        <div className="container-luxe flex flex-col items-start justify-between gap-6 border-b border-line pb-10 sm:flex-row sm:items-end">
+          <div className="max-w-2xl">
+            <p className="text-[10px] font-semibold uppercase text-gold">The next chapter</p>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight">
+              Choose the silhouette that speaks for you.
+            </h2>
+          </div>
+          <Link
+            href="/collection"
+            className="gold-focus inline-flex min-h-11 items-center gap-3 bg-obsidian px-5 text-[10px] font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian"
+          >
+            Explore the Collection
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
     </main>

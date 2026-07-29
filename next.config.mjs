@@ -5,8 +5,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   images: {
-    unoptimized: true,
+    qualities: [75, 90, 92, 94, 95, 96],
     remotePatterns: [
       {
         protocol: "https",

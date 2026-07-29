@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { Footer } from "@/components/footer";
+import { MiniCartDrawer } from "@/components/mini-cart-drawer";
 import { Navigation } from "@/components/navigation";
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
@@ -17,6 +18,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       <Navigation />
       {children}
       <Footer />
+      <MiniCartDrawer />
     </>
   );
 }

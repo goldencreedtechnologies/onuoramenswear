@@ -1,33 +1,66 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import type { Product } from "@/data/catalog";
 
-export function ProductCard({ product, priority }: { product: Product; priority?: boolean }) {
+export function ProductCard({
+  product,
+  priority = false,
+  badge
+}: {
+  product: Product;
+  priority?: boolean;
+  badge?: string;
+}) {
+  const secondaryImage =
+    product.images.find((image) => image && image !== product.image) ?? product.image;
+
   return (
-    <Link href={`/products/${product.slug}`} className="image-lift group block overflow-hidden rounded-[18px] border border-gold/15 bg-panel shadow-sm shadow-black/5">
-      <div className="garment-frame relative aspect-[4/5] overflow-hidden">
-        <Image
-          src={product.image}
-          alt={`${product.name} ${product.edition} premium stretch menswear`}
-          fill
-          sizes="(min-width: 768px) 33vw, 100vw"
-          className="garment-image h-full w-full p-2"
-          priority={priority}
-        />
-        <div className="absolute inset-x-0 bottom-0 rounded-b-[18px] bg-gradient-to-t from-obsidian/86 via-obsidian/28 to-transparent p-3 text-ivory">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0] text-gold-soft">{product.edition}</p>
-              <h3 className="font-display text-xl leading-none">{product.name}</h3>
-              <p className="mt-1.5 text-xs text-ivory/72">{product.meaning}</p>
-            </div>
-            <p className="text-xs font-bold">{product.price}</p>
-          </div>
+    <article className="group min-w-0">
+      <Link
+        href={`/products/${product.slug}`}
+        className="gold-focus block"
+        aria-label={`Shop ${product.name}, ${product.edition}`}
+      >
+        <div className="product-card-media relative aspect-[3/4] overflow-hidden bg-[#f1f0ec]">
+          <Image
+            src={product.image}
+            alt={`${product.name} ${product.edition}`}
+            fill
+            sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+            priority={priority}
+            className="product-card-image object-cover transition duration-700 ease-out group-hover:scale-[1.018]"
+          />
+          {secondaryImage !== product.image ? (
+            <Image
+              src={secondaryImage}
+              alt=""
+              aria-hidden="true"
+              fill
+              sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
+              className="product-card-secondary object-cover"
+            />
+          ) : null}
+          {badge ? (
+            <span className="absolute left-3 top-3 bg-page/92 px-2.5 py-1 text-[9px] font-semibold uppercase text-copy backdrop-blur-sm">
+              {badge}
+            </span>
+          ) : null}
+          <span className="absolute bottom-3 right-3 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+          </span>
         </div>
-      </div>
-      <div className="flex items-center justify-end border-t border-gold/15 bg-panel px-4 py-3 text-[11px] font-bold uppercase tracking-[0] text-copy">
-        <span className="text-gold transition group-hover:translate-x-1">Buy Now</span>
-      </div>
-    </Link>
+        <div className="flex items-start justify-between gap-3 pt-3">
+          <div className="min-w-0">
+            <p className="truncate text-[10px] font-medium uppercase text-copy-muted">
+              {product.edition}
+            </p>
+            <h3 className="mt-1 text-sm font-semibold text-copy">{product.name}</h3>
+            <p className="mt-1 text-xs text-copy-muted">{product.meaning}</p>
+          </div>
+          <p className="shrink-0 text-sm font-medium text-copy">{product.price}</p>
+        </div>
+      </Link>
+    </article>
   );
 }

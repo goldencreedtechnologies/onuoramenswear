@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { resolveDeliveryRoute, type Coordinates, type RouteResult } from "@/lib/backend/maps";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
+import { resolveShippingRule } from "@/lib/commerce/shipping-rules";
 
 const countryAliases: Record<string, string> = {
   nigeria: "NG",
@@ -392,20 +393,6 @@ async function getConfiguredDeliveryMethod(input: DeliveryQuoteRequest): Promise
   return mapMethod(methods[0] as DeliveryMethodRow, zone);
 }
 
-function calculateShippingUsd(input: DeliveryQuoteRequest, method: DeliveryMethod, route: RouteResult) {
-  if (method.freeShippingThresholdUsd && input.subtotalUsd >= method.freeShippingThresholdUsd) {
-    return 0;
-  }
-
-  const extraItems = Math.max(input.itemCount - 1, 0);
-  const distanceFee = route.distanceKm && method.perKmRateUsd > 0 ? route.distanceKm * method.perKmRateUsd : 0;
-  const rawRate = method.baseRateUsd + extraItems * method.perItemRateUsd + distanceFee;
-  const withMinimum = method.minimumRateUsd === null ? rawRate : Math.max(rawRate, method.minimumRateUsd);
-  const withMaximum = method.maximumRateUsd === null ? withMinimum : Math.min(withMinimum, method.maximumRateUsd);
-
-  return Number(withMaximum.toFixed(2));
-}
-
 export async function createDeliveryQuote(input: DeliveryQuoteRequest) {
   const parsed = deliveryQuoteRequestSchema.parse(input);
   const method = (await getConfiguredDeliveryMethod(parsed)) ?? fallbackMethod(parsed);
@@ -417,16 +404,21 @@ export async function createDeliveryQuote(input: DeliveryQuoteRequest) {
     destinationCity: parsed.shippingCity,
     destinationCountry: parsed.shippingCountry
   });
-  const shippingUsd = calculateShippingUsd(parsed, method, route);
+  const shippingRule = resolveShippingRule({
+    shippingCountry: parsed.shippingCountry,
+    shippingCity: parsed.shippingCity,
+    shippingState: parsed.shippingState,
+    itemCount: parsed.itemCount
+  });
   const requiresManualReview =
     route.confidence === "manual_review" || (method.requiresDistance && route.distanceKm === null);
   const source = route.provider === "google" || route.provider === "mapbox" ? route.provider : method.id ? "supabase" : "fallback";
   const quote: DeliveryQuote = {
-    zoneCode: method.zoneCode,
-    methodCode: method.code,
-    methodName: method.name,
+    zoneCode: shippingRule.zoneCode,
+    methodCode: shippingRule.methodCode,
+    methodName: shippingRule.methodName,
     carrierCode: method.carrierCode,
-    shippingUsd,
+    shippingUsd: shippingRule.shippingUsd,
     currency: "USD",
     estimatedMinDays: method.estimatedMinDays,
     estimatedMaxDays: method.estimatedMaxDays,
@@ -437,10 +429,7 @@ export async function createDeliveryQuote(input: DeliveryQuoteRequest) {
     mapUrl: route.mapUrl ?? null,
     source,
     requiresManualReview,
-    note:
-      shippingUsd === 0 && method.freeShippingThresholdUsd
-        ? "Complimentary global delivery has been applied to this private order."
-        : route.note
+    note: [shippingRule.note, route.note].filter(Boolean).join(" ")
   };
   const client = createSupabaseServiceClient();
 

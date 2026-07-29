@@ -6,8 +6,8 @@ export const metadata = {
 
 export default function AccountPage() {
   return (
-    <main className="bg-obsidian pt-28 text-ivory">
-      <section className="container-luxe grid min-h-[70vh] place-items-center py-12 md:py-14">
+    <main className="account-surface min-h-screen bg-obsidian pt-[104px] text-ivory">
+      <section className="container-luxe py-10 md:py-14">
         <AccountClient />
       </section>
     </main>

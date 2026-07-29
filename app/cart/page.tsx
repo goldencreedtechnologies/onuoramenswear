@@ -1,15 +1,15 @@
 import { CartClient } from "@/components/cart-client";
 
 export const metadata = {
-  title: "Cart"
+  title: "Shopping Bag"
 };
 
 export default function CartPage() {
   return (
-    <main className="bg-page pt-28 text-copy">
-      <section className="container-luxe py-14 md:py-14">
-        <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold">Bag</p>
-        <h1 className="font-display text-4xl md:text-5xl">Your edit awaits.</h1>
+    <main className="min-h-screen bg-page pt-[104px] text-copy">
+      <section className="container-luxe py-10 md:py-14">
+        <p className="text-[10px] font-semibold uppercase text-gold">Shopping bag</p>
+        <h1 className="mt-2 text-3xl font-semibold md:text-4xl">Your selection.</h1>
         <CartClient />
       </section>
     </main>

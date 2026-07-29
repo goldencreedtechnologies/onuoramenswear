@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Check, ShoppingBag, X } from "lucide-react";
+import Link from "next/link";
+import { Check, Minus, Plus, Ruler, ShoppingBag, X } from "lucide-react";
 import { addCartItem, productToCartItem } from "@/lib/cart";
 import { cn } from "@/lib/cn";
 import type { StoreProduct } from "@/lib/backend/types";
@@ -14,10 +15,6 @@ const sizes = [
   { label: "XXL", chest: "50-55", waist: "42-48", trouser: "40" }
 ];
 
-type ProductOptionsProps = {
-  product: StoreProduct;
-};
-
 type InventoryItem = {
   size: string;
   availableQuantity: number;
@@ -25,10 +22,25 @@ type InventoryItem = {
   isSoldOut: boolean;
 };
 
-export function ProductOptions({ product }: ProductOptionsProps) {
-  const [selectedSize, setSelectedSize] = useState("M");
-  const [open, setOpen] = useState(false);
+type ColorOption = {
+  slug: string;
+  name: string;
+  colorName: string;
+  colorValue: string;
+};
+
+export function ProductOptions({
+  product,
+  colorOptions
+}: {
+  product: StoreProduct;
+  colorOptions: ColorOption[];
+}) {
+  const [selectedSize, setSelectedSize] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [added, setAdded] = useState(false);
+  const [needsSize, setNeedsSize] = useState(false);
   const [inventory, setInventory] = useState<InventoryItem[] | null>(null);
 
   useEffect(() => {
@@ -42,9 +54,7 @@ export function ProductOptions({ product }: ProductOptionsProps) {
         }
       })
       .catch(() => {
-        if (!cancelled) {
-          setInventory([]);
-        }
+        if (!cancelled) setInventory([]);
       });
 
     return () => {
@@ -52,33 +62,96 @@ export function ProductOptions({ product }: ProductOptionsProps) {
     };
   }, [product.slug]);
 
-  const inventoryBySize = useMemo(() => {
-    return new Map((inventory ?? []).map((item) => [item.size, item]));
-  }, [inventory]);
+  const inventoryBySize = useMemo(
+    () => new Map((inventory ?? []).map((item) => [item.size, item])),
+    [inventory]
+  );
+  const selectedInventory = selectedSize ? inventoryBySize.get(selectedSize) : undefined;
+  const allSoldOut =
+    inventory !== null &&
+    inventory.length > 0 &&
+    sizes.every((size) => inventoryBySize.get(size.label)?.isSoldOut);
+  const maxQuantity = selectedInventory
+    ? Math.max(1, Math.min(6, selectedInventory.availableQuantity))
+    : 6;
 
-  const firstAvailableSize = sizes.find((size) => !inventoryBySize.get(size.label)?.isSoldOut)?.label;
-  const selectedSizeIsSoldOut = Boolean(inventoryBySize.get(selectedSize)?.isSoldOut);
-  const activeSize = selectedSizeIsSoldOut && firstAvailableSize ? firstAvailableSize : selectedSize;
-  const selectedInventory = inventoryBySize.get(activeSize);
-  const selectedIsSoldOut = Boolean(selectedInventory?.isSoldOut);
+  function chooseSize(size: string) {
+    setSelectedSize(size);
+    setQuantity(1);
+    setNeedsSize(false);
+  }
 
-  function handleAddToBag() {
-    if (selectedIsSoldOut) {
+  function addSelectedProduct(redirectToCheckout = false) {
+    if (!selectedSize) {
+      setNeedsSize(true);
       return;
     }
 
-    addCartItem(productToCartItem(product, activeSize));
+    if (selectedInventory?.isSoldOut || allSoldOut) return;
+
+    const item = productToCartItem(product, selectedSize);
+    item.quantity = quantity;
+    addCartItem(item);
     setAdded(true);
+
+    if (redirectToCheckout) {
+      window.location.assign("/checkout");
+      return;
+    }
+
+    window.dispatchEvent(new Event("onuora-cart-open"));
     window.setTimeout(() => setAdded(false), 1800);
   }
 
   return (
     <>
-      <div className="mt-6">
-        <div className="mb-3 flex items-center justify-between gap-4">
-          <p className="text-xs font-bold uppercase tracking-[0]">Select size</p>
+      <div className="mt-7 border-t border-line pt-6">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-xs font-semibold uppercase">
+            Colour <span className="ml-2 font-normal text-copy-muted">{product.colorName}</span>
+          </p>
         </div>
-        <div className="grid grid-cols-5 gap-2">
+        <div className="mt-4 flex flex-wrap gap-3" aria-label="Available colours">
+          {colorOptions.map((option) => {
+            const isSelected = option.slug === product.slug;
+
+            return (
+              <Link
+                key={option.slug}
+                href={`/products/${option.slug}`}
+                className={cn(
+                  "gold-focus grid h-8 w-8 place-items-center rounded-full border transition",
+                  isSelected
+                    ? "border-copy ring-1 ring-copy ring-offset-2 ring-offset-page"
+                    : "border-copy/20 hover:border-copy"
+                )}
+                aria-label={`${option.name}, ${option.colorName}${isSelected ? ", selected" : ""}`}
+                aria-current={isSelected ? "page" : undefined}
+                title={`${option.name} / ${option.colorName}`}
+              >
+                <span
+                  className="h-5 w-5 rounded-full border border-black/15"
+                  style={{ backgroundColor: option.colorValue }}
+                />
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-xs font-semibold uppercase">Select size</p>
+          <button
+            type="button"
+            onClick={() => setSizeGuideOpen(true)}
+            className="gold-focus inline-flex items-center gap-2 text-[10px] font-semibold uppercase text-copy-muted underline underline-offset-4 hover:text-copy"
+          >
+            <Ruler className="h-3.5 w-3.5" />
+            View size details
+          </button>
+        </div>
+        <div className="mt-3 grid grid-cols-5 gap-2">
           {sizes.map((size) => {
             const sizeInventory = inventoryBySize.get(size.label);
             const isSoldOut = Boolean(sizeInventory?.isSoldOut);
@@ -87,84 +160,126 @@ export function ProductOptions({ product }: ProductOptionsProps) {
               <button
                 key={size.label}
                 type="button"
-                onClick={() => !isSoldOut && setSelectedSize(size.label)}
+                onClick={() => !isSoldOut && chooseSize(size.label)}
                 disabled={isSoldOut}
                 className={cn(
-                  "gold-focus h-10 rounded-[14px] border border-gold/30 bg-[var(--product-panel)] text-sm font-bold transition hover:border-gold hover:bg-gold hover:text-obsidian",
-                  activeSize === size.label && "border-gold bg-gold text-obsidian",
-                  isSoldOut && "cursor-not-allowed border-black/10 opacity-35 hover:border-black/10 hover:bg-[var(--product-panel)] hover:text-current"
+                  "size-choice gold-focus relative h-11 border text-xs font-semibold transition",
+                  isSoldOut &&
+                    "cursor-not-allowed text-copy-muted/45 after:absolute after:left-1/2 after:top-1/2 after:h-px after:w-8 after:-translate-x-1/2 after:-translate-y-1/2 after:-rotate-45 after:bg-copy-muted/45"
                 )}
-                aria-pressed={activeSize === size.label}
-                aria-label={isSoldOut ? `${size.label} sold out` : `${size.label} available`}
+                data-selected={selectedSize === size.label}
+                aria-pressed={selectedSize === size.label}
+                aria-label={isSoldOut ? `${size.label} sold out` : `Select size ${size.label}`}
               >
                 {size.label}
               </button>
             );
           })}
         </div>
-        <p className="mt-3 text-sm" style={{ color: "var(--product-muted)" }}>
-          Selected: <span className="font-bold" style={{ color: "var(--product-text)" }}>{activeSize}</span>
-          {selectedInventory?.isLowStock ? <span className="ml-2 font-bold text-gold">Only {selectedInventory.availableQuantity} left</span> : null}
-          {selectedIsSoldOut ? <span className="ml-2 font-bold text-gold">Sold out</span> : null}
-        </p>
+        <div className="mt-2 min-h-5 text-[11px]">
+          {needsSize ? <p className="font-medium text-wine">Choose a size before continuing.</p> : null}
+          {selectedInventory?.isLowStock && !needsSize ? (
+            <p className="font-medium text-gold">
+              Only {selectedInventory.availableQuantity} left in {selectedSize}
+            </p>
+          ) : null}
+          {allSoldOut ? <p className="font-medium text-wine">This style is currently sold out.</p> : null}
+        </div>
       </div>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+      <div className="mt-4 flex items-center justify-between border-y border-line py-4">
+        <p className="text-xs font-semibold uppercase">Quantity</p>
+        <div className="flex h-10 items-center border border-line">
+          <button
+            type="button"
+            onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+            className="gold-focus flex h-full w-10 items-center justify-center hover:bg-surface-subtle"
+            aria-label="Decrease quantity"
+          >
+            <Minus className="h-3.5 w-3.5" />
+          </button>
+          <span className="grid h-full w-10 place-items-center border-x border-line text-xs font-semibold">
+            {quantity}
+          </span>
+          <button
+            type="button"
+            onClick={() => setQuantity((value) => Math.min(maxQuantity, value + 1))}
+            disabled={quantity >= maxQuantity}
+            className="gold-focus flex h-full w-10 items-center justify-center hover:bg-surface-subtle disabled:opacity-30"
+            aria-label="Increase quantity"
+          >
+            <Plus className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-5 grid gap-2">
         <button
           type="button"
-          onClick={handleAddToBag}
-          disabled={selectedIsSoldOut || (inventory !== null && !firstAvailableSize)}
-          className="gold-focus inline-flex min-h-10 items-center justify-center gap-3 rounded-[3px] bg-gold px-4 py-2.5 text-xs font-bold uppercase tracking-[0] text-obsidian transition hover:-translate-y-0.5 hover:bg-gold-soft"
+          onClick={() => addSelectedProduct(false)}
+          disabled={allSoldOut}
+          className="gold-focus inline-flex min-h-12 items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-white transition hover:bg-gold hover:text-obsidian disabled:cursor-not-allowed disabled:opacity-45"
         >
           {added ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
-          {selectedIsSoldOut ? "Sold out" : added ? "Added to bag" : `Add ${activeSize} to bag`}
+          {allSoldOut ? "Sold out" : added ? "Added to bag" : "Add to bag"}
         </button>
         <button
           type="button"
-          onClick={() => setOpen(true)}
-          className="gold-focus inline-flex min-h-10 items-center justify-center rounded-[14px] border border-gold/35 px-4 py-2.5 text-xs font-bold uppercase tracking-[0] transition hover:border-gold hover:text-gold"
+          onClick={() => addSelectedProduct(true)}
+          disabled={allSoldOut}
+          className="gold-focus min-h-12 border border-copy px-5 text-xs font-semibold uppercase text-copy transition hover:bg-copy hover:text-white disabled:cursor-not-allowed disabled:opacity-45"
         >
-          View size details
+          Buy now
         </button>
       </div>
 
-      {open ? (
-        <div className="fixed inset-0 z-[80] grid place-items-center bg-obsidian/70 p-5 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Size details">
-          <div className="max-h-[90vh] w-full max-w-3xl overflow-auto rounded-[26px] border border-gold/25 bg-panel p-5 text-copy shadow-2xl md:p-5">
-            <div className="mb-6 flex items-start justify-between gap-5">
+      {sizeGuideOpen ? (
+        <div
+          className="fixed inset-0 z-[100] grid place-items-center bg-black/62 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Size details"
+        >
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-auto bg-page p-5 text-copy shadow-2xl md:p-8">
+            <div className="flex items-start justify-between gap-5 border-b border-line pb-5">
               <div>
-                <p className="mb-3 text-xs font-bold uppercase tracking-[0] text-gold">Stretch-fit size guide</p>
-                <h2 className="font-display text-3xl">Available sizes</h2>
+                <p className="text-[10px] font-semibold uppercase text-gold">Stretch-fit guide</p>
+                <h2 className="mt-2 text-2xl font-semibold">Available sizes</h2>
               </div>
-              <button className="gold-focus inline-flex h-10 w-10 items-center justify-center rounded-full border border-gold/20" onClick={() => setOpen(false)} aria-label="Close size details">
-                <X className="h-4 w-4" />
+              <button
+                type="button"
+                className="gold-focus flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-subtle"
+                onClick={() => setSizeGuideOpen(false)}
+                aria-label="Close size details"
+              >
+                <X className="h-5 w-5" />
               </button>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[560px] border-collapse text-left text-sm">
+              <table className="w-full min-w-[540px] border-collapse text-left text-sm">
                 <thead>
-                  <tr className="border-b border-gold/20 text-xs uppercase tracking-[0] text-copy-muted">
-                    <th className="py-3 pr-4">Size</th>
-                    <th className="py-3 pr-4">Chest (in)</th>
-                    <th className="py-3 pr-4">Waist (in)</th>
-                    <th className="py-3 pr-4">Trouser length (in)</th>
+                  <tr className="border-b border-line text-[10px] uppercase text-copy-muted">
+                    <th className="py-4 pr-4">Size</th>
+                    <th className="py-4 pr-4">Chest (in)</th>
+                    <th className="py-4 pr-4">Waist (in)</th>
+                    <th className="py-4">Trouser length (in)</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sizes.map((size) => (
-                    <tr key={size.label} className="border-b border-gold/15">
-                      <td className="py-3 pr-4 font-bold">{size.label}</td>
-                      <td className="py-3 pr-4">{size.chest}</td>
-                      <td className="py-3 pr-4">{size.waist}</td>
-                      <td className="py-3 pr-4">{size.trouser}</td>
+                    <tr key={size.label} className="border-b border-line">
+                      <td className="py-4 pr-4 font-semibold">{size.label}</td>
+                      <td className="py-4 pr-4">{size.chest}</td>
+                      <td className="py-4 pr-4">{size.waist}</td>
+                      <td className="py-4">{size.trouser}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <p className="mt-6 text-sm leading-7 text-copy-muted">
-              Because of the stretch-fit fabric, this garment allows for natural flexibility across sizes.
-              If you are between two sizes, size down for a fitted look or size up for relaxed comfort.
+            <p className="mt-6 text-sm leading-6 text-copy-muted">
+              The four-way stretch allows natural flexibility. Choose the smaller size for a
+              closer tailored line, or the larger size for a more relaxed fit.
             </p>
           </div>
         </div>

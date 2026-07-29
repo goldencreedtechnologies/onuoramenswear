@@ -36,8 +36,6 @@ import {
   Megaphone,
   Menu,
   MessageSquare,
-  Monitor,
-  Moon,
   PackageCheck,
   Palette,
   Plus,
@@ -49,7 +47,6 @@ import {
   ShoppingBag,
   SlidersHorizontal,
   Sparkles,
-  Sun,
   Tags,
   TicketCheck,
   Truck,
@@ -60,7 +57,6 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
-import { useThemeMode } from "@/components/theme-provider";
 
 type Status = { type: "idle" | "loading" | "error" | "success"; message?: string };
 
@@ -189,6 +185,14 @@ type ProductRow = {
   story_kicker: string;
   story_title: string;
   occasion: string;
+  family: "original" | "button" | "buttonless";
+  color_name: string;
+  color_value: string;
+  model_name: string;
+  details: string;
+  fit: string;
+  fabric_care: string;
+  delivery: string;
   sort_order: number;
 };
 
@@ -314,6 +318,14 @@ const emptyProductForm = {
   storyKicker: "",
   storyTitle: "",
   occasion: "",
+  family: "original" as "original" | "button" | "buttonless",
+  colorName: "",
+  colorValue: "#1F1F1F",
+  modelName: "",
+  details: "",
+  fit: "",
+  fabricCare: "",
+  delivery: "",
   sortOrder: 0
 };
 
@@ -366,7 +378,6 @@ function exportCsv(filename: string, rows: Array<Record<string, string | number 
 }
 
 export function AdminClient() {
-  const { mode: themeMode, setMode } = useThemeMode();
   const [identity, setIdentity] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<Status>({ type: "idle" });
@@ -644,6 +655,14 @@ export function AdminClient() {
       storyKicker: product.story_kicker,
       storyTitle: product.story_title,
       occasion: product.occasion,
+      family: product.family,
+      colorName: product.color_name,
+      colorValue: product.color_value,
+      modelName: product.model_name,
+      details: product.details,
+      fit: product.fit,
+      fabricCare: product.fabric_care,
+      delivery: product.delivery,
       sortOrder: product.sort_order
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -712,15 +731,7 @@ export function AdminClient() {
               alt="Onuora Menswear"
               width={220}
               height={70}
-              className="theme-logo-light h-11 w-auto object-contain"
-              priority
-            />
-            <Image
-              src="/brand/onuora-logo-gold.png"
-              alt="Onuora Menswear"
-              width={220}
-              height={220}
-              className="theme-logo-dark h-24 w-auto object-contain"
+              className="h-11 w-auto object-contain"
               priority
             />
             <p className="-mt-1 text-[10px] font-bold uppercase tracking-[0] text-copy-muted">Admin control panel</p>
@@ -1026,6 +1037,19 @@ export function AdminClient() {
                 {["slug", "name", "edition", "meaning", "price", "image"].map((field) => <TextInput key={field} field={field} form={productForm} setForm={setProductForm} />)}
               </div>
               <div className="grid gap-3 md:grid-cols-4">
+                <select
+                  value={productForm.family}
+                  onChange={(event) => setProductForm((current) => ({ ...current, family: event.target.value as typeof current.family }))}
+                  className="gold-focus min-h-11 rounded-2xl border border-gold/15 bg-page px-3 text-sm text-copy"
+                  aria-label="Product family"
+                >
+                  <option value="original">Original design</option>
+                  <option value="button">With button</option>
+                  <option value="buttonless">Without button</option>
+                </select>
+                {["colorName", "colorValue", "modelName"].map((field) => <TextInput key={field} field={field} form={productForm} setForm={setProductForm} />)}
+              </div>
+              <div className="grid gap-3 md:grid-cols-4">
                 {["palette", "pageText", "pageMuted", "pagePanel"].map((field) => <TextInput key={field} field={field} form={productForm} setForm={setProductForm} />)}
               </div>
               <div className="grid gap-3 md:grid-cols-3">
@@ -1033,6 +1057,23 @@ export function AdminClient() {
               </div>
               <textarea value={productForm.images} onChange={(event) => setProductForm((current) => ({ ...current, images: event.target.value }))} placeholder="Gallery image URLs, one per line" className="gold-focus min-h-24 rounded-2xl border border-gold/15 bg-page px-3 py-3 text-sm text-copy" />
               <textarea value={productForm.story} onChange={(event) => setProductForm((current) => ({ ...current, story: event.target.value }))} placeholder="Product story" required className="gold-focus min-h-32 rounded-2xl border border-gold/15 bg-page px-3 py-3 text-sm text-copy" />
+              <div className="grid gap-3 md:grid-cols-2">
+                {[
+                  ["details", "Product details"],
+                  ["fit", "Fit guidance"],
+                  ["fabricCare", "Fabric and care"],
+                  ["delivery", "Delivery information"]
+                ].map(([field, placeholder]) => (
+                  <textarea
+                    key={field}
+                    value={String(productForm[field as keyof typeof productForm])}
+                    onChange={(event) => setProductForm((current) => ({ ...current, [field]: event.target.value }))}
+                    placeholder={placeholder}
+                    required
+                    className="gold-focus min-h-28 rounded-2xl border border-gold/15 bg-page px-3 py-3 text-sm text-copy"
+                  />
+                ))}
+              </div>
               <PlainInput value={String(productForm.sortOrder)} onChange={(value) => setProductForm((current) => ({ ...current, sortOrder: Number(value) || 0 }))} placeholder="Sort order" type="number" />
               <label className="flex items-center gap-3 text-sm text-copy-muted">
                 <input type="checkbox" checked={productForm.darkPage} onChange={(event) => setProductForm((current) => ({ ...current, darkPage: event.target.checked }))} className="accent-[#C9A23E]" />
@@ -1051,6 +1092,7 @@ export function AdminClient() {
                   <div>
                     <p className="font-display text-2xl leading-none text-copy">{product.name}</p>
                     <p className="mt-2 text-sm text-copy-muted">{product.edition} / {product.meaning} / {product.price}</p>
+                    <p className="mt-1 text-[10px] font-semibold uppercase text-gold">{product.family} / {product.color_name} / Model {product.model_name}</p>
                     <p className="mt-2 line-clamp-2 text-xs leading-5 text-copy-muted">{product.story_title}</p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <span className="rounded-full border border-gold/15 px-2 py-1 text-[10px] text-copy-muted">{(product.images ?? []).length} gallery images</span>
@@ -1138,35 +1180,16 @@ export function AdminClient() {
 
   function ContentModule({ mode }: { mode: ModuleId }) {
     if (mode === "appearance") {
-      const themeOptions = [
-        { value: "light", label: "Light", icon: Sun, text: "Use the ivory luxury storefront palette." },
-        { value: "dark", label: "Dark", icon: Moon, text: "Use the onyx/gold luxury storefront palette." },
-        { value: "system", label: "System", icon: Monitor, text: "Follow the visitor device preference." }
-      ] as const;
-
       return (
         <section className="grid gap-5">
           <ModuleHeader />
-          <div className="grid gap-4 md:grid-cols-3">
-            {themeOptions.map((item) => {
-              const Icon = item.icon;
-              const active = item.value === themeMode;
-              return (
-                <button
-                  key={item.value}
-                  type="button"
-                  onClick={() => setMode(item.value)}
-                  className={`gold-focus rounded-[24px] border p-5 text-left transition ${
-                    active ? "border-gold bg-gold text-obsidian shadow-lg shadow-gold/10" : "border-gold/15 bg-panel text-copy hover:border-gold/40"
-                  }`}
-                >
-                  <Icon className={`h-5 w-5 ${active ? "text-obsidian" : "text-gold"}`} />
-                  <p className="mt-5 font-display text-2xl leading-none">{item.label}</p>
-                  <p className={`mt-2 text-sm leading-6 ${active ? "text-obsidian/70" : "text-copy-muted"}`}>{item.text}</p>
-                  {active ? <p className="mt-4 text-[11px] font-bold uppercase tracking-[0]">Active</p> : null}
-                </button>
-              );
-            })}
+          <div className="rounded-[24px] border border-gold/20 bg-panel p-5">
+            <Palette className="h-5 w-5 text-gold" />
+            <p className="mt-5 font-display text-2xl leading-none text-copy">ONUORA house appearance</p>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-copy-muted">
+              The public storefront uses one consistent ivory, onyx, and heritage-gold visual
+              system. Manage campaign imagery, logos, navigation, and page content below.
+            </p>
           </div>
           <div className="grid gap-5 xl:grid-cols-2">
             <SettingForm />

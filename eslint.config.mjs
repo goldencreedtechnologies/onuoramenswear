@@ -6,7 +6,7 @@ const eslintConfig = [
   ...nextTypescript,
   {
     ignores: [
-      ".next/**",
+      ".next*/**",
       "node_modules/**",
       "next-env.d.ts",
       "dev-server.log",

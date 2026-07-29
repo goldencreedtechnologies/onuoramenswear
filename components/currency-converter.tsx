@@ -20,13 +20,15 @@ const rates = {
 
 const currencies = Object.keys(rates) as Array<keyof typeof rates>;
 
-type CurrencyConverterProps = {
+export function CurrencyConverter({
+  priceUsd,
+  className
+}: {
   priceUsd: number;
-  accentText: string;
-  panelText: string;
-};
-
-export function CurrencyConverter({ priceUsd, accentText, panelText }: CurrencyConverterProps) {
+  accentText?: string;
+  panelText?: string;
+  className?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [currency, setCurrency] = useState<keyof typeof rates>("USD");
 
@@ -40,20 +42,20 @@ export function CurrencyConverter({ priceUsd, accentText, panelText }: CurrencyC
   }, [currency, priceUsd]);
 
   return (
-    <div className="mt-3">
+    <div className={cn("relative mt-2 w-fit", className)}>
       <button
         type="button"
-        className="gold-focus inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0]"
+        className="gold-focus inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase text-copy-muted hover:text-copy"
         onClick={() => setOpen((value) => !value)}
-        style={{ color: accentText }}
         aria-expanded={open}
-        aria-label="Open currency selector"
+        aria-label="Choose display currency"
       >
-        <span className="underline decoration-gold/40 underline-offset-4">USD</span>
-        <ChevronDown className="h-4 w-4" />
+        {currency}
+        <ChevronDown className={cn("h-3.5 w-3.5 transition", open && "rotate-180")} />
+        {currency !== "USD" ? <span className="ml-1 normal-case text-copy">{amount}</span> : null}
       </button>
       {open ? (
-        <div className="mt-3 inline-flex flex-col gap-1 rounded-[22px] border border-gold/20 bg-panel p-2 shadow-lg shadow-black/10">
+        <div className="absolute left-0 top-full z-30 mt-2 grid min-w-44 bg-page p-1.5 shadow-xl ring-1 ring-line">
           {currencies.map((item) => (
             <button
               key={item}
@@ -63,18 +65,22 @@ export function CurrencyConverter({ priceUsd, accentText, panelText }: CurrencyC
                 setOpen(false);
               }}
               className={cn(
-                "gold-focus rounded-[18px] px-3 py-2 text-left text-sm font-semibold transition hover:bg-gold hover:text-obsidian",
-                currency === item ? "bg-gold text-obsidian" : "text-copy"
+                "gold-focus flex min-h-9 items-center justify-between px-3 text-left text-xs transition hover:bg-surface-subtle",
+                currency === item && "font-semibold"
               )}
             >
               {item}
+              <span className="ml-5 text-copy-muted">
+                {new Intl.NumberFormat("en", {
+                  style: "currency",
+                  currency: item,
+                  maximumFractionDigits: item === "NGN" || item === "XOF" ? 0 : 2
+                }).format(priceUsd * rates[item])}
+              </span>
             </button>
           ))}
         </div>
       ) : null}
-      <div className="mt-3 text-sm" style={{ color: panelText }}>
-        {amount} equivalent
-      </div>
     </div>
   );
 }

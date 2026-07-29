@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { ArrowRight, Minus, Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { Cta } from "@/components/cta";
 import { cartSubtotal, readCart, updateCartItemQuantity, type CartItem } from "@/lib/cart";
 
 function money(amount: number) {
@@ -32,89 +31,112 @@ export function CartClient() {
     setItems(nextCart.items);
   }
 
+  if (!items.length) {
+    return (
+      <div className="mt-8 border-y border-line py-16 text-center">
+        <p className="text-sm text-copy-muted">Your bag is currently empty.</p>
+        <Link
+          href="/collection"
+          className="gold-focus mt-6 inline-flex min-h-12 items-center gap-3 bg-obsidian px-6 text-xs font-semibold uppercase text-ivory hover:bg-gold hover:text-obsidian"
+        >
+          Explore collections
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+    );
+  }
+
   return (
-    <div className="mt-8 grid gap-5 md:grid-cols-[1fr_340px]">
-      <div className="space-y-4">
-        {items.length ? (
-          items.map((item) => (
-            <article
-              key={`${item.productSlug}-${item.size}`}
-              className="grid gap-4 rounded-[26px] border border-gold/20 bg-panel-muted p-3 shadow-sm shadow-black/5 sm:grid-cols-[112px_1fr] sm:p-4"
+    <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+      <div className="border-t border-line">
+        {items.map((item) => (
+          <article
+            key={`${item.productSlug}-${item.size}`}
+            className="grid grid-cols-[96px_1fr] gap-4 border-b border-line py-5 sm:grid-cols-[132px_1fr]"
+          >
+            <Link
+              href={`/products/${item.productSlug}`}
+              className="gold-focus relative aspect-[3/4] overflow-hidden bg-surface-subtle"
             >
-              <Link href={`/products/${item.productSlug}`} className="block overflow-hidden rounded-[22px] bg-panel">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  width={360}
-                  height={420}
-                  className="aspect-[4/5] h-full w-full object-contain p-3"
-                />
-              </Link>
-              <div className="flex flex-col justify-between gap-5">
-                <div className="flex items-start justify-between gap-5">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0] text-gold">{item.edition}</p>
-                    <h2 className="mt-2 font-display text-3xl leading-none">{item.name}</h2>
-                    <p className="mt-2 text-sm text-copy-muted">Size {item.size}</p>
-                  </div>
-                  <p className="text-sm font-bold">{money(item.unitPriceUsd * item.quantity)}</p>
+              <Image src={item.image} alt={item.name} fill sizes="132px" className="object-contain p-2" />
+            </Link>
+            <div className="flex min-w-0 flex-col justify-between gap-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-[9px] font-semibold uppercase text-gold">{item.edition}</p>
+                  <h2 className="mt-1 truncate text-lg font-semibold">{item.name}</h2>
+                  <p className="mt-1 text-xs text-copy-muted">Size {item.size}</p>
                 </div>
-                <div className="flex items-center justify-between gap-4">
-                  <div className="inline-flex items-center rounded-full border border-gold/25 bg-panel">
-                    <button
-                      type="button"
-                      onClick={() => updateQuantity(item, item.quantity - 1)}
-                      className="gold-focus inline-flex h-10 w-10 items-center justify-center rounded-full"
-                      aria-label={`Reduce ${item.name} quantity`}
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-                    <span className="min-w-8 text-center text-sm font-bold">{item.quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => updateQuantity(item, item.quantity + 1)}
-                      className="gold-focus inline-flex h-10 w-10 items-center justify-center rounded-full"
-                      aria-label={`Increase ${item.name} quantity`}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-                  </div>
+                <p className="shrink-0 text-sm font-medium">{money(item.unitPriceUsd * item.quantity)}</p>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex h-10 items-center border border-line">
                   <button
                     type="button"
-                    onClick={() => updateQuantity(item, 0)}
-                    className="gold-focus inline-flex h-10 w-10 items-center justify-center rounded-full border border-gold/20 text-copy-muted transition hover:border-gold hover:text-gold"
-                    aria-label={`Remove ${item.name}`}
+                    onClick={() => updateQuantity(item, item.quantity - 1)}
+                    className="gold-focus flex h-full w-10 items-center justify-center hover:bg-surface-subtle"
+                    aria-label={`Reduce ${item.name} quantity`}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Minus className="h-3.5 w-3.5" />
+                  </button>
+                  <span className="grid h-full w-9 place-items-center border-x border-line text-xs font-semibold">
+                    {item.quantity}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => updateQuantity(item, item.quantity + 1)}
+                    className="gold-focus flex h-full w-10 items-center justify-center hover:bg-surface-subtle"
+                    aria-label={`Increase ${item.name} quantity`}
+                  >
+                    <Plus className="h-3.5 w-3.5" />
                   </button>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => updateQuantity(item, 0)}
+                  className="gold-focus inline-flex h-10 w-10 items-center justify-center text-copy-muted transition hover:text-wine"
+                  aria-label={`Remove ${item.name}`}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
               </div>
-            </article>
-          ))
-        ) : (
-          <div className="rounded-[26px] border border-gold/20 bg-panel-muted p-5">
-            <p className="text-copy-muted">Your bag is empty. Choose a signature set to begin your edit.</p>
-            <Cta href="/collections" className="mt-6">Shop collections</Cta>
-          </div>
-        )}
+            </div>
+          </article>
+        ))}
+        <Link
+          href="/collection"
+          className="gold-focus mt-5 inline-flex items-center gap-2 text-[10px] font-semibold uppercase text-copy-muted underline underline-offset-4 hover:text-copy"
+        >
+          Continue shopping
+        </Link>
       </div>
-      <aside className="h-fit rounded-[26px] border border-gold/20 bg-obsidian p-5 text-ivory">
-        <h2 className="font-display text-3xl">Order summary</h2>
-        <div className="my-5 space-y-3 text-sm text-ivory/70">
-          <div className="flex justify-between">
-            <span>Subtotal</span>
+
+      <aside className="bg-surface-subtle p-6 lg:sticky lg:top-[124px]">
+        <h2 className="text-lg font-semibold">Order summary</h2>
+        <div className="my-6 space-y-3 border-y border-line py-5 text-sm">
+          <div className="flex justify-between gap-5">
+            <span className="text-copy-muted">Subtotal</span>
             <span>{money(subtotal)}</span>
           </div>
-          <div className="flex justify-between">
-            <span>Shipping</span>
-            <span>Calculated at checkout</span>
+          <div className="flex justify-between gap-5">
+            <span className="text-copy-muted">Delivery</span>
+            <span className="text-right">Calculated at checkout</span>
           </div>
         </div>
-        {items.length ? (
-          <Cta href="/checkout">Continue to checkout</Cta>
-        ) : (
-          <Cta href="/collections" variant="light">Start shopping</Cta>
-        )}
+        <div className="flex justify-between text-base font-semibold">
+          <span>Estimated total</span>
+          <span>{money(subtotal)}</span>
+        </div>
+        <Link
+          href="/checkout"
+          className="gold-focus mt-6 inline-flex min-h-12 w-full items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian"
+        >
+          Secure checkout
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+        <p className="mt-4 text-center text-[10px] leading-5 text-copy-muted">
+          Taxes and delivery are confirmed before payment.
+        </p>
       </aside>
     </div>
   );

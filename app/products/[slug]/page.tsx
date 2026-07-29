@@ -1,9 +1,12 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ChevronRight, Globe2, PackageCheck, ShieldCheck } from "lucide-react";
 import { CurrencyConverter } from "@/components/currency-converter";
 import { ProductGallery } from "@/components/product-gallery";
 import { ProductOptions } from "@/components/product-options";
 import { ProductCard } from "@/components/product-card";
 import { getStoreProductBySlug, getStoreProducts } from "@/lib/backend/catalog";
+import { priceToUsd } from "@/lib/cart";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -18,9 +21,7 @@ export async function generateMetadata({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = await getStoreProductBySlug(slug);
 
-  if (!product) {
-    return {};
-  }
+  if (!product) return {};
 
   return {
     title: product.name,
@@ -32,70 +33,138 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = await getStoreProductBySlug(slug);
 
-  if (!product) {
-    notFound();
-  }
+  if (!product) notFound();
 
-  const related = (await getStoreProducts()).filter((item) => item.slug !== product.slug).slice(0, 3);
+  const allProducts = await getStoreProducts();
+  const colorOptions = allProducts
+    .filter((item) => item.family === product.family)
+    .map((item) => ({
+      slug: item.slug,
+      name: item.name,
+      colorName: item.colorName,
+      colorValue: item.colorValue
+    }));
+  const related = allProducts
+    .filter((item) => item.slug !== product.slug)
+    .sort((a, b) => Number(b.family === product.family) - Number(a.family === product.family))
+    .slice(0, 4);
+  const collectionLabel =
+    product.family === "original"
+      ? "Original Design"
+      : product.family === "button"
+        ? "With Button"
+        : "Without Button";
+  const collectionHash =
+    product.family === "original"
+      ? "original"
+      : product.family === "button"
+        ? "with-button"
+        : "without-button";
 
   return (
-    <main
-      className="pt-24"
-      style={
-        {
-          backgroundColor: product.palette,
-          color: product.pageText,
-          "--product-text": product.pageText,
-          "--product-muted": product.pageMuted,
-          "--product-panel": product.pagePanel
-        } as React.CSSProperties
-      }
-    >
-      <section className="container-luxe grid gap-7 py-10 md:grid-cols-[0.9fr_0.78fr] md:py-14">
-        <ProductGallery images={product.images} productName={product.name} darkPage={product.darkPage} />
-        <aside className="md:sticky md:top-28 md:self-start">
-          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0] text-gold">{product.edition}</p>
-          <h1 className="product-title font-display text-4xl leading-[0.96] md:text-5xl">{product.name}</h1>
-          <p className="mt-3 text-lg" style={{ color: product.pageMuted }}>{product.meaning}</p>
-          <p className="mt-6 text-2xl font-semibold">{product.price}</p>
-          <CurrencyConverter priceUsd={100} accentText={product.pageText} panelText={product.pageMuted} />
-          <ProductOptions product={product} />
-          <div className="mt-6 divide-y divide-gold/20 border-y border-gold/25 text-sm">
+    <main className="bg-page pt-[104px] text-copy">
+      <div className="container-luxe py-4">
+        <nav className="flex items-center gap-1.5 text-[10px] uppercase text-copy-muted" aria-label="Breadcrumb">
+          <Link href="/" className="gold-focus hover:text-copy">
+            Home
+          </Link>
+          <ChevronRight className="h-3 w-3" />
+          <Link href={`/collection#${collectionHash}`} className="gold-focus hover:text-copy">
+            {collectionLabel}
+          </Link>
+          <ChevronRight className="h-3 w-3" />
+          <span className="text-copy">{product.name}</span>
+        </nav>
+      </div>
+
+      <section className="container-luxe grid gap-8 pb-14 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] lg:gap-12 lg:pb-20">
+        <ProductGallery
+          images={Array.from(new Set([product.image, ...product.images]))}
+          productName={product.name}
+        />
+        <aside className="lg:sticky lg:top-[124px] lg:self-start">
+          <p className="text-[10px] font-semibold uppercase text-gold">{product.edition}</p>
+          <h1 className="product-title mt-2 text-3xl font-semibold leading-none sm:text-4xl">
+            {product.name}
+          </h1>
+          <p className="mt-2 text-sm text-copy-muted">{product.meaning}</p>
+          <p className="mt-5 text-xl font-medium">{product.price}</p>
+          <CurrencyConverter priceUsd={priceToUsd(product.price)} />
+          <ProductOptions product={product} colorOptions={colorOptions} />
+
+          <div className="mt-6 grid grid-cols-3 border-y border-line py-5">
             {[
-              ["Fabric", "Smooth, breathable 4-way stretch fabric with a tailored drape."],
-              ["Fit", "Designed to flex with the body while maintaining a sharp silhouette."],
-              ["Shipping", "Tracked UK and international fulfilment with premium client care."],
-              ["Care", "Gentle wash, dry flat, cool iron inside out."],
+              { icon: PackageCheck, label: "Inventory checked" },
+              { icon: Globe2, label: "Tracked delivery" },
+              { icon: ShieldCheck, label: "Secure payment" }
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.label} className="px-2 text-center">
+                  <Icon className="mx-auto h-4 w-4 text-gold" />
+                  <p className="mt-2 text-[9px] font-semibold uppercase text-copy-muted">
+                    {item.label}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="divide-y divide-line border-b border-line text-sm">
+            {[
+              ["Details", product.details],
+              ["Fit", product.fit],
+              ["Fabric & care", product.fabricCare],
+              ["Delivery", product.delivery]
             ].map(([title, text]) => (
-              <details key={title} className="group py-5">
-                <summary className="cursor-pointer list-none font-bold uppercase tracking-[0]">{title}</summary>
-                <p className="mt-3 leading-7" style={{ color: product.pageMuted }}>{text}</p>
+              <details key={title} className="group py-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase">
+                  {title}
+                  <span className="text-lg font-light group-open:rotate-45">+</span>
+                </summary>
+                <p className="pr-6 pt-3 text-sm leading-6 text-copy-muted">{text}</p>
               </details>
             ))}
           </div>
         </aside>
       </section>
 
-      <section className="py-12 md:py-16" style={{ backgroundColor: product.pagePanel, color: product.pageText }}>
-          <div className="container-luxe grid gap-5 md:grid-cols-[0.82fr_1.05fr] md:items-center">
-            <div>
-              <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold-soft">{product.storyKicker}</p>
-              <h2 className="font-display text-3xl leading-[1.05] md:text-4xl">{product.storyTitle}</h2>
-            </div>
-            <p className="text-sm leading-7" style={{ color: product.pageMuted }}>
+      <section
+        className="py-14 md:py-20"
+        style={{ backgroundColor: product.palette, color: product.pageText }}
+      >
+        <div className="container-luxe grid gap-6 md:grid-cols-[0.8fr_1.2fr] md:items-start">
+          <div>
+            <p className="text-[10px] font-semibold uppercase text-gold-soft">{product.storyKicker}</p>
+            <h2 className="mt-3 max-w-lg text-3xl font-semibold leading-tight md:text-4xl">
+              {product.storyTitle}
+            </h2>
+          </div>
+          <div>
+            <p className="max-w-2xl text-base leading-8" style={{ color: product.pageMuted }}>
               {product.story}
             </p>
-          </div>
-        </section>
-
-      <section className="container-luxe py-12 md:py-16">
-        <div className="mb-7 flex items-end justify-between gap-5">
-          <div>
-            <p className="mb-4 text-xs font-bold uppercase tracking-[0] text-gold">Complete the wardrobe</p>
-            <h2 className="font-display text-4xl">You may also like</h2>
+            <p className="mt-6 text-[10px] font-semibold uppercase" style={{ color: product.pageMuted }}>
+              Designed for {product.occasion}
+            </p>
           </div>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
+      </section>
+
+      <section className="container-luxe py-14 md:py-20">
+        <div className="mb-7 flex items-end justify-between gap-5">
+          <div>
+            <p className="text-[10px] font-semibold uppercase text-gold">Complete the wardrobe</p>
+            <h2 className="mt-2 text-2xl font-semibold md:text-3xl">You may also like</h2>
+          </div>
+          <Link
+            href={`/collection#${collectionHash}`}
+            className="gold-focus hidden border-b border-copy/35 pb-1 text-[10px] font-semibold uppercase sm:block"
+          >
+            Shop all
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 lg:grid-cols-4">
           {related.map((item) => (
             <ProductCard key={item.slug} product={item} />
           ))}
