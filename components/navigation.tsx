@@ -32,19 +32,9 @@ const collectionGroups = [
   {
     title: "Permanent Collections",
     links: [
-      { href: "/collection#original", label: "Heritage — Nkwọ" },
-      { href: "/collection#with-button", label: "Cowrie — Ọzọ" },
-      { href: "/collection#without-button", label: "Resort — Uzọ" },
-      { href: "/collection", label: "View All Collections" }
-    ]
-  },
-  {
-    title: "House Originals",
-    links: [
-      { href: "/products/ebube", label: "EBUBE / Black" },
-      { href: "/products/ndu", label: "NDỤ / Burgundy" },
-      { href: "/products/ijeoma", label: "IJEỌMA / Blue" },
-      { href: "/collection#original", label: "Explore Nkwọ" }
+      { href: "/collection#original", label: "Heritage Collection" },
+      { href: "/collection#with-button", label: "Cowrie Collection" },
+      { href: "/collection#without-button", label: "Resort Collection" }
     ]
   }
 ];
@@ -312,7 +302,7 @@ export function Navigation() {
             className={cn(
               "container-luxe grid gap-8 py-9",
               megaMenu === "collections"
-                ? "grid-cols-[repeat(2,1fr)_1.35fr]"
+                ? "grid-cols-[0.8fr_1.35fr]"
                 : "grid-cols-[repeat(2,0.75fr)_1.35fr]"
             )}
           >
