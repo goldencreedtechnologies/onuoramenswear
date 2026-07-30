@@ -2,27 +2,27 @@ import { Globe2, MapPin, PackageCheck } from "lucide-react";
 
 export const metadata = {
   title: "Delivery",
-  description: "ONUORA delivery rates, destination estimates, and dispatch information."
+  description: "ỌNUỌRA delivery rates, destination estimates, and dispatch information."
 };
 
 const deliveryOptions = [
   {
+    icon: Globe2,
+    title: "International Delivery",
+    price: "$50 Flat Rate",
+    copy: "Worldwide delivery available."
+  },
+  {
     icon: MapPin,
-    title: "Lagos delivery",
+    title: "Lagos Delivery",
     price: "Complimentary",
-    copy: "Available for valid delivery addresses within Lagos."
+    copy: "Available for valid Lagos delivery addresses."
   },
   {
     icon: PackageCheck,
-    title: "Outside Lagos / one outfit",
-    price: "$50",
-    copy: "A destination estimate and delivery window are confirmed during checkout."
-  },
-  {
-    icon: Globe2,
-    title: "Outside Lagos / two or more",
-    price: "$25",
-    copy: "Reduced delivery applies automatically when the bag contains at least two outfits."
+    title: "Outside Lagos",
+    price: "₦15,000 Flat Rate",
+    copy: "Single fixed rate."
   }
 ];
 
@@ -32,10 +32,10 @@ export default function ShippingPage() {
       <section className="container-luxe py-12 md:py-16">
         <p className="text-[10px] font-semibold uppercase text-gold">Delivery</p>
         <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
-          Clear rates. Destination-aware service.
+          Clear Rates. Worldwide Delivery.
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-7 text-copy-muted">
-          Enter the complete destination at checkout to receive the applicable delivery method,
+          Enter the complete destination at checkout to confirm the applicable delivery method,
           charge, and estimated window before payment.
         </p>
         <div className="mt-10 grid border-t border-line md:grid-cols-3">
@@ -55,11 +55,11 @@ export default function ShippingPage() {
           })}
         </div>
         <div className="mt-12 max-w-3xl border-t border-line pt-7">
-          <h2 className="text-lg font-semibold">Dispatch and tracking</h2>
+          <h2 className="text-lg font-semibold">Dispatch And Tracking</h2>
           <p className="mt-3 text-sm leading-7 text-copy-muted">
             Orders are checked before dispatch. Tracking or delivery updates are sent to the email
             supplied at checkout. Unusual or remote routes may require manual confirmation by
-            client care before fulfilment.
+            Client Care before fulfilment.
           </p>
         </div>
         <div className="mt-10 grid gap-px bg-line md:grid-cols-2">
@@ -70,17 +70,17 @@ export default function ShippingPage() {
                 "Available garments are normally prepared after payment and inventory confirmation. Limited runs, high-volume periods, or additional quality checks may extend preparation; any material delay will be communicated."
             },
             {
-              title: "Destination accuracy",
+              title: "Destination Accuracy",
               copy:
                 "The customer is responsible for a complete name, telephone number, street address, city, state, postal code, and country. Address changes cannot be guaranteed after fulfilment begins."
             },
             {
-              title: "International duties",
+              title: "International Duties",
               copy:
                 "Import duties, taxes, brokerage, or local handling charges may be payable by the recipient unless checkout expressly states that they were collected. Local authorities determine these charges."
             },
             {
-              title: "Missed or failed delivery",
+              title: "Missed Or Failed Delivery",
               copy:
                 "A carrier may require a signature or make a limited number of attempts. Re-delivery, storage, return-to-sender, or correction costs caused by an unavailable recipient or incorrect address may be charged."
             }
@@ -92,7 +92,7 @@ export default function ShippingPage() {
           ))}
         </div>
         <div className="mt-10 max-w-3xl border-t border-line pt-7">
-          <h2 className="text-lg font-semibold">Timing and responsibility</h2>
+          <h2 className="text-lg font-semibold">Timing And Responsibility</h2>
           <p className="mt-3 text-sm leading-7 text-copy-muted">
             Delivery dates are estimates rather than guarantees. Delays caused by customs,
             weather, carrier disruption, access restrictions, or other circumstances outside

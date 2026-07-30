@@ -1,5 +1,6 @@
 import { getResendApiKey, getTransactionalEmailFrom, hasEmailProviderConfig } from "@/lib/backend/env";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
+import { CURRENCY_LOCALES, isCurrencyCode, type CurrencyCode } from "@/data/site-config";
 
 type NotificationRow = {
   id: string;
@@ -34,8 +35,12 @@ function getNumber(payload: Record<string, unknown>, key: string, fallback = 0) 
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
-function money(amount: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
+function money(amount: number, currency: CurrencyCode = "USD") {
+  return new Intl.NumberFormat(CURRENCY_LOCALES[currency], {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0
+  }).format(amount);
 }
 
 function baseEmail({ title, body, action }: { title: string; body: string; action?: string }) {
@@ -56,29 +61,31 @@ function baseEmail({ title, body, action }: { title: string; body: string; actio
 
 export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
   const fullName = getString(row.payload, "fullName", "Client");
-  const totalUsd = getNumber(row.payload, "totalUsd");
+  const currencyValue = getString(row.payload, "currency", "USD");
+  const currency = isCurrencyCode(currencyValue) ? currencyValue : "USD";
+  const total = getNumber(row.payload, "total", getNumber(row.payload, "totalUsd"));
 
   if (row.template === "payment_confirmed") {
     const subject = row.subject ?? "Your ỌNUỌRA payment is confirmed";
-    const body = `Dear ${fullName}, your payment has been confirmed. Your order total is ${money(totalUsd)}, and the garment now moves into fulfilment.`;
-    return { subject, ...baseEmail({ title: "Payment confirmed.", body, action: "We will send another note when your order moves into delivery." }) };
+    const body = `Dear ${fullName}, your payment has been confirmed. Your order total is ${money(total, currency)}, and the garment now moves into fulfilment.`;
+    return { subject, ...baseEmail({ title: "Payment Confirmed.", body, action: "We will send another note when your order moves into delivery." }) };
   }
 
   if (row.template === "payment_expired") {
     const subject = row.subject ?? "Your ỌNUỌRA checkout expired";
     const body = `Dear ${fullName}, your checkout session expired before payment was completed. The reserved pieces have been released back to availability.`;
-    return { subject, ...baseEmail({ title: "Checkout expired.", body, action: "You can return to your bag and start checkout again when ready." }) };
+    return { subject, ...baseEmail({ title: "Checkout Expired.", body, action: "You can return to your bag and start checkout again when ready." }) };
   }
 
   if (row.template === "payment_failed") {
     const subject = row.subject ?? "Your ỌNUỌRA payment was not completed";
     const body = `Dear ${fullName}, Stripe could not complete your payment. No charge has been confirmed, and the reserved pieces have been returned to availability.`;
-    return { subject, ...baseEmail({ title: "Payment not completed.", body, action: "Review your payment method and begin checkout again when ready." }) };
+    return { subject, ...baseEmail({ title: "Payment Not Completed.", body, action: "Review your payment method and begin checkout again when ready." }) };
   }
 
   const subject = row.subject ?? "Your ỌNUỌRA order has been started";
   const body = `Dear ${fullName}, your private order has been created and your selected size has been reserved while payment is pending.`;
-  return { subject, ...baseEmail({ title: "Order started.", body, action: "Complete payment to move your order into fulfilment." }) };
+  return { subject, ...baseEmail({ title: "Order Started.", body, action: "Complete payment to move your order into fulfilment." }) };
 }
 
 async function sendResendEmail(row: NotificationRow, rendered: RenderedEmail) {

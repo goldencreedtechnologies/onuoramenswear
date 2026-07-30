@@ -1,3 +1,4 @@
+import { PRODUCT_PRICES } from "@/data/site-config";
 import type { StoreProduct } from "@/lib/backend/types";
 
 export const cartStorageKey = "onuora-cart";
@@ -7,6 +8,8 @@ export type CartItem = {
   name: string;
   edition: string;
   image: string;
+  colorName: string;
+  colorValue: string;
   size: string;
   quantity: number;
   unitPriceUsd: number;
@@ -16,20 +19,63 @@ export type CartSnapshot = {
   items: CartItem[];
 };
 
-export function priceToUsd(price: string) {
-  const amount = Number(price.replace(/[^0-9.]/g, ""));
-  return Number.isFinite(amount) && amount > 0 ? amount : 100;
+export function priceToUsd(_price?: string) {
+  return PRODUCT_PRICES.USD;
 }
 
-export function productToCartItem(product: StoreProduct, size: string): CartItem {
+export function cartItemKey(item: Pick<CartItem, "productSlug" | "size" | "colorName">) {
+  return `${item.productSlug}::${item.size}::${item.colorName.toLowerCase()}`;
+}
+
+export function productToCartItem(
+  product: StoreProduct,
+  size: string,
+  colour: { colorName: string; colorValue: string } = {
+    colorName: product.colorName,
+    colorValue: product.colorValue
+  }
+): CartItem {
   return {
     productSlug: product.slug,
     name: product.name,
     edition: product.edition,
     image: product.image,
+    colorName: colour.colorName,
+    colorValue: colour.colorValue,
     size,
     quantity: 1,
     unitPriceUsd: priceToUsd(product.price)
+  };
+}
+
+function normalizeCartItem(value: unknown): CartItem | null {
+  if (!value || typeof value !== "object") return null;
+
+  const item = value as Partial<CartItem>;
+  if (
+    typeof item.productSlug !== "string" ||
+    typeof item.name !== "string" ||
+    typeof item.edition !== "string" ||
+    typeof item.image !== "string" ||
+    typeof item.size !== "string" ||
+    typeof item.quantity !== "number" ||
+    typeof item.unitPriceUsd !== "number"
+  ) {
+    return null;
+  }
+
+  const fallbackColour = item.edition.replace(/\s+Edition$/i, "").trim() || "Selected Colour";
+
+  return {
+    productSlug: item.productSlug,
+    name: item.name,
+    edition: item.edition,
+    image: item.image,
+    colorName: typeof item.colorName === "string" ? item.colorName : fallbackColour,
+    colorValue: typeof item.colorValue === "string" ? item.colorValue : "#1F1F1F",
+    size: item.size,
+    quantity: item.quantity,
+    unitPriceUsd: item.unitPriceUsd
   };
 }
 
@@ -44,8 +90,12 @@ export function readCart(): CartSnapshot {
       return { items: [] };
     }
 
-    const parsed = JSON.parse(stored) as CartSnapshot;
-    return { items: Array.isArray(parsed.items) ? parsed.items : [] };
+    const parsed = JSON.parse(stored) as Partial<CartSnapshot>;
+    const items = Array.isArray(parsed.items)
+      ? parsed.items.map(normalizeCartItem).filter((item): item is CartItem => Boolean(item))
+      : [];
+
+    return { items };
   } catch {
     return { items: [] };
   }
@@ -58,9 +108,8 @@ export function writeCart(cart: CartSnapshot) {
 
 export function addCartItem(item: CartItem) {
   const cart = readCart();
-  const existing = cart.items.find(
-    (cartItem) => cartItem.productSlug === item.productSlug && cartItem.size === item.size
-  );
+  const key = cartItemKey(item);
+  const existing = cart.items.find((cartItem) => cartItemKey(cartItem) === key);
 
   if (existing) {
     existing.quantity += item.quantity;
@@ -72,10 +121,16 @@ export function addCartItem(item: CartItem) {
   return cart;
 }
 
-export function updateCartItemQuantity(productSlug: string, size: string, quantity: number) {
+export function updateCartItemQuantity(
+  productSlug: string,
+  size: string,
+  colorName: string,
+  quantity: number
+) {
+  const targetKey = cartItemKey({ productSlug, size, colorName });
   const cart = readCart();
   const nextItems = cart.items
-    .map((item) => (item.productSlug === productSlug && item.size === size ? { ...item, quantity } : item))
+    .map((item) => (cartItemKey(item) === targetKey ? { ...item, quantity } : item))
     .filter((item) => item.quantity > 0);
 
   writeCart({ items: nextItems });

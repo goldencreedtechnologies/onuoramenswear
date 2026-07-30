@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { ProductPrice } from "@/components/currency-provider";
 import type { Product } from "@/data/catalog";
+import { PRODUCT_TYPE_LABEL } from "@/data/site-config";
 
 export function ProductCard({
   product,
@@ -22,7 +26,7 @@ export function ProductCard({
         className="gold-focus block"
         aria-label={`Shop ${product.name}, ${product.edition}`}
       >
-        <div className="product-card-media relative aspect-[3/4] overflow-hidden bg-[#f1f0ec]">
+        <div className="product-card-media relative aspect-[3/4] overflow-hidden bg-page">
           <Image
             src={product.image}
             alt={`${product.name} ${product.edition}`}
@@ -42,11 +46,11 @@ export function ProductCard({
             />
           ) : null}
           {badge ? (
-            <span className="absolute left-3 top-3 bg-page/92 px-2.5 py-1 text-[9px] font-semibold uppercase text-copy backdrop-blur-sm">
+            <span className="absolute bottom-2 right-2 max-w-[calc(100%-3.5rem)] bg-page/88 px-2 py-0.5 text-right text-[8px] font-semibold uppercase leading-4 text-copy backdrop-blur-sm">
               {badge}
             </span>
           ) : null}
-          <span className="absolute bottom-3 right-3 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <span className="absolute bottom-2 left-2 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
             <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
           </span>
         </div>
@@ -56,9 +60,9 @@ export function ProductCard({
               {product.edition}
             </p>
             <h3 className="mt-1 text-sm font-semibold text-copy">{product.name}</h3>
-            <p className="mt-1 text-xs text-copy-muted">{product.meaning}</p>
+            <p className="mt-1 text-xs text-copy-muted">{PRODUCT_TYPE_LABEL}</p>
           </div>
-          <p className="shrink-0 text-sm font-medium text-copy">{product.price}</p>
+          <ProductPrice className="shrink-0 text-sm font-medium text-copy" />
         </div>
       </Link>
     </article>

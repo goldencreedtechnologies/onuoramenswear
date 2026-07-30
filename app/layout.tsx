@@ -4,11 +4,11 @@ import { SiteChrome } from "@/components/site-chrome";
 
 export const metadata: Metadata = {
   title: {
-    default: "Onuora | Luxury Nigerian Stretch Menswear",
-    template: "%s | Onuora"
+    default: "ỌNUỌRA Menswear | Contemporary African Menswear",
+    template: "%s | ỌNUỌRA Menswear"
   },
   description:
-    "Modern African stretch tailoring for men who carry heritage, confidence, and ease.",
+    "Contemporary African menswear designed and made in Nigeria for a global wardrobe.",
   metadataBase: new URL("https://onuoramenswear.com")
 };
 

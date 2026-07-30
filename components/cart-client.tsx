@@ -4,15 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Minus, Plus, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { cartSubtotal, readCart, updateCartItemQuantity, type CartItem } from "@/lib/cart";
-
-function money(amount: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
-}
+import { useCurrency } from "@/components/currency-provider";
+import { PRODUCT_PRICES, PRODUCT_TYPE_LABEL, formatCurrency } from "@/data/site-config";
+import { readCart, updateCartItemQuantity, type CartItem } from "@/lib/cart";
 
 export function CartClient() {
   const [items, setItems] = useState<CartItem[]>([]);
-  const subtotal = useMemo(() => cartSubtotal(items), [items]);
+  const { currency } = useCurrency();
+  const itemCount = useMemo(() => items.reduce((total, item) => total + item.quantity, 0), [items]);
+  const subtotal = PRODUCT_PRICES[currency] * itemCount;
+  const money = (amount: number) => formatCurrency(currency, amount);
 
   useEffect(() => {
     const syncCart = () => setItems(readCart().items);
@@ -27,7 +28,7 @@ export function CartClient() {
   }, []);
 
   function updateQuantity(item: CartItem, quantity: number) {
-    const nextCart = updateCartItemQuantity(item.productSlug, item.size, quantity);
+    const nextCart = updateCartItemQuantity(item.productSlug, item.size, item.colorName, quantity);
     setItems(nextCart.items);
   }
 
@@ -39,7 +40,7 @@ export function CartClient() {
           href="/collection"
           className="gold-focus mt-6 inline-flex min-h-12 items-center gap-3 bg-obsidian px-6 text-xs font-semibold uppercase text-ivory hover:bg-gold hover:text-obsidian"
         >
-          Explore collections
+          Explore Collections
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
@@ -51,23 +52,23 @@ export function CartClient() {
       <div className="border-t border-line">
         {items.map((item) => (
           <article
-            key={`${item.productSlug}-${item.size}`}
+            key={`${item.productSlug}-${item.size}-${item.colorName}`}
             className="grid grid-cols-[96px_1fr] gap-4 border-b border-line py-5 sm:grid-cols-[132px_1fr]"
           >
             <Link
               href={`/products/${item.productSlug}`}
-              className="gold-focus relative aspect-[3/4] overflow-hidden bg-surface-subtle"
+              className="gold-focus relative aspect-[3/4] overflow-hidden bg-page"
             >
-              <Image src={item.image} alt={item.name} fill sizes="132px" className="object-contain p-2" />
+              <Image src={item.image} alt={item.name} fill sizes="132px" className="object-cover" />
             </Link>
             <div className="flex min-w-0 flex-col justify-between gap-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
                   <p className="text-[9px] font-semibold uppercase text-gold">{item.edition}</p>
                   <h2 className="mt-1 truncate text-lg font-semibold">{item.name}</h2>
-                  <p className="mt-1 text-xs text-copy-muted">Size {item.size}</p>
+                  <p className="mt-1 text-xs text-copy-muted">{PRODUCT_TYPE_LABEL} · {item.colorName} · Size {item.size}</p>
                 </div>
-                <p className="shrink-0 text-sm font-medium">{money(item.unitPriceUsd * item.quantity)}</p>
+                <p className="shrink-0 text-sm font-medium">{money(PRODUCT_PRICES[currency] * item.quantity)}</p>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <div className="flex h-10 items-center border border-line">
@@ -107,12 +108,12 @@ export function CartClient() {
           href="/collection"
           className="gold-focus mt-5 inline-flex items-center gap-2 text-[10px] font-semibold uppercase text-copy-muted underline underline-offset-4 hover:text-copy"
         >
-          Continue shopping
+          Continue Shopping
         </Link>
       </div>
 
       <aside className="bg-surface-subtle p-6 lg:sticky lg:top-[124px]">
-        <h2 className="text-lg font-semibold">Order summary</h2>
+        <h2 className="text-lg font-semibold">Order Summary</h2>
         <div className="my-6 space-y-3 border-y border-line py-5 text-sm">
           <div className="flex justify-between gap-5">
             <span className="text-copy-muted">Subtotal</span>
@@ -124,14 +125,14 @@ export function CartClient() {
           </div>
         </div>
         <div className="flex justify-between text-base font-semibold">
-          <span>Estimated total</span>
+          <span>Estimated Total</span>
           <span>{money(subtotal)}</span>
         </div>
         <Link
           href="/checkout"
           className="gold-focus mt-6 inline-flex min-h-12 w-full items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian"
         >
-          Secure checkout
+          Secure Checkout
           <ArrowRight className="h-4 w-4" />
         </Link>
         <p className="mt-4 text-center text-[10px] leading-5 text-copy-muted">

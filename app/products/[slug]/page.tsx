@@ -6,6 +6,7 @@ import { ProductGallery } from "@/components/product-gallery";
 import { ProductOptions } from "@/components/product-options";
 import { ProductCard } from "@/components/product-card";
 import { getStoreProductBySlug, getStoreProducts } from "@/lib/backend/catalog";
+import { getCollectionByFamily } from "@/data/site-config";
 import { priceToUsd } from "@/lib/cart";
 
 type ProductPageProps = {
@@ -48,18 +49,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .filter((item) => item.slug !== product.slug)
     .sort((a, b) => Number(b.family === product.family) - Number(a.family === product.family))
     .slice(0, 4);
-  const collectionLabel =
-    product.family === "original"
-      ? "Original Design"
-      : product.family === "button"
-        ? "With Button"
-        : "Without Button";
-  const collectionHash =
-    product.family === "original"
-      ? "original"
-      : product.family === "button"
-        ? "with-button"
-        : "without-button";
+  const collection = getCollectionByFamily(product.family);
+  const collectionLabel = collection.englishName;
+  const collectionHash = collection.legacyHash;
 
   return (
     <main className="bg-page pt-[104px] text-copy">
@@ -154,14 +146,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <section className="container-luxe py-14 md:py-20">
         <div className="mb-7 flex items-end justify-between gap-5">
           <div>
-            <p className="text-[10px] font-semibold uppercase text-gold">Complete the wardrobe</p>
-            <h2 className="mt-2 text-2xl font-semibold md:text-3xl">You may also like</h2>
+            <p className="text-[10px] font-semibold uppercase text-gold">Complete The Wardrobe</p>
+            <h2 className="mt-2 text-2xl font-semibold md:text-3xl">You May Also Like</h2>
           </div>
           <Link
             href={`/collection#${collectionHash}`}
             className="gold-focus hidden border-b border-copy/35 pb-1 text-[10px] font-semibold uppercase sm:block"
           >
-            Shop all
+            Shop All
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 lg:grid-cols-4">

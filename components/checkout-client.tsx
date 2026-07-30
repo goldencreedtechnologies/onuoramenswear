@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { Loader2, LockKeyhole, MapPin } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useCurrency } from "@/components/currency-provider";
+import { DELIVERY_COPY, PRODUCT_PRICES, PRODUCT_TYPE_LABEL, formatCurrency, operationalUsdAmountInCurrency } from "@/data/site-config";
 import { cartSubtotal, readCart, type CartItem } from "@/lib/cart";
 
 type OrderStatus = { type: "idle" } | { type: "loading" } | { type: "error"; message: string };
@@ -32,19 +34,19 @@ const fieldClass =
   "gold-focus min-h-12 border border-line bg-page px-4 text-sm font-normal normal-case text-copy outline-none transition placeholder:text-copy-muted/60 hover:border-line-strong focus:border-copy";
 const labelClass = "grid gap-2 text-[10px] font-semibold uppercase text-copy";
 
-function money(amount: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
-}
-
 export function CheckoutClient() {
   const [items, setItems] = useState<CartItem[]>([]);
+  const { currency } = useCurrency();
   const [status, setStatus] = useState<OrderStatus>({ type: "idle" });
   const [quoteStatus, setQuoteStatus] = useState<QuoteStatus>({ type: "idle" });
   const [deliveryQuote, setDeliveryQuote] = useState<DeliveryQuote | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const subtotal = useMemo(() => cartSubtotal(items), [items]);
-  const shipping = deliveryQuote?.shippingUsd ?? 0;
+  const subtotalUsd = useMemo(() => cartSubtotal(items), [items]);
+  const itemCount = useMemo(() => items.reduce((total, item) => total + item.quantity, 0), [items]);
+  const subtotal = PRODUCT_PRICES[currency] * itemCount;
+  const shipping = deliveryQuote ? operationalUsdAmountInCurrency(deliveryQuote.shippingUsd, currency) : 0;
   const total = subtotal + shipping;
+  const money = (amount: number) => formatCurrency(currency, amount);
 
   useEffect(() => {
     const syncCart = () => setItems(readCart().items);
@@ -78,7 +80,7 @@ export function CheckoutClient() {
       postalCode: String(form.get("postalCode") ?? "") || undefined,
       shippingCountry: String(form.get("shippingCountry") ?? ""),
       itemCount: items.reduce((sum, item) => sum + item.quantity, 0),
-      subtotalUsd: subtotal
+      subtotalUsd
     };
 
     if (!payload.shippingAddress || !payload.shippingCity || !payload.shippingCountry) {
@@ -130,7 +132,7 @@ export function CheckoutClient() {
       email: String(form.get("email") ?? ""),
       fullName: String(form.get("fullName") ?? ""),
       phone: String(form.get("phone") ?? ""),
-      currency: "USD",
+      currency,
       shippingAddress: String(form.get("shippingAddress") ?? ""),
       shippingCity: String(form.get("shippingCity") ?? ""),
       shippingState: String(form.get("shippingState") ?? "") || undefined,
@@ -141,6 +143,8 @@ export function CheckoutClient() {
         productSlug: item.productSlug,
         quantity: item.quantity,
         size: item.size,
+        colorName: item.colorName,
+        colorValue: item.colorValue,
         unitPriceUsd: item.unitPriceUsd
       }))
     };
@@ -172,8 +176,8 @@ export function CheckoutClient() {
     <>
       <div className="mb-8 flex items-center justify-between gap-5 border-b border-line pb-6">
         <div>
-          <p className="text-[10px] font-semibold uppercase text-gold">Secure checkout</p>
-          <h1 className="mt-2 text-3xl font-semibold md:text-4xl">Delivery and payment.</h1>
+          <p className="text-[10px] font-semibold uppercase text-gold">Secure Checkout</p>
+          <h1 className="mt-2 text-3xl font-semibold md:text-4xl">Delivery And Payment.</h1>
         </div>
         <LockKeyhole className="h-5 w-5 text-gold" aria-label="Secure payment" />
       </div>
@@ -201,7 +205,7 @@ export function CheckoutClient() {
             </label>
           </div>
 
-          <h2 className="mb-1 mt-5 text-sm font-semibold uppercase">Delivery address</h2>
+          <h2 className="mb-1 mt-5 text-sm font-semibold uppercase">Delivery Address</h2>
           <label className={labelClass}>
             Street address
             <input name="shippingAddress" autoComplete="street-address" required className={fieldClass} />
@@ -232,7 +236,7 @@ export function CheckoutClient() {
               <div className="flex gap-3">
                 <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
                 <div>
-                  <p className="text-xs font-semibold uppercase">Delivery estimate</p>
+                  <p className="text-xs font-semibold uppercase">Delivery Estimate</p>
                   <p className="mt-1 max-w-md text-sm leading-6 text-copy-muted">
                     {deliveryQuote
                       ? `${deliveryQuote.methodName}: ${deliveryQuote.estimatedMinDays}-${deliveryQuote.estimatedMaxDays} business days${
@@ -260,8 +264,9 @@ export function CheckoutClient() {
             ) : null}
           </div>
 
+          <p className="text-xs leading-5 text-copy-muted">{DELIVERY_COPY}</p>
           <p className="text-xs leading-5 text-copy-muted">
-            Stripe securely processes payment in USD. Your bank may display the local equivalent.
+            Prices are shown in {currency}. Final payment details are confirmed securely by Stripe.
           </p>
           {status.type === "error" ? (
             <p className="text-sm font-medium text-wine">{status.message}</p>
@@ -272,34 +277,34 @@ export function CheckoutClient() {
             className="gold-focus mt-2 inline-flex min-h-12 items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian disabled:cursor-not-allowed disabled:opacity-45"
           >
             {status.type === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            Continue to secure payment
+            Continue To Secure Payment
           </button>
         </form>
 
         <aside className="bg-surface-subtle p-6 lg:sticky lg:top-[124px]">
-          <h2 className="text-lg font-semibold">Order summary</h2>
+          <h2 className="text-lg font-semibold">Order Summary</h2>
           <div className="mt-5 space-y-4">
             {items.length ? (
               items.map((item) => (
                 <div
-                  key={`${item.productSlug}-${item.size}`}
+                  key={`${item.productSlug}-${item.size}-${item.colorName}`}
                   className="grid grid-cols-[64px_1fr_auto] gap-3 border-b border-line pb-4"
                 >
                   <div className="relative aspect-[3/4] bg-page">
-                    <Image src={item.image} alt={item.name} fill sizes="64px" className="object-contain p-1.5" />
+                    <Image src={item.image} alt={item.name} fill sizes="64px" className="object-cover" />
                   </div>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold">{item.name}</p>
                     <p className="mt-1 text-[10px] uppercase text-copy-muted">
-                      {item.edition} / {item.size} / Qty {item.quantity}
+                      {PRODUCT_TYPE_LABEL} / {item.edition} / {item.colorName} / {item.size} / Qty {item.quantity}
                     </p>
                   </div>
-                  <p className="text-xs font-medium">{money(item.unitPriceUsd * item.quantity)}</p>
+                  <p className="text-xs font-medium">{money(PRODUCT_PRICES[currency] * item.quantity)}</p>
                 </div>
               ))
             ) : (
               <p className="text-sm leading-6 text-copy-muted">
-                Your bag is empty. Add a garment before checkout.
+                Your bag is empty. Add a complete outfit before checkout.
               </p>
             )}
           </div>
@@ -310,7 +315,7 @@ export function CheckoutClient() {
             </div>
             <div className="flex justify-between">
               <span className="text-copy-muted">Delivery</span>
-              <span>{deliveryQuote ? money(shipping) : "Not calculated"}</span>
+              <span>{deliveryQuote ? money(shipping) : "Not Calculated"}</span>
             </div>
             <div className="flex justify-between border-t border-line pt-4 text-base font-semibold">
               <span>Total</span>

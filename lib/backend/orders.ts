@@ -5,12 +5,13 @@ import { markOrderInventorySold, releaseOrderInventory, reserveOrderInventory } 
 import { queueOrderNotification, recordOrderEvent } from "@/lib/backend/order-lifecycle";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 import { priceToUsd } from "@/lib/cart";
+import { isAdditionalProductColour, isCurrencyCode, operationalUsdAmountInCurrency } from "@/data/site-config";
 
 export const checkoutDraftSchema = z.object({
   email: z.string().email(),
   fullName: z.string().min(2),
   phone: z.string().optional(),
-  currency: z.string().default("USD"),
+  currency: z.enum(["NGN", "GBP", "USD", "EUR"]).default("USD"),
   shippingCountry: z.string().trim().min(2),
   shippingCity: z.string().trim().min(2),
   shippingState: z.string().optional(),
@@ -26,6 +27,8 @@ export const checkoutDraftSchema = z.object({
         productSlug: z.string().min(1),
         quantity: z.number().int().positive(),
         size: z.string().min(1),
+        colorName: z.string().trim().min(2).max(80).optional(),
+        colorValue: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
         unitPriceUsd: z.number().positive()
       })
     )
@@ -38,6 +41,8 @@ type PricedOrderItem = {
   productSlug: string;
   quantity: number;
   size: string;
+  colorName: string;
+  colorValue: string;
   unitPriceUsd: number;
   name: string;
   edition: string;
@@ -61,10 +66,22 @@ export async function createOrder(draft: CheckoutDraftInput) {
       return { ok: false as const, reason: `Unknown product: ${item.productSlug}` };
     }
 
+    const colorName = item.colorName ?? product.colorName;
+    const colorValue = item.colorValue ?? product.colorValue;
+    const isProductColour =
+      colorName.toLowerCase() === product.colorName.toLowerCase() &&
+      colorValue.toLowerCase() === product.colorValue.toLowerCase();
+
+    if (!isProductColour && !isAdditionalProductColour(colorName, colorValue)) {
+      return { ok: false as const, reason: `Unknown colour selection: ${colorName}` };
+    }
+
     pricedItems.push({
       productSlug: item.productSlug,
       quantity: item.quantity,
       size: item.size,
+      colorName,
+      colorValue,
       unitPriceUsd: priceToUsd(product.price),
       name: product.name,
       edition: product.edition,
@@ -156,7 +173,16 @@ export async function createOrder(draft: CheckoutDraftInput) {
     shippingStatus: "quote_attached",
     inventoryStatus: "reserved",
     note: "Order created and inventory reserved while payment is pending.",
-    source: "system"
+    source: "system",
+    metadata: {
+      selectedColours: pricedItems.map((item) => ({
+        productSlug: item.productSlug,
+        size: item.size,
+        colorName: item.colorName,
+        colorValue: item.colorValue,
+        quantity: item.quantity
+      }))
+    }
   });
 
   await queueOrderNotification({
@@ -167,13 +193,19 @@ export async function createOrder(draft: CheckoutDraftInput) {
     subject: "Your ỌNUỌRA order has been started",
     payload: {
       fullName: draft.fullName,
+      currency: draft.currency,
       subtotalUsd,
       shippingUsd,
       totalUsd,
+      subtotal: operationalUsdAmountInCurrency(subtotalUsd, isCurrencyCode(draft.currency) ? draft.currency : "USD"),
+      shipping: operationalUsdAmountInCurrency(shippingUsd, isCurrencyCode(draft.currency) ? draft.currency : "USD"),
+      total: operationalUsdAmountInCurrency(totalUsd, isCurrencyCode(draft.currency) ? draft.currency : "USD"),
       items: pricedItems.map((item) => ({
         productSlug: item.productSlug,
         name: item.name,
         size: item.size,
+        colorName: item.colorName,
+        colorValue: item.colorValue,
         quantity: item.quantity
       }))
     }
@@ -244,7 +276,7 @@ export async function markOrderPaid({
 
   const { data: order, error: orderError } = await client
     .from("orders")
-    .select("id, email, customer_profile_id, full_name, payment_status, shipping_status, total_usd")
+    .select("id, email, customer_profile_id, full_name, payment_status, shipping_status, currency, total_usd")
     .eq("stripe_checkout_session_id", checkoutSessionId)
     .maybeSingle();
 
@@ -300,7 +332,12 @@ export async function markOrderPaid({
       subject: "Your ỌNUỌRA payment is confirmed",
       payload: {
         fullName: order.full_name,
-        totalUsd: Number(order.total_usd)
+        currency: isCurrencyCode(order.currency) ? order.currency : "USD",
+        totalUsd: Number(order.total_usd),
+        total: operationalUsdAmountInCurrency(
+          Number(order.total_usd),
+          isCurrencyCode(order.currency) ? order.currency : "USD"
+        )
       }
     });
   }

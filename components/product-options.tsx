@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Check, Minus, Plus, Ruler, ShoppingBag, X } from "lucide-react";
+import { ADDITIONAL_PRODUCT_COLOURS } from "@/data/site-config";
 import { addCartItem, productToCartItem } from "@/lib/cart";
 import { cn } from "@/lib/cn";
 import type { StoreProduct } from "@/lib/backend/types";
@@ -29,6 +30,12 @@ type ColorOption = {
   colorValue: string;
 };
 
+type SelectedColour = {
+  name: string;
+  value: string;
+  usesCurrentPhotography: boolean;
+};
+
 export function ProductOptions({
   product,
   colorOptions
@@ -37,11 +44,27 @@ export function ProductOptions({
   colorOptions: ColorOption[];
 }) {
   const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColour, setSelectedColour] = useState<SelectedColour>({
+    name: product.colorName,
+    value: product.colorValue,
+    usesCurrentPhotography: false
+  });
   const [quantity, setQuantity] = useState(1);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [added, setAdded] = useState(false);
   const [needsSize, setNeedsSize] = useState(false);
   const [inventory, setInventory] = useState<InventoryItem[] | null>(null);
+
+  useEffect(() => {
+    setSelectedColour({
+      name: product.colorName,
+      value: product.colorValue,
+      usesCurrentPhotography: false
+    });
+    setSelectedSize("");
+    setQuantity(1);
+    setNeedsSize(false);
+  }, [product.slug, product.colorName, product.colorValue]);
 
   useEffect(() => {
     let cancelled = false;
@@ -89,7 +112,10 @@ export function ProductOptions({
 
     if (selectedInventory?.isSoldOut || allSoldOut) return;
 
-    const item = productToCartItem(product, selectedSize);
+    const item = productToCartItem(product, selectedSize, {
+      colorName: selectedColour.name,
+      colorValue: selectedColour.value
+    });
     item.quantity = quantity;
     addCartItem(item);
     setAdded(true);
@@ -108,17 +134,25 @@ export function ProductOptions({
       <div className="mt-7 border-t border-line pt-6">
         <div className="flex items-center justify-between gap-4">
           <p className="text-xs font-semibold uppercase">
-            Colour <span className="ml-2 font-normal text-copy-muted">{product.colorName}</span>
+            Colour <span className="ml-2 font-normal text-copy-muted">{selectedColour.name}</span>
           </p>
         </div>
         <div className="mt-4 flex flex-wrap gap-3" aria-label="Available colours">
           {colorOptions.map((option) => {
-            const isSelected = option.slug === product.slug;
+            const isSelected =
+              !selectedColour.usesCurrentPhotography && option.slug === product.slug;
 
             return (
               <Link
                 key={option.slug}
                 href={`/products/${option.slug}`}
+                onClick={() =>
+                  setSelectedColour({
+                    name: option.colorName,
+                    value: option.colorValue,
+                    usesCurrentPhotography: false
+                  })
+                }
                 className={cn(
                   "gold-focus grid h-8 w-8 place-items-center rounded-full border transition",
                   isSelected
@@ -136,7 +170,45 @@ export function ProductOptions({
               </Link>
             );
           })}
+          {ADDITIONAL_PRODUCT_COLOURS.map((colour) => {
+            const isSelected =
+              selectedColour.usesCurrentPhotography && selectedColour.name === colour.name;
+
+            return (
+              <button
+                key={colour.id}
+                type="button"
+                onClick={() =>
+                  setSelectedColour({
+                    name: colour.name,
+                    value: colour.value,
+                    usesCurrentPhotography: true
+                  })
+                }
+                className={cn(
+                  "gold-focus grid h-8 w-8 place-items-center rounded-full border transition",
+                  isSelected
+                    ? "border-copy ring-1 ring-copy ring-offset-2 ring-offset-page"
+                    : "border-copy/20 hover:border-copy"
+                )}
+                aria-label={`${colour.name}${isSelected ? ", selected" : ""}`}
+                aria-pressed={isSelected}
+                title={`${colour.name} / Photography coming soon`}
+              >
+                <span
+                  className="h-5 w-5 rounded-full border border-black/15"
+                  style={{ backgroundColor: colour.value }}
+                />
+              </button>
+            );
+          })}
         </div>
+        {selectedColour.usesCurrentPhotography ? (
+          <p className="mt-3 text-[11px] leading-5 text-copy-muted">
+            This colour is available to order. The current product photography remains on screen
+            until its dedicated imagery is ready.
+          </p>
+        ) : null}
       </div>
 
       <div className="mt-6">

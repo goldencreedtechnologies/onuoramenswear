@@ -5,7 +5,7 @@ import { newArrivalsPromotion } from "@/data/phase-one-collections";
 
 export const metadata = {
   title: "Client Care",
-  description: "Contact ONUORA for sizing, styling, orders, delivery, and membership support."
+  description: "Contact ỌNUỌRA for sizing, styling, orders, delivery, and membership support."
 };
 
 const inputClass =
@@ -21,7 +21,7 @@ export default function ContactPage() {
             We are here to help you arrive well.
           </h1>
           <p className="mt-5 max-w-md text-sm leading-7 text-copy-muted">
-            Speak with the house about sizing, delivery, styling, existing orders, or ONUORA
+            Speak with the house about sizing, delivery, styling, existing orders, or ỌNUỌRA
             Circle access.
           </p>
           <div className="mt-8 border-t border-line">
@@ -69,7 +69,7 @@ export default function ContactPage() {
               <option>Order support</option>
               <option>Delivery</option>
               <option>Styling</option>
-              <option>ONUORA Circle</option>
+              <option>ỌNUỌRA Circle</option>
             </select>
           </label>
           <label className="grid gap-2 text-[10px] font-semibold uppercase">
@@ -92,7 +92,7 @@ export default function ContactPage() {
           <div className="relative aspect-[4/3] overflow-hidden bg-[#f3f0e9]">
             <Image
               src="/brand/products/button/ndb3/ndb3-angle.webp"
-              alt="ONUORA burgundy buttoned new arrival"
+              alt="ỌNUỌRA burgundy buttoned new arrival"
               fill
               sizes="260px"
               className="object-cover"

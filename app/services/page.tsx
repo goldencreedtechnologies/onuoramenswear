@@ -11,36 +11,42 @@ import {
 
 export const metadata = {
   title: "Client Services",
-  description: "ONUORA styling, sizing, delivery, order, and private client services."
+  description: "ỌNUỌRA styling, sizing, delivery, order, and private client services."
 };
 
 const services = [
   {
+    id: "sizing",
     icon: Ruler,
     title: "Fit & sizing",
     copy: "Personal guidance across stretch fit, chest, waist, trouser length, and the silhouette best suited to your preference."
   },
   {
+    id: "styling",
     icon: Sparkles,
     title: "Private styling",
-    copy: "Occasion-led advice on colour, edition, footwear, and building a considered ONUORA wardrobe."
+    copy: "Occasion-led advice on colour, edition, footwear, and building a considered ỌNUỌRA wardrobe."
   },
   {
+    id: "care",
     icon: PackageCheck,
-    title: "Order care",
-    copy: "Support with order status, exchanges, garment condition, fulfilment, and post-purchase questions."
+    title: "Order & garment care",
+    copy: "Support with garment care, order status, exchanges, garment condition, fulfilment, and post-purchase questions."
   },
   {
+    id: "delivery",
     icon: Globe2,
     title: "Global delivery",
     copy: "Destination guidance, delivery estimates, customs context, and tracked service across the UK, USA, Europe, and worldwide."
   },
   {
+    id: "circle",
     icon: CircleUserRound,
-    title: "ONUORA Circle",
+    title: "ỌNUỌRA Circle",
     copy: "Private previews, early collection access, fit notes, and considered communication from the house."
   },
   {
+    id: "contact",
     icon: MessageCircle,
     title: "Concierge enquiry",
     copy: "A direct route for gifting, group orders, press, partnerships, and requests that need a human response."
@@ -70,7 +76,8 @@ export default function ServicesPage() {
           return (
             <article
               key={service.title}
-              className="border-b border-line py-8 sm:px-6 sm:[&:nth-child(odd)]:border-r lg:border-r lg:[&:nth-child(3n)]:border-r-0"
+              id={service.id}
+              className="scroll-mt-28 border-b border-line py-8 sm:px-6 sm:[&:nth-child(odd)]:border-r lg:border-r lg:[&:nth-child(3n)]:border-r-0"
             >
               <Icon className="h-5 w-5 text-gold" />
               <h2 className="mt-5 text-sm font-semibold uppercase">{service.title}</h2>

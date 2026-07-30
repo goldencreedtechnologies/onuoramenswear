@@ -306,7 +306,7 @@ const emptyProductForm = {
   name: "",
   edition: "",
   meaning: "",
-  price: "$100",
+  price: "$120",
   image: "",
   images: "",
   palette: "#1F1F1F",
@@ -698,7 +698,7 @@ export function AdminClient() {
               <ShieldCheck className="h-5 w-5" />
             </span>
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0] text-gold">ONUORA command</p>
+              <p className="text-xs font-bold uppercase tracking-[0] text-gold">ỌNUỌRA Command</p>
               <h1 className="font-display text-3xl text-copy">Secure access</h1>
             </div>
           </div>
@@ -725,10 +725,10 @@ export function AdminClient() {
         } ${mobileSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         <div className="flex min-h-[92px] items-center justify-between border-b border-gold/10 px-4">
-          <Link href="/" className={`gold-focus min-w-0 ${sidebarCollapsed ? "hidden" : "block"}`} aria-label="Open Onuora storefront">
+          <Link href="/" className={`gold-focus min-w-0 ${sidebarCollapsed ? "hidden" : "block"}`} aria-label="Open ỌNUỌRA Storefront">
             <Image
               src="/brand/onuora-logo-horizontal.png"
-              alt="Onuora Menswear"
+              alt="ỌNUỌRA Menswear"
               width={220}
               height={70}
               className="h-11 w-auto object-contain"
@@ -1043,9 +1043,9 @@ export function AdminClient() {
                   className="gold-focus min-h-11 rounded-2xl border border-gold/15 bg-page px-3 text-sm text-copy"
                   aria-label="Product family"
                 >
-                  <option value="original">Original design</option>
-                  <option value="button">With button</option>
-                  <option value="buttonless">Without button</option>
+                  <option value="original">Heritage Collection — Nkwọ</option>
+                  <option value="button">Cowrie Collection — Ọzọ</option>
+                  <option value="buttonless">Resort Collection — Uzọ</option>
                 </select>
                 {["colorName", "colorValue", "modelName"].map((field) => <TextInput key={field} field={field} form={productForm} setForm={setProductForm} />)}
               </div>
@@ -1185,7 +1185,7 @@ export function AdminClient() {
           <ModuleHeader />
           <div className="rounded-[24px] border border-gold/20 bg-panel p-5">
             <Palette className="h-5 w-5 text-gold" />
-            <p className="mt-5 font-display text-2xl leading-none text-copy">ONUORA house appearance</p>
+            <p className="mt-5 font-display text-2xl leading-none text-copy">ỌNUỌRA House Appearance</p>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-copy-muted">
               The public storefront uses one consistent ivory, onyx, and heritage-gold visual
               system. Manage campaign imagery, logos, navigation, and page content below.
@@ -1299,7 +1299,7 @@ export function AdminClient() {
         ],
         cards: [
           ["Customer profiles", "Order emails, phones, delivery regions, and purchase history are now visible from Orders.", Users],
-          ["VIP segmentation", "Use order totals and repeat purchases to build the future ONUORA Circle membership layer.", TicketCheck]
+          ["VIP segmentation", "Use order totals and repeat purchases to build the future ỌNUỌRA Circle membership layer.", TicketCheck]
         ]
       },
       support: {

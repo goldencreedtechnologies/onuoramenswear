@@ -6,28 +6,28 @@ const footerGroups = [
   {
     title: "Shop",
     links: [
-      { href: "/collection#without-button", label: "New arrivals" },
-      { href: "/collection#with-button", label: "With button" },
-      { href: "/collection#original", label: "Original design" },
-      { href: "/cart", label: "Shopping bag" }
+      { href: "/collection#original", label: "Heritage — Nkwọ" },
+      { href: "/collection#with-button", label: "Cowrie — Ọzọ" },
+      { href: "/collection#without-button", label: "Resort — Uzọ" },
+      { href: "/cart", label: "Shopping Bag" }
     ]
   },
   {
-    title: "Client care",
+    title: "Client Services",
     links: [
-      { href: "/contact", label: "Contact us" },
+      { href: "/contact", label: "Contact" },
       { href: "/services", label: "Services" },
       { href: "/shipping", label: "Delivery" },
-      { href: "/returns", label: "Returns & exchanges" },
-      { href: "/account", label: "My account" }
+      { href: "/returns", label: "Returns & Exchanges" },
+      { href: "/account", label: "My Account" }
     ]
   },
   {
-    title: "The house",
+    title: "The House",
     links: [
-      { href: "/about", label: "Our heritage" },
+      { href: "/about", label: "About" },
       { href: "/journal", label: "Journal" },
-      { href: "/contact", label: "ONUORA Circle" }
+      { href: "/contact", label: "ỌNUỌRA Circle" }
     ]
   }
 ];
@@ -37,11 +37,11 @@ export function Footer() {
     <footer className="bg-obsidian text-ivory">
       <div className="container-luxe grid gap-10 border-t border-white/10 py-12 lg:grid-cols-[1.25fr_repeat(3,0.7fr)] lg:py-16">
         <div>
-          <Link href="/" className="inline-flex" aria-label="ONUORA home">
+          <Link href="/" className="inline-flex" aria-label="ỌNUỌRA Home">
             <span className="relative block h-20 w-[220px] overflow-hidden">
               <Image
                 src="/brand/onuora-logo-gold.png"
-                alt="ONUORA Menswear"
+                alt="ỌNUỌRA Menswear"
                 fill
                 sizes="220px"
                 className="object-cover object-center"
@@ -49,7 +49,7 @@ export function Footer() {
             </span>
           </Link>
           <p className="mt-4 max-w-sm text-sm leading-6 text-white/55">
-            Modern stretch menswear, made with African craft for a global wardrobe.
+            Contemporary African Menswear. Designed And Made In Nigeria For A Global Wardrobe.
           </p>
           <form action="/contact" method="get" className="mt-7 flex max-w-md border-b border-white/35">
             <label className="sr-only" htmlFor="footer-email">
@@ -59,13 +59,13 @@ export function Footer() {
               id="footer-email"
               name="email"
               type="email"
-              placeholder="Email for private previews"
+              placeholder="Email For Private Previews"
               className="min-h-12 flex-1 bg-transparent pr-4 text-sm text-white outline-none placeholder:text-white/40"
             />
             <button
               type="submit"
               className="gold-focus inline-flex h-12 w-12 items-center justify-center text-gold"
-              aria-label="Join ONUORA Circle"
+              aria-label="Join ỌNUỌRA Circle"
             >
               <ArrowRight className="h-4 w-4" />
             </button>
@@ -90,7 +90,7 @@ export function Footer() {
 
       <div className="container-luxe grid gap-5 border-t border-white/10 py-6 lg:grid-cols-[1fr_auto] lg:items-center">
         <span className="text-[10px] uppercase tracking-[0.06em] text-white/40">
-          © 2026 ONUORA. Wear the story of your people.
+          © 2026 ỌNUỌRA. Wear Your Identity.
         </span>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-3 text-[10px] uppercase tracking-[0.06em] text-white/48">
           <Link href="/privacy" className="transition hover:text-white">
@@ -112,7 +112,7 @@ export function Footer() {
           >
             <Mail className="h-4 w-4" />
           </Link>
-          <Link href="/contact" aria-label="Client care" className="transition hover:text-white">
+          <Link href="/contact" aria-label="Client Services" className="transition hover:text-white">
             <MessageCircle className="h-4 w-4" />
           </Link>
         </div>

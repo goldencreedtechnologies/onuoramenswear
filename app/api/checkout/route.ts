@@ -40,8 +40,8 @@ export async function POST(request: Request) {
       currency: "usd",
       unit_amount: Math.round(item.unitPriceUsd * 100),
       product_data: {
-        name: `${item.name} - Size ${item.size}`,
-        description: item.edition
+        name: `${item.name} - ${item.colorName} - Size ${item.size}`,
+        description: `${item.edition}. Colour: ${item.colorName}`
       }
     }
   }));

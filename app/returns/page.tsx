@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Returns & Exchanges",
-  description: "ONUORA size exchange and manufacturing fault policy."
+  description: "ỌNUỌRA size exchange and manufacturing fault policy."
 };
 
 export default function ReturnsPage() {

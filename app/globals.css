@@ -115,6 +115,22 @@ select option {
   color: var(--copy);
 }
 
+/* Stage 3 contrast safeguard: dark controls always start with light text,
+   while existing hover utilities remain free to invert with lighter backgrounds. */
+button[class~="bg-obsidian"],
+a[class~="bg-obsidian"],
+button[class~="bg-black"],
+a[class~="bg-black"] {
+  color: #ffffff;
+}
+
+button[class~="bg-white"],
+a[class~="bg-white"],
+button[class~="bg-page"],
+a[class~="bg-page"] {
+  color: #171717;
+}
+
 img {
   max-width: 100%;
 }
@@ -219,6 +235,13 @@ img {
   transform: scale(1);
 }
 
+.home-collection-card[data-collection="with-button"] .collection-image-primary,
+.home-collection-card[data-collection="with-button"] .collection-image-hover {
+  object-fit: cover;
+  object-position: center 38%;
+  transform: scale(1.02);
+}
+
 .product-card-secondary {
   transform: scale(1.015);
 }
@@ -253,6 +276,16 @@ img {
     transform: scale(1);
   }
 
+  .collection-image-pair.home-collection-card[data-collection="with-button"]:hover
+    .collection-image-primary {
+    transform: scale(1.04);
+  }
+
+  .collection-image-pair.home-collection-card[data-collection="with-button"]:hover
+    .collection-image-hover {
+    transform: scale(1.02);
+  }
+
   .group:hover .product-card-secondary {
     opacity: 1;
     transform: scale(1);
@@ -264,9 +297,9 @@ img {
 }
 
 .garment-image {
-  object-fit: contain;
-  object-position: center;
-  padding: clamp(0.75rem, 2.2vw, 1.5rem);
+  object-fit: cover;
+  object-position: center top;
+  padding: 0;
 }
 
 .product-title {
@@ -302,11 +335,11 @@ img {
   color: var(--copy);
 }
 
-.luxury-nav-link {
+.primary-nav-link {
   position: relative;
 }
 
-.luxury-nav-link::after {
+.primary-nav-link::after {
   content: "";
   position: absolute;
   right: 0;
@@ -319,8 +352,8 @@ img {
   transition: transform 300ms ease;
 }
 
-.luxury-nav-link:hover::after,
-.luxury-nav-link:focus-visible::after {
+.primary-nav-link:hover::after,
+.primary-nav-link:focus-visible::after {
   transform: scaleX(1);
   transform-origin: left;
 }

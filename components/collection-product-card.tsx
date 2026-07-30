@@ -14,9 +14,7 @@ export function CollectionProductCard({
   const content = (
     <>
       <div
-        className={`relative aspect-[3/4] overflow-hidden ${
-          product.href ? "bg-[#f1f0ec]" : "bg-surface-subtle"
-        }`}
+        className="relative aspect-[3/4] overflow-hidden bg-page"
       >
         <CollectionImageSwap
           images={product.images}
@@ -25,11 +23,11 @@ export function CollectionProductCard({
           priority={priority}
           className="object-cover object-center"
         />
-        <span className="absolute left-3 top-3 bg-page/90 px-2.5 py-1 text-[9px] font-semibold uppercase text-copy backdrop-blur-sm">
+        <span className="absolute bottom-2 right-2 max-w-[calc(100%-3.5rem)] bg-page/88 px-2 py-0.5 text-right text-[8px] font-semibold uppercase leading-4 text-copy backdrop-blur-sm">
           {product.description}
         </span>
         {product.href ? (
-          <span className="absolute bottom-3 right-3 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <span className="absolute bottom-2 left-2 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
             <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
           </span>
         ) : null}

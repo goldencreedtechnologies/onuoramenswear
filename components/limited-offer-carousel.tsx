@@ -9,25 +9,25 @@ import { newArrivalsPromotion } from "@/data/phase-one-collections";
 const campaignImages = [
   {
     src: "/brand/products/buttonless/nd1/nd1-studio-registered.webp",
-    alt: "Kharn wearing the cobalt buttonless New Design",
+    alt: "Kharn wearing the cobalt Resort Collection set",
     className:
       "col-span-7 col-start-1 row-span-6 row-start-1 sm:col-span-5 sm:col-start-1"
   },
   {
     src: "/brand/products/button/ndb2/ndb2-studio-registered.webp",
-    alt: "Edson wearing the earth button New Design",
+    alt: "Edson wearing the earth Cowrie Collection set",
     className:
       "col-span-5 col-start-8 row-span-3 row-start-1 sm:col-span-3 sm:col-start-6"
   },
   {
     src: "/brand/products/buttonless/nd3/nd3-studio-registered.webp",
-    alt: "Charlie wearing the burgundy buttonless New Design",
+    alt: "Charlie wearing the burgundy Resort Collection set",
     className:
       "col-span-5 col-start-8 row-span-3 row-start-4 sm:col-span-4 sm:col-start-9 sm:row-start-1"
   },
   {
     src: "/brand/products/button/ndb5/ndb5-studio-registered.webp",
-    alt: "Idris wearing the royal purple button New Design",
+    alt: "Idris wearing the royal purple Cowrie Collection set",
     className:
       "hidden sm:col-span-7 sm:col-start-6 sm:row-span-3 sm:row-start-4 sm:block"
   }
@@ -112,7 +112,7 @@ export function LimitedOfferCarousel() {
                 id="new-arrivals-heading"
                 className="text-xl font-semibold uppercase sm:text-2xl"
               >
-                New Arrivals
+                Current Offer
               </h2>
               <button
                 type="button"
@@ -133,7 +133,7 @@ export function LimitedOfferCarousel() {
             type="button"
             className="absolute inset-0 bg-black/58 backdrop-blur-sm"
             onClick={closeModal}
-            aria-label="Close limited offer"
+            aria-label="Close Limited Offer"
           />
           <section
             role="dialog"
@@ -145,7 +145,7 @@ export function LimitedOfferCarousel() {
               type="button"
               onClick={closeModal}
               className="gold-focus absolute right-4 top-4 grid h-10 w-10 place-items-center border border-black/20 transition hover:border-black hover:bg-black hover:text-white"
-              aria-label="Close offer details"
+              aria-label="Close Offer Details"
             >
               <X className="h-4 w-4" />
             </button>
@@ -154,18 +154,17 @@ export function LimitedOfferCarousel() {
               id="limited-offer-title"
               className="mt-4 max-w-md text-3xl font-semibold leading-tight sm:text-4xl"
             >
-              Buy any 2 outfits and get 50% off the 3rd.
+              Buy Two Outfits And Receive 50% Off A Third Outfit.
             </h2>
             <p className="mt-5 max-w-md text-sm leading-7 text-black/62">
-              Offer repeats on every eligible order with discounts automatically applied before
-              payment.
+              The discount applies to the lowest-priced qualifying outfit. Promotions do not stack, and shipping is excluded.
             </p>
             <Link
               href={newArrivalsPromotion.href}
               onClick={closeModal}
               className="gold-focus mt-8 inline-flex min-h-11 items-center justify-center gap-3 bg-black px-5 text-[10px] font-semibold uppercase text-white transition hover:bg-gold hover:text-black"
             >
-              Shop New Designs
+              Shop Current Offer
               <ArrowRight className="h-4 w-4" />
             </Link>
           </section>

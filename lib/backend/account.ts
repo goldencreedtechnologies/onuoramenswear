@@ -56,6 +56,7 @@ export type CustomerOrder = {
   paymentStatus: string;
   shippingStatus: string;
   deliveryMethodName: string | null;
+  currency: string;
   subtotalUsd: number;
   shippingUsd: number;
   totalUsd: number;
@@ -98,6 +99,7 @@ type OrderRow = {
   payment_status: string;
   shipping_status: string | null;
   delivery_method_name: string | null;
+  currency: string | null;
   subtotal_usd: number;
   shipping_usd: number;
   total_usd: number;
@@ -145,6 +147,7 @@ function mapOrder(row: OrderRow): CustomerOrder {
     paymentStatus: row.payment_status,
     shippingStatus: row.shipping_status ?? "not_started",
     deliveryMethodName: row.delivery_method_name,
+    currency: row.currency ?? "USD",
     subtotalUsd: Number(row.subtotal_usd),
     shippingUsd: Number(row.shipping_usd),
     totalUsd: Number(row.total_usd),
@@ -232,7 +235,7 @@ export async function getAccountOverview(user: AccountUser) {
     client
       .from("orders")
       .select(
-        "id, status, payment_status, shipping_status, delivery_method_name, subtotal_usd, shipping_usd, total_usd, created_at, order_items(id, product_slug, quantity, size, unit_price_usd)"
+        "id, status, payment_status, shipping_status, delivery_method_name, currency, subtotal_usd, shipping_usd, total_usd, created_at, order_items(id, product_slug, quantity, size, unit_price_usd)"
       )
       .eq("customer_profile_id", prepared.profile.id)
       .order("created_at", { ascending: false })

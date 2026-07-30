@@ -50,7 +50,7 @@ const emptyProduct = {
   name: "",
   edition: "",
   meaning: "",
-  price: "$100",
+  price: "$120",
   image: "",
   images: "",
   palette: "#1F1F1F",

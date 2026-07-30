@@ -2,21 +2,21 @@ import { PolicyPage } from "@/components/policy-page";
 
 export const metadata = {
   title: "Accessibility",
-  description: "ONUORA's commitment to an inclusive and accessible digital shopping experience."
+  description: "ỌNUỌRA's commitment to an inclusive and accessible digital shopping experience."
 };
 
 const sections = [
   {
     title: "Our commitment",
     paragraphs: [
-      "ONUORA is committed to making its digital experience usable by as many people as possible, including customers who use assistive technologies or navigate with different visual, motor, auditory, or cognitive needs.",
+      "ỌNUỌRA is committed to making its digital experience usable by as many people as possible, including customers who use assistive technologies or navigate with different visual, motor, auditory, or cognitive needs.",
       "We work toward the Web Content Accessibility Guidelines and review accessibility as the site and services evolve."
     ]
   },
   {
     title: "What the site supports",
     paragraphs: [
-      "The storefront is designed with semantic page structure, keyboard-operable controls, visible focus states, descriptive labels, responsive layouts, text alternatives for meaningful imagery, and strong contrast across the consistent ONUORA palette."
+      "The storefront is designed with semantic page structure, keyboard-operable controls, visible focus states, descriptive labels, responsive layouts, text alternatives for meaningful imagery, and strong contrast across the consistent ỌNUỌRA palette."
     ],
     bullets: [
       "Keyboard navigation for menus, filters, product options, dialogs, cart controls, and checkout.",

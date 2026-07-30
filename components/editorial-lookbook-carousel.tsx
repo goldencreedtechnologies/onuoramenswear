@@ -42,7 +42,7 @@ function ProductScreen({
           alt={`${product.name} ${product.edition}`}
           fill
           sizes={compact ? "140px" : "120px"}
-          className={cn("h-full w-full object-contain object-center", compact ? "p-4" : "p-5")}
+          className="h-full w-full object-cover object-top"
         />
       </div>
       <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/12 to-transparent" />

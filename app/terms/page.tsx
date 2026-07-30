@@ -2,7 +2,7 @@ import { PolicyPage } from "@/components/policy-page";
 
 export const metadata = {
   title: "Terms & Conditions",
-  description: "Terms governing use of the ONUORA website, purchases, offers, and services."
+  description: "Terms governing use of the ỌNUỌRA website, purchases, offers, and services."
 };
 
 const sections = [
@@ -44,8 +44,8 @@ const sections = [
   {
     title: "Intellectual property and liability",
     paragraphs: [
-      "The ONUORA name, marks, garments, photography, writing, software, and website design are protected. Content may not be copied, sold, or commercially reused without written permission.",
-      "To the extent permitted by law, ONUORA is not responsible for indirect or unforeseeable loss, service interruption outside reasonable control, or misuse of the website."
+      "The ỌNUỌRA name, marks, garments, photography, writing, software, and website design are protected. Content may not be copied, sold, or commercially reused without written permission.",
+      "To the extent permitted by law, ỌNUỌRA is not responsible for indirect or unforeseeable loss, service interruption outside reasonable control, or misuse of the website."
     ]
   }
 ];
@@ -55,7 +55,7 @@ export default function TermsPage() {
     <PolicyPage
       eyebrow="Legal"
       title="Terms for shopping the house."
-      introduction="These terms set the expectations that apply when you browse, create an account, or purchase from ONUORA."
+      introduction="These terms set the expectations that apply when you browse, create an account, or purchase from ỌNUỌRA."
       effectiveDate="28 July 2026"
       sections={sections}
     />

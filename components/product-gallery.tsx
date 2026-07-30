@@ -47,8 +47,8 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
               type="button"
               onClick={() => setActiveIndex(index)}
               className={cn(
-                "gold-focus relative aspect-[3/4] w-[72px] shrink-0 overflow-hidden border bg-[#f3f0e9] transition sm:w-[82px]",
-                activeIndex === index ? "border-copy" : "border-transparent hover:border-line-strong"
+                "gold-focus relative aspect-[3/4] w-[72px] shrink-0 overflow-hidden bg-page transition sm:w-[82px]",
+                activeIndex === index ? "opacity-100" : "opacity-60 hover:opacity-100"
               )}
               aria-label={`Show ${productName} view ${index + 1}`}
             >
@@ -66,7 +66,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
 
       <button
         type="button"
-        className="group/zoom gold-focus relative order-1 aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-[#f3f0e9]"
+        className="group/zoom gold-focus relative order-1 aspect-[4/5] w-full cursor-zoom-in overflow-hidden bg-page"
         onMouseMove={handleZoom}
         onClick={() => {
           setLightboxZoomed(false);
@@ -81,7 +81,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
           loading="eager"
           quality={94}
           sizes="(min-width: 1024px) 56vw, 100vw"
-          className="object-contain transition-transform duration-500 ease-out md:group-hover/zoom:scale-[1.02]"
+          className="object-cover transition-transform duration-500 ease-out md:group-hover/zoom:scale-[1.02]"
           style={{ transformOrigin: zoomOrigin }}
         />
         <span className="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-page/92 text-copy shadow-sm backdrop-blur">

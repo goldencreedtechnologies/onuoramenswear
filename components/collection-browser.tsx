@@ -17,8 +17,17 @@ function productPrice(product: PhaseOneCollectionProduct) {
   return product.prices.USD;
 }
 
+function sortProducts(products: PhaseOneCollectionProduct[], sort: string) {
+  return [...products].sort((a, b) => {
+    if (sort === "price-asc") return productPrice(a) - productPrice(b);
+    if (sort === "price-desc") return productPrice(b) - productPrice(a);
+    if (sort === "name") return a.name.localeCompare(b.name);
+    return 0;
+  });
+}
+
 export function CollectionBrowser({ sections }: { sections: CollectionSection[] }) {
-  const railRef = useRef<HTMLDivElement>(null);
+  const railRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const [sort, setSort] = useState("featured");
   const [selectedColor, setSelectedColor] = useState("all");
   const [selectedCollection, setSelectedCollection] = useState("all");
@@ -36,27 +45,39 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
     [sections]
   );
 
-  const visibleProducts = useMemo(() => {
-    const products = sections
-      .filter((section) => selectedCollection === "all" || section.id === selectedCollection)
-      .flatMap((section) => section.products)
-      .filter((product) => selectedColor === "all" || product.color === selectedColor);
+  const visibleSections = useMemo(
+    () =>
+      sections
+        .filter((section) => selectedCollection === "all" || section.id === selectedCollection)
+        .map((section) => ({
+          ...section,
+          products: sortProducts(
+            section.products.filter(
+              (product) => selectedColor === "all" || product.color === selectedColor
+            ),
+            sort
+          )
+        }))
+        .filter((section) => section.products.length),
+    [sections, selectedCollection, selectedColor, sort]
+  );
 
-    return [...products].sort((a, b) => {
-      if (sort === "price-asc") return productPrice(a) - productPrice(b);
-      if (sort === "price-desc") return productPrice(b) - productPrice(a);
-      if (sort === "name") return a.name.localeCompare(b.name);
-      return 0;
-    });
-  }, [sections, selectedCollection, selectedColor, sort]);
+  const visibleProductCount = visibleSections.reduce(
+    (total, section) => total + section.products.length,
+    0
+  );
 
   function changeCollection(id: string) {
     setSelectedCollection(id);
-    requestAnimationFrame(() => railRef.current?.scrollTo({ left: 0, behavior: "smooth" }));
+    requestAnimationFrame(() => {
+      Object.values(railRefs.current).forEach((rail) =>
+        rail?.scrollTo({ left: 0, behavior: "smooth" })
+      );
+    });
   }
 
-  function moveRail(direction: -1 | 1) {
-    const rail = railRef.current;
+  function moveRail(sectionId: string, direction: -1 | 1) {
+    const rail = railRefs.current[sectionId];
     if (!rail) return;
 
     rail.scrollBy({
@@ -76,9 +97,12 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
             <button
               type="button"
               onClick={() => changeCollection("all")}
-              className={`gold-focus shrink-0 py-4 text-[10px] font-semibold uppercase transition sm:py-5 ${
-                selectedCollection === "all" ? "text-copy" : "text-copy-muted hover:text-copy"
+              className={`gold-focus shrink-0 border-b-2 py-4 text-[10px] font-semibold uppercase transition sm:py-5 ${
+                selectedCollection === "all"
+                  ? "border-copy text-copy"
+                  : "border-transparent text-copy-muted hover:text-copy"
               }`}
+              aria-current={selectedCollection === "all" ? "page" : undefined}
             >
               All
             </button>
@@ -87,13 +111,14 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
                 key={section.id}
                 type="button"
                 onClick={() => changeCollection(section.id)}
-                className={`gold-focus shrink-0 py-4 text-[10px] font-semibold uppercase transition sm:py-5 ${
+                className={`gold-focus shrink-0 border-b-2 py-4 text-[10px] font-semibold uppercase transition sm:py-5 ${
                   selectedCollection === section.id
-                    ? "text-copy"
-                    : "text-copy-muted hover:text-copy"
+                    ? "border-copy text-copy"
+                    : "border-transparent text-copy-muted hover:text-copy"
                 }`}
+                aria-current={selectedCollection === section.id ? "page" : undefined}
               >
-                {section.title.replace("New Design — ", "")}
+                {section.title}
               </button>
             ))}
           </nav>
@@ -117,59 +142,80 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
               className="gold-focus h-11 w-full bg-transparent px-3 text-[10px] font-semibold uppercase text-copy outline-none sm:h-10 sm:w-auto"
             >
               <option value="featured">Featured</option>
-              <option value="price-asc">Price: low to high</option>
-              <option value="price-desc">Price: high to low</option>
+              <option value="price-asc">Price: Low To High</option>
+              <option value="price-desc">Price: High To Low</option>
               <option value="name">Name</option>
             </select>
           </div>
         </div>
       </div>
 
-      <section className="overflow-hidden py-9 md:py-12" aria-labelledby="collection-rail-title">
+      <section className="overflow-hidden py-9 md:py-12" aria-labelledby="collection-browser-title">
         <div className="container-luxe">
-          <header className="mb-7 flex items-end justify-between gap-6">
-            <div>
-              <p className="text-[10px] font-semibold uppercase text-gold">
-                {visibleProducts.length} {visibleProducts.length === 1 ? "style" : "styles"}
-              </p>
-              <h2 id="collection-rail-title" className="mt-2 text-2xl font-semibold md:text-3xl">
-                {selectedCollection === "all"
-                  ? "The complete collection"
-                  : sections.find((section) => section.id === selectedCollection)?.title}
-              </h2>
-            </div>
-            <div className="hidden gap-2 sm:flex">
-              <button
-                type="button"
-                onClick={() => moveRail(-1)}
-                className="gold-focus grid h-10 w-10 place-items-center border border-line text-copy transition hover:border-copy hover:bg-copy hover:text-white"
-                aria-label="Scroll products left"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => moveRail(1)}
-                className="gold-focus grid h-10 w-10 place-items-center border border-line text-copy transition hover:border-copy hover:bg-copy hover:text-white"
-                aria-label="Scroll products right"
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
+          <header className="mb-9">
+            <p className="text-[10px] font-semibold uppercase text-gold">
+              {visibleProductCount} {visibleProductCount === 1 ? "Style" : "Styles"}
+            </p>
+            <h2 id="collection-browser-title" className="mt-2 text-2xl font-semibold md:text-3xl">
+              {selectedCollection === "all"
+                ? "The Permanent Collections"
+                : sections.find((section) => section.id === selectedCollection)?.title}
+            </h2>
           </header>
 
-          {visibleProducts.length ? (
-            <div
-              ref={railRef}
-              className="hide-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-4 sm:gap-5"
-            >
-              {visibleProducts.map((product, index) => (
-                <div
-                  key={product.id}
-                  className="min-w-0 shrink-0 basis-[78vw] snap-start sm:basis-[42vw] md:basis-[calc((100%-3.75rem)/4.25)] xl:basis-[calc((100%-5rem)/5.25)]"
-                >
-                  <CollectionProductCard product={product} priority={index < 5} />
-                </div>
+          {visibleSections.length ? (
+            <div className="grid gap-12 md:gap-16">
+              {visibleSections.map((section, sectionIndex) => (
+                <section key={section.id} id={section.id} aria-labelledby={`${section.id}-title`}>
+                  <header className="mb-6 flex items-end justify-between gap-6">
+                    <div className="max-w-2xl">
+                      <p className="text-[10px] font-semibold uppercase text-gold">
+                        {section.eyebrow}
+                      </p>
+                      <h3 id={`${section.id}-title`} className="mt-2 text-2xl font-semibold">
+                        {section.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-6 text-copy-muted">{section.description}</p>
+                    </div>
+                    <div className="hidden shrink-0 gap-2 sm:flex">
+                      <button
+                        type="button"
+                        onClick={() => moveRail(section.id, -1)}
+                        className="gold-focus grid h-10 w-10 place-items-center border border-line text-copy transition hover:border-copy hover:bg-copy hover:text-white"
+                        aria-label={`Scroll ${section.title} products left`}
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveRail(section.id, 1)}
+                        className="gold-focus grid h-10 w-10 place-items-center border border-line text-copy transition hover:border-copy hover:bg-copy hover:text-white"
+                        aria-label={`Scroll ${section.title} products right`}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </header>
+
+                  <div
+                    ref={(node) => {
+                      railRefs.current[section.id] = node;
+                    }}
+                    className="hide-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-4 sm:gap-5"
+                  >
+                    {section.products.map((product, index) => (
+                      <div
+                        key={product.id}
+                        className="min-w-0 shrink-0 basis-[78vw] snap-start sm:basis-[42vw] md:basis-[calc((100%-2.5rem)/3)] lg:basis-[calc((100%-3.75rem)/4)]"
+                      >
+                        <CollectionProductCard
+                          product={product}
+                          priority={sectionIndex === 0 && index < 4}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </section>
               ))}
             </div>
           ) : (
@@ -180,7 +226,7 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
                 onClick={() => setSelectedColor("all")}
                 className="gold-focus mt-4 text-xs font-semibold uppercase text-copy underline underline-offset-4"
               >
-                Clear filter
+                Clear Filter
               </button>
             </div>
           )}
@@ -220,7 +266,7 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
                     selectedColor === "all" ? "font-semibold" : ""
                   }`}
                 >
-                  All colours
+                  All Colours
                   {selectedColor === "all" ? <span className="text-gold">Selected</span> : null}
                 </button>
                 {colors.map(([name, value]) => (
@@ -257,7 +303,7 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
                 onClick={() => setFiltersOpen(false)}
                 className="gold-focus h-12 bg-obsidian text-xs font-semibold uppercase text-ivory hover:bg-gold hover:text-obsidian"
               >
-                View {visibleProducts.length}
+                View {visibleProductCount}
               </button>
             </div>
           </aside>

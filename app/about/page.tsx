@@ -5,7 +5,7 @@ import { craftSteps } from "@/data/catalog";
 
 export const metadata = {
   title: "Our Heritage",
-  description: "The story, mission, craft, and stretch-fit philosophy behind ONUORA."
+  description: "The story, mission, craft, and stretch-fit philosophy behind ỌNUỌRA."
 };
 
 const principles = [
@@ -17,7 +17,7 @@ const principles = [
   {
     icon: Move3D,
     title: "Freedom in form",
-    text: "Premium stretch construction keeps the silhouette composed while the body remains free."
+    text: "Stretch construction keeps the silhouette composed while the body remains free."
   },
   {
     icon: Globe2,
@@ -36,8 +36,8 @@ export default function AboutPage() {
     <main className="bg-page pt-[104px] text-copy">
       <section className="relative min-h-[690px] overflow-hidden bg-obsidian text-white md:min-h-[760px]">
         <Image
-          src="/brand/heritage-draft.png"
-          alt="The ONUORA house wearing New Designs in Lagos"
+          src="/brand/Heritage.jpg"
+          alt="The ỌNUỌRA house wearing contemporary African menswear in Nigeria"
           fill
           priority
           loading="eager"
@@ -51,10 +51,10 @@ export default function AboutPage() {
           <div className="max-w-2xl">
             <p className="text-[10px] font-semibold uppercase text-gold-soft">Our Heritage</p>
             <h1 className="mt-3 text-4xl font-semibold leading-tight sm:text-5xl">
-              The voice of the people, cut for now.
+              The Voice Of The People, Cut For Now.
             </h1>
             <p className="mt-4 max-w-lg text-sm leading-6 text-white/72">
-              ONUORA creates for men across Africa and the diaspora who refuse to choose between
+              ỌNUỌRA creates for men across Africa and the diaspora who refuse to choose between
               cultural presence, modern comfort, and a global point of view.
             </p>
           </div>
@@ -66,19 +66,19 @@ export default function AboutPage() {
           <div>
             <p className="text-[10px] font-semibold uppercase text-gold">Brand Story</p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
-              Meaning before garment.
+              Meaning Before Garment.
             </h2>
           </div>
           <div className="grid gap-5 text-sm leading-7 text-copy-muted sm:grid-cols-2">
             <p>
-              ONUORA is an Igbo expression of communal voice and identity. That idea guides a
+              ỌNUỌRA is an Igbo expression of communal voice and identity. That idea guides a
               house where every name, colour, and gold mark carries intention before it becomes
               clothing.
             </p>
             <p>
               The original silhouette brought the visual authority of African occasion wear into
-              an easier stretch-tailored form. The New Designs extend that language through
-              buttoned and uninterrupted fronts made for contemporary movement.
+              an easier stretch-tailored form. The Cowrie and Resort collections extend that language through structured and
+              collarless silhouettes made for contemporary movement.
             </p>
           </div>
         </div>
@@ -87,9 +87,9 @@ export default function AboutPage() {
       <section className="border-y border-line bg-panel-muted py-12 md:py-16">
         <div className="container-luxe">
           <header className="max-w-2xl">
-            <p className="text-[10px] font-semibold uppercase text-gold">About ONUORA</p>
+            <p className="text-[10px] font-semibold uppercase text-gold">About ỌNUỌRA</p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight">
-              Luxury should carry identity without asking the body to stand still.
+              Identity Should Move With The Body.
             </h2>
           </header>
           <div className="mt-9 grid gap-px bg-line sm:grid-cols-2 lg:grid-cols-4">
@@ -111,22 +111,22 @@ export default function AboutPage() {
         <div className="container-luxe grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-stretch">
           <div className="relative min-h-[500px] overflow-hidden bg-surface-subtle">
             <Image
-              src="/brand/heritage-draft.png"
-              alt="ONUORA founder with Idris and Edson"
+              src="/brand/founder.png"
+              alt="The Founder Of ỌNUỌRA Menswear"
               fill
               quality={94}
               sizes="(min-width: 1024px) 55vw, 100vw"
-              className="object-cover object-[50%_40%]"
+              className="object-cover object-top"
             />
           </div>
           <div className="flex flex-col justify-center bg-obsidian p-7 text-ivory sm:p-10 lg:p-12">
-            <p className="text-[10px] font-semibold uppercase text-gold-soft">From the CEO</p>
+            <p className="text-[10px] font-semibold uppercase text-gold-soft">From The Founder</p>
             <blockquote className="mt-5 text-2xl font-semibold leading-snug sm:text-3xl">
               “We are building more than an outfit. We are giving modern men a way to wear where
               they come from without compromising how they need to move.”
             </blockquote>
             <p className="mt-6 text-sm leading-7 text-white/58">
-              The house is led by a belief that African luxury can be emotionally rooted,
+              The house is led by a belief that African design can be culturally rooted,
               technically modern, and internationally fluent at the same time.
             </p>
           </div>
@@ -137,7 +137,7 @@ export default function AboutPage() {
         <div className="container-luxe grid gap-8 md:grid-cols-[0.7fr_1.3fr] md:items-start">
           <div>
             <p className="text-[10px] font-semibold uppercase text-[#9f751d]">Our Mission</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight">Carry heritage forward.</h2>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight">Carry Heritage Forward.</h2>
           </div>
           <p className="max-w-3xl text-base leading-8 text-black/66">
             To create precise, comfortable menswear that strengthens confidence, celebrates
@@ -152,7 +152,7 @@ export default function AboutPage() {
           <header className="mb-8 max-w-2xl">
             <p className="text-[10px] font-semibold uppercase text-gold-soft">Craftsmanship</p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
-              Craft is the quiet proof.
+              Craft Is The Quiet Proof.
             </h2>
           </header>
           <div className="grid gap-px bg-white/12 md:grid-cols-3">
@@ -181,7 +181,7 @@ export default function AboutPage() {
           <div className="max-w-2xl">
             <p className="text-[10px] font-semibold uppercase text-gold">The next chapter</p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight">
-              Choose the silhouette that speaks for you.
+              Choose The Silhouette That Speaks For You.
             </h2>
           </div>
           <Link

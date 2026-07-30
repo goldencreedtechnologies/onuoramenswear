@@ -26,7 +26,7 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
             Your order is in motion.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-copy-muted">
-            Thank you for choosing ONUORA. Stripe is confirming the payment and the house will
+            Thank you for choosing ỌNUỌRA. Stripe is confirming the payment and the house will
             begin fulfilment as soon as that confirmation arrives.
           </p>
           {session_id ? (

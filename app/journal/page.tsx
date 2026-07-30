@@ -5,12 +5,12 @@ import { journalPosts } from "@/data/catalog";
 
 export const metadata = {
   title: "Journal",
-  description: "Editorial notes on African luxury, styling, craft, and modern masculinity."
+  description: "Editorial notes on African identity, styling, craft, and modern masculinity."
 };
 
 const journalImages = [
-  "/brand/new-product-nb(back).png",
-  "/brand/old-design-1.png",
+  "/brand/new-product-nb.png",
+  "/brand/new-product-btn/new-design-b-black.png",
   "/brand/new-product-b.png"
 ];
 
@@ -20,7 +20,7 @@ export default function JournalPage() {
       <section className="container-luxe py-12 md:py-16">
         <p className="text-[10px] font-semibold uppercase text-gold">Journal</p>
         <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
-          Notes on craft, identity, and the modern African wardrobe.
+          Notes On Craft, Identity, And The Modern African Wardrobe.
         </h1>
       </section>
       <section className="container-luxe grid gap-x-5 gap-y-12 pb-16 md:grid-cols-3 md:pb-24">
@@ -32,7 +32,7 @@ export default function JournalPage() {
                 alt=""
                 fill
                 sizes="(min-width: 768px) 33vw, 100vw"
-                className="object-cover transition duration-700 group-hover:scale-[1.025]"
+                className="object-cover object-top transition duration-700 group-hover:scale-[1.015]"
               />
             </div>
             <p className="mt-4 text-[10px] font-semibold uppercase text-gold">{post.tag}</p>

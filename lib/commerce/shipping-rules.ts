@@ -1,17 +1,22 @@
 export const shippingRules = {
+  international: {
+    rateUsd: 50,
+    zoneCode: "GLOBAL_EXPORT",
+    methodCode: "international-delivery",
+    methodName: "International Delivery"
+  },
   lagos: {
     rateUsd: 0,
     zoneCode: "LAGOS",
-    methodCode: "complimentary-lagos",
-    methodName: "Complimentary Lagos delivery"
+    methodCode: "lagos-delivery",
+    methodName: "Lagos Delivery"
   },
   outsideLagos: {
-    multiItemMinimum: 2,
-    standardRateUsd: 50,
-    multiItemRateUsd: 25,
+    // The storefront's deterministic operating ratio displays this as ₦15,000.
+    rateUsd: 15,
     zoneCode: "OUTSIDE_LAGOS",
     methodCode: "outside-lagos",
-    methodName: "Outside Lagos delivery"
+    methodName: "Outside Lagos"
   }
 } as const;
 
@@ -83,31 +88,32 @@ export function resolveShippingRule({
   shippingCountry,
   shippingCity,
   shippingState,
-  itemCount
+  itemCount: _itemCount
 }: {
   shippingCountry: string;
   shippingCity: string;
   shippingState?: string;
   itemCount: number;
 }) {
+  if (!isNigeria(shippingCountry)) {
+    return {
+      ...shippingRules.international,
+      shippingUsd: shippingRules.international.rateUsd,
+      note: "The international flat rate has been applied."
+    };
+  }
+
   if (isWithinLagos({ shippingCountry, shippingCity, shippingState })) {
     return {
       ...shippingRules.lagos,
       shippingUsd: shippingRules.lagos.rateUsd,
-      note: "Complimentary shipping has been applied for this Lagos delivery."
+      note: "Complimentary Lagos delivery has been applied."
     };
   }
 
-  const qualifiesForMultiItemRate = itemCount >= shippingRules.outsideLagos.multiItemMinimum;
-  const shippingUsd = qualifiesForMultiItemRate
-    ? shippingRules.outsideLagos.multiItemRateUsd
-    : shippingRules.outsideLagos.standardRateUsd;
-
   return {
     ...shippingRules.outsideLagos,
-    shippingUsd,
-    note: qualifiesForMultiItemRate
-      ? "The reduced outside-Lagos rate has been applied for an order of two or more outfits."
-      : "The standard outside-Lagos rate has been applied."
+    shippingUsd: shippingRules.outsideLagos.rateUsd,
+    note: "The single outside-Lagos flat rate has been applied."
   };
 }

@@ -13,46 +13,52 @@ import {
   X
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { CurrencySelector, useCurrency } from "@/components/currency-provider";
 import { products } from "@/data/catalog";
 import { newArrivalsPromotion } from "@/data/phase-one-collections";
+import { announcementCopy, fixedProductPriceLabel, getCollectionByFamily } from "@/data/site-config";
 import { readCart } from "@/lib/cart";
 import { cn } from "@/lib/cn";
 
 type MegaMenu = "collections" | "contact" | null;
 
 const desktopLinks = [
-  { href: "/collection#without-button", label: "New arrivals" },
-  { href: "/about", label: "Heritage" },
-  { href: "/journal", label: "Journal" }
+  { href: "/collection", label: "SHOP" },
+  { href: "/about", label: "ABOUT" },
+  { href: "/journal", label: "JOURNAL" }
 ];
 
 const collectionGroups = [
   {
-    title: "New Design",
+    title: "Permanent Collections",
     links: [
-      { href: "/collection#without-button", label: "Without Button" },
-      { href: "/collection#with-button", label: "With Button" },
-      { href: "/collection", label: "View All New Designs" }
+      { href: "/collection#original", label: "Heritage — Nkwọ" },
+      { href: "/collection#with-button", label: "Cowrie — Ọzọ" },
+      { href: "/collection#without-button", label: "Resort — Uzọ" },
+      { href: "/collection", label: "View All Collections" }
     ]
   },
   {
-    title: "Original Design",
+    title: "House Originals",
     links: [
       { href: "/products/ebube", label: "EBUBE / Black" },
       { href: "/products/ndu", label: "NDỤ / Burgundy" },
       { href: "/products/ijeoma", label: "IJEỌMA / Blue" },
-      { href: "/collection#original", label: "View All Originals" }
+      { href: "/collection#original", label: "Explore Nkwọ" }
     ]
   }
 ];
 
 const contactGroups = [
   {
-    title: "Client Care",
+    title: "Client Services",
     links: [
-      { href: "/contact", label: "Contact Us" },
-      { href: "/services", label: "Services" },
-      { href: "/account", label: "My Account" }
+      { href: "/shipping", label: "Delivery" },
+      { href: "/returns", label: "Returns" },
+      { href: "/services#sizing", label: "Sizing" },
+      { href: "/services#care", label: "Care" },
+      { href: "/contact", label: "Contact" },
+      { href: "/services#faq", label: "Frequently Asked Questions" }
     ]
   },
   {
@@ -71,7 +77,7 @@ function BrandLogo() {
   return (
     <Image
       src="/brand/onuora-logo-horizontal.png"
-      alt="ONUORA Menswear"
+      alt="ỌNUỌRA Menswear"
       width={260}
       height={82}
       className="h-9 w-auto object-contain md:h-10"
@@ -90,7 +96,7 @@ function PromotionCard({ closeMenus }: { closeMenus: () => void }) {
       <div className="relative aspect-[3/4] overflow-hidden bg-[#f1eee7]">
         <Image
           src="/brand/products/button/ndb3/ndb3-studio-registered.webp"
-          alt="ONUORA burgundy buttoned new arrival"
+          alt="ỌNUỌRA Burgundy Cowrie Collection Outfit"
           fill
           sizes="120px"
           className="object-cover transition duration-700 group-hover:scale-[1.025]"
@@ -100,7 +106,7 @@ function PromotionCard({ closeMenus }: { closeMenus: () => void }) {
         <p className="text-[9px] font-bold uppercase text-gold">{newArrivalsPromotion.title}</p>
         <p className="mt-2 text-lg font-semibold leading-6">{newArrivalsPromotion.offer}</p>
         <span className="mt-5 inline-flex items-center gap-2 text-[10px] font-bold uppercase">
-          Shop the offer
+          Shop The Offer
           <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-1" />
         </span>
       </div>
@@ -110,6 +116,7 @@ function PromotionCard({ closeMenus }: { closeMenus: () => void }) {
 
 export function Navigation() {
   const pathname = usePathname();
+  const { currency } = useCurrency();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaMenu, setMegaMenu] = useState<MegaMenu>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -162,7 +169,8 @@ export function Navigation() {
           product.edition,
           product.meaning,
           product.colorName,
-          product.family
+          getCollectionByFamily(product.family).englishName,
+          getCollectionByFamily(product.family).igboName
         ]
           .join(" ")
           .toLowerCase()
@@ -179,7 +187,7 @@ export function Navigation() {
           isHome ? "bg-transparent text-[#171717]" : "bg-obsidian text-ivory"
         )}
       >
-        Worldwide shipping · Express delivery to the UK, USA, and Europe
+        {announcementCopy(currency)}
       </div>
 
       <div className="mx-3 h-[68px] rounded-[14px] border border-white/55 bg-[#f7f3e8]/94 text-[#171717] shadow-[0_12px_36px_rgb(0_0_0/0.10)] backdrop-blur-xl sm:mx-5 lg:mx-7">
@@ -188,7 +196,7 @@ export function Navigation() {
             href="/"
             onClick={closeMenus}
             className="gold-focus -my-4 flex shrink-0 items-center"
-            aria-label="ONUORA home"
+            aria-label="ỌNUỌRA Home"
           >
             <BrandLogo />
           </Link>
@@ -200,17 +208,17 @@ export function Navigation() {
             <Link
               href={desktopLinks[0].href}
               onClick={closeMenus}
-              className="luxury-nav-link gold-focus"
+              className="primary-nav-link gold-focus"
             >
               {desktopLinks[0].label}
             </Link>
             <button
               type="button"
               onClick={() => toggleMegaMenu("collections")}
-              className="luxury-nav-link gold-focus inline-flex h-full items-center gap-1.5"
+              className="primary-nav-link gold-focus inline-flex h-full items-center gap-1.5"
               aria-expanded={megaMenu === "collections"}
             >
-              Collections
+              COLLECTIONS
               <ChevronDown
                 className={cn(
                   "h-3.5 w-3.5 transition",
@@ -223,7 +231,7 @@ export function Navigation() {
                 key={link.href}
                 href={link.href}
                 onClick={closeMenus}
-                className="luxury-nav-link gold-focus"
+                className="primary-nav-link gold-focus"
               >
                 {link.label}
               </Link>
@@ -231,10 +239,10 @@ export function Navigation() {
             <button
               type="button"
               onClick={() => toggleMegaMenu("contact")}
-              className="luxury-nav-link gold-focus inline-flex h-full items-center gap-1.5"
+              className="primary-nav-link gold-focus inline-flex h-full items-center gap-1.5"
               aria-expanded={megaMenu === "contact"}
             >
-              Contact Us
+              CLIENT SERVICES
               <ChevronDown
                 className={cn(
                   "h-3.5 w-3.5 transition",
@@ -245,6 +253,7 @@ export function Navigation() {
           </nav>
 
           <div className="flex items-center gap-1.5">
+            <CurrencySelector className="hidden sm:block" />
             <button
               type="button"
               onClick={() => {
@@ -339,9 +348,9 @@ export function Navigation() {
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search products, editions, or colours"
+                placeholder="Search Products, Collections Or Colours"
                 className="min-h-14 flex-1 bg-transparent px-4 text-base outline-none placeholder:text-copy-muted/70"
-                aria-label="Search ONUORA"
+                aria-label="Search ỌNUỌRA"
               />
               <button
                 type="button"
@@ -360,7 +369,7 @@ export function Navigation() {
                   onClick={closeMenus}
                   className="group flex items-center gap-3 border-b border-copy/10 pb-3"
                 >
-                  <span className="relative h-16 w-12 shrink-0 bg-[#f3f0e9]">
+                  <span className="relative h-16 w-12 shrink-0 overflow-hidden bg-page">
                     <Image
                       src={product.image}
                       alt=""
@@ -372,7 +381,7 @@ export function Navigation() {
                   <span>
                     <span className="block text-sm font-semibold">{product.name}</span>
                     <span className="mt-1 block text-[10px] uppercase text-copy-muted">
-                      {product.colorName} · {product.price}
+                      {product.colorName} · {fixedProductPriceLabel(currency)}
                     </span>
                   </span>
                 </Link>
@@ -389,16 +398,17 @@ export function Navigation() {
         <div className="fixed inset-x-0 bottom-0 top-[100px] overflow-y-auto bg-page text-copy lg:hidden">
           <nav className="container-luxe flex min-h-full flex-col py-7" aria-label="Mobile navigation">
             <div className="flex flex-col border-t border-copy/12">
+              <div className="mb-5 flex items-center justify-between border-b border-copy/12 pb-5">
+                <span className="text-xs font-semibold uppercase">Currency</span>
+                <CurrencySelector />
+              </div>
               {[
-                { href: "/collection#without-button", label: "New arrivals" },
-                { href: "/collection", label: "Collections" },
-                { href: "/about", label: "Heritage" },
-                { href: "/journal", label: "Journal" },
-                { href: "/contact", label: "Contact Us" },
-                { href: "/services", label: "Services" },
-                { href: "/shipping", label: "Delivery" },
-                { href: "/returns", label: "Returns & Exchanges" },
-                { href: "/account", label: "Account" }
+                { href: "/collection", label: "SHOP" },
+                { href: "/collection", label: "COLLECTIONS" },
+                { href: "/about", label: "ABOUT" },
+                { href: "/journal", label: "JOURNAL" },
+                { href: "/services", label: "CLIENT SERVICES" },
+                { href: "/account", label: "ACCOUNT" }
               ].map((link) => (
                 <Link
                   key={`${link.href}-${link.label}`}
@@ -416,7 +426,7 @@ export function Navigation() {
               onClick={closeMenus}
               className="mt-6 bg-panel-muted p-5"
             >
-              <p className="text-[9px] font-bold uppercase text-gold">New arrivals</p>
+              <p className="text-[9px] font-bold uppercase text-gold">Current Offer</p>
               <p className="mt-2 text-lg font-semibold">{newArrivalsPromotion.offer}</p>
             </Link>
           </nav>

@@ -4,24 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  cartSubtotal,
-  readCart,
-  updateCartItemQuantity,
-  type CartItem
-} from "@/lib/cart";
-
-function money(amount: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD"
-  }).format(amount);
-}
+import { useCurrency } from "@/components/currency-provider";
+import { PRODUCT_PRICES, PRODUCT_TYPE_LABEL, formatCurrency } from "@/data/site-config";
+import { readCart, updateCartItemQuantity, type CartItem } from "@/lib/cart";
 
 export function MiniCartDrawer() {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<CartItem[]>([]);
-  const subtotal = useMemo(() => cartSubtotal(items), [items]);
+  const { currency } = useCurrency();
+  const itemCount = useMemo(() => items.reduce((total, item) => total + item.quantity, 0), [items]);
+  const subtotal = PRODUCT_PRICES[currency] * itemCount;
+  const money = (amount: number) => formatCurrency(currency, amount);
 
   useEffect(() => {
     const syncCart = () => setItems(readCart().items);
@@ -60,7 +53,7 @@ export function MiniCartDrawer() {
   }, [open]);
 
   function updateQuantity(item: CartItem, quantity: number) {
-    setItems(updateCartItemQuantity(item.productSlug, item.size, quantity).items);
+    setItems(updateCartItemQuantity(item.productSlug, item.size, item.colorName, quantity).items);
   }
 
   return (
@@ -89,7 +82,7 @@ export function MiniCartDrawer() {
         <div className="flex h-[72px] items-center justify-between border-b border-line px-5">
           <div className="flex items-center gap-3">
             <ShoppingBag className="h-4 w-4 text-gold" />
-            <h2 className="text-sm font-semibold uppercase">Your bag</h2>
+            <h2 className="text-sm font-semibold uppercase">Your Bag</h2>
             <span className="text-xs text-copy-muted">
               {items.reduce((total, item) => total + item.quantity, 0)}
             </span>
@@ -109,13 +102,13 @@ export function MiniCartDrawer() {
             <div className="flex-1 overflow-y-auto px-5">
               {items.map((item) => (
                 <article
-                  key={`${item.productSlug}-${item.size}`}
+                  key={`${item.productSlug}-${item.size}-${item.colorName}`}
                   className="grid grid-cols-[88px_1fr] gap-4 border-b border-line py-5"
                 >
                   <Link
                     href={`/products/${item.productSlug}`}
                     onClick={() => setOpen(false)}
-                    className="gold-focus relative aspect-[3/4] overflow-hidden bg-[#f3f0e9]"
+                    className="gold-focus relative aspect-[3/4] overflow-hidden bg-page"
                   >
                     <Image
                       src={item.image}
@@ -130,11 +123,11 @@ export function MiniCartDrawer() {
                       <div className="min-w-0">
                         <p className="truncate text-sm font-semibold">{item.name}</p>
                         <p className="mt-1 text-[10px] uppercase text-copy-muted">
-                          {item.edition} · Size {item.size}
+                          {PRODUCT_TYPE_LABEL} · {item.edition} · {item.colorName} · Size {item.size}
                         </p>
                       </div>
                       <p className="shrink-0 text-sm font-medium">
-                        {money(item.unitPriceUsd * item.quantity)}
+                        {money(PRODUCT_PRICES[currency] * item.quantity)}
                       </p>
                     </div>
                     <div className="flex items-center justify-between">
@@ -194,7 +187,7 @@ export function MiniCartDrawer() {
                   onClick={() => setOpen(false)}
                   className="gold-focus min-h-11 border border-copy px-5 text-xs font-semibold uppercase transition hover:bg-copy hover:text-white"
                 >
-                  Continue shopping
+                  Continue Shopping
                 </button>
               </div>
             </div>
@@ -203,16 +196,16 @@ export function MiniCartDrawer() {
           <div className="grid flex-1 place-items-center p-8 text-center">
             <div>
               <ShoppingBag className="mx-auto h-6 w-6 text-gold" />
-              <p className="mt-5 text-lg font-semibold">Your bag is empty.</p>
+              <p className="mt-5 text-lg font-semibold">Your Bag is empty.</p>
               <p className="mt-2 text-sm text-copy-muted">
-                Discover the new buttoned, buttonless, and original edits.
+                Discover the Heritage, Cowrie and Resort Collections.
               </p>
               <Link
                 href="/collection"
                 onClick={() => setOpen(false)}
                 className="gold-focus mt-6 inline-flex min-h-11 items-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian"
               >
-                Shop collections
+                Shop Collections
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

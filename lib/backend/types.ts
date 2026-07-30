@@ -10,6 +10,8 @@ export type OrderItem = {
   productSlug: string;
   quantity: number;
   size: string;
+  colorName?: string;
+  colorValue?: string;
   unitPriceUsd: number;
 };
 

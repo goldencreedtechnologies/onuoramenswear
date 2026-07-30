@@ -9,6 +9,7 @@ import {
   getSupabaseUrl,
   hasSupabaseConfig
 } from "@/lib/backend/env";
+import { DELIVERY_COPY, PRODUCT_INCLUSION_LABEL, PRODUCT_PRICES, PRODUCT_TYPE_LABEL } from "@/data/site-config";
 import type { StoreProduct } from "@/lib/backend/types";
 
 const legacyProductColumns =
@@ -49,13 +50,23 @@ function isProductFamily(value?: string | null): value is ProductFamily {
   return value === "original" || value === "button" || value === "buttonless";
 }
 
+
+function normalizeDetails(value: string) {
+  if (value.includes(PRODUCT_TYPE_LABEL) || value.includes(PRODUCT_INCLUSION_LABEL)) return value;
+  return `${PRODUCT_TYPE_LABEL}. ${PRODUCT_INCLUSION_LABEL}. ${value}`;
+}
+
+function normalizeFabricCare(value: string) {
+  return value.replace(/\bpremium\s+/gi, "").replace(/\bluxury\s+/gi, "");
+}
+
 function mapRow(row: ProductRow): StoreProduct {
   const local = localProducts.find((product) => product.slug === row.slug);
 
   if (local && !isProductFamily(row.family)) {
     return {
       ...local,
-      price: row.price || local.price,
+      price: `$${PRODUCT_PRICES.USD}`,
       id: row.id,
       sort_order: row.sort_order,
       updated_at: row.updated_at
@@ -70,7 +81,7 @@ function mapRow(row: ProductRow): StoreProduct {
     name: row.name,
     edition: row.edition,
     meaning: row.meaning,
-    price: row.price,
+    price: `$${PRODUCT_PRICES.USD}`,
     image: row.image,
     images: Array.isArray(row.images) && row.images.length ? row.images : [row.image],
     palette: row.palette,
@@ -86,10 +97,10 @@ function mapRow(row: ProductRow): StoreProduct {
     colorName: row.color_name || fallback.colorName,
     colorValue: row.color_value || row.palette || fallback.colorValue,
     modelName: row.model_name || fallback.modelName,
-    details: row.details || fallback.details,
+    details: normalizeDetails(row.details || fallback.details),
     fit: row.fit || fallback.fit,
-    fabricCare: row.fabric_care || fallback.fabricCare,
-    delivery: row.delivery || fallback.delivery,
+    fabricCare: normalizeFabricCare(row.fabric_care || fallback.fabricCare),
+    delivery: DELIVERY_COPY,
     id: row.id,
     sort_order: row.sort_order,
     updated_at: row.updated_at
@@ -183,5 +194,14 @@ export function mergeProductWithLocal(
   product: Partial<Product> & Pick<Product, "slug">
 ): Product | null {
   const local = localProducts.find((item) => item.slug === product.slug);
-  return local ? { ...local, ...product } : null;
+  return local
+    ? {
+        ...local,
+        ...product,
+        price: `$${PRODUCT_PRICES.USD}`,
+        details: normalizeDetails(product.details ?? local.details),
+        fabricCare: normalizeFabricCare(product.fabricCare ?? local.fabricCare),
+        delivery: DELIVERY_COPY
+      }
+    : null;
 }

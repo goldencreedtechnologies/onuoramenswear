@@ -3,6 +3,7 @@
 import { Loader2, LogOut, MapPin, PackageCheck, Plus, Save, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { CURRENCY_LOCALES, isCurrencyCode, operationalUsdAmountInCurrency } from "@/data/site-config";
 
 type AuthStatus =
   | { type: "idle"; message?: string }
@@ -39,6 +40,7 @@ type Order = {
   paymentStatus: string;
   shippingStatus: string;
   deliveryMethodName: string | null;
+  currency: string;
   subtotalUsd: number;
   shippingUsd: number;
   totalUsd: number;
@@ -58,8 +60,13 @@ type AccountOverview = {
   orders: Order[];
 };
 
-function money(amount: number) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
+function money(amount: number, currencyValue = "USD") {
+  const currency = isCurrencyCode(currencyValue) ? currencyValue : "USD";
+  return new Intl.NumberFormat(CURRENCY_LOCALES[currency], {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0
+  }).format(operationalUsdAmountInCurrency(amount, currency));
 }
 
 function titleCase(value: string) {
@@ -404,7 +411,7 @@ export function AccountClient() {
 
             <section className="rounded-[26px] border border-gold/18 p-5">
               <div className="flex items-center justify-between gap-4">
-                <p className="text-xs font-bold uppercase tracking-[0] text-gold-soft">Order history</p>
+                <p className="text-xs font-bold uppercase tracking-[0] text-gold-soft">Order History</p>
                 <PackageCheck className="h-4 w-4 text-gold" />
               </div>
               {defaultAddress ? <p className="mt-3 text-sm text-ivory/55">Default delivery: {defaultAddress.city}, {defaultAddress.countryName}</p> : null}
@@ -415,7 +422,7 @@ export function AccountClient() {
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <p className="text-xs font-bold uppercase tracking-[0] text-gold">Order {shortId(order.id)}</p>
-                          <p className="mt-2 font-display text-2xl leading-none">{money(order.totalUsd)}</p>
+                          <p className="mt-2 font-display text-2xl leading-none">{money(order.totalUsd, order.currency)}</p>
                           <p className="mt-2 text-sm text-ivory/55">{new Date(order.createdAt).toLocaleDateString()}</p>
                         </div>
                         <div className="text-left text-xs font-bold uppercase tracking-[0] text-ivory/55 sm:text-right">

@@ -84,7 +84,7 @@ export function PolicyPage({
           ))}
           <div className="mt-5 border-t border-line pt-7">
             <p className="text-sm leading-7 text-copy-muted">
-              Questions about this policy can be directed to ONUORA Client Care.
+              Questions about this policy can be directed to ỌNUỌRA Client Services.
             </p>
             <Link
               href="/contact"
