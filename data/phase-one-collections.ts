@@ -83,22 +83,22 @@ const resort = COLLECTIONS[2];
 export const phaseOneCollections: PhaseOneCollection[] = [
   {
     id: "original",
-    eyebrow: heritage.englishName,
-    title: heritage.igboName,
+    eyebrow: heritage.igboName,
+    title: heritage.englishName,
     description: heritage.description,
     products: collectionProducts("original", regionalPriceSets.original, heritage.englishName)
   },
   {
     id: "with-button",
-    eyebrow: cowrie.englishName,
-    title: cowrie.igboName,
+    eyebrow: cowrie.igboName,
+    title: cowrie.englishName,
     description: cowrie.description,
     products: collectionProducts("button", regionalPriceSets.withButton, cowrie.englishName)
   },
   {
     id: "without-button",
-    eyebrow: resort.englishName,
-    title: resort.igboName,
+    eyebrow: resort.igboName,
+    title: resort.englishName,
     description: resort.description,
     products: collectionProducts("buttonless", regionalPriceSets.withoutButton, resort.englishName)
   }
@@ -107,24 +107,24 @@ export const phaseOneCollections: PhaseOneCollection[] = [
 export const homepageCollectionCards = [
   {
     id: "without-button",
-    eyebrow: resort.englishName,
-    title: resort.igboName,
+    eyebrow: resort.igboName,
+    title: resort.englishName,
     description: resort.description,
     href: "/collection#without-button",
     images: phaseOneImagePairs.withoutButton
   },
   {
     id: "with-button",
-    eyebrow: cowrie.englishName,
-    title: cowrie.igboName,
+    eyebrow: cowrie.igboName,
+    title: cowrie.englishName,
     description: cowrie.description,
     href: "/collection#with-button",
     images: phaseOneImagePairs.withButton
   },
   {
     id: "original",
-    eyebrow: heritage.englishName,
-    title: heritage.igboName,
+    eyebrow: heritage.igboName,
+    title: heritage.englishName,
     description: heritage.description,
     href: "/collection#original",
     images: phaseOneImagePairs.original
