@@ -15,186 +15,191 @@ type CollectionSection = {
   products: PhaseOneCollectionProduct[];
 };
 
-type ProductView = "front" | "mid" | "angle" | "back";
-
-type EditorialView = {
+type EditorialAsset = {
   productId: string;
-  frontView: ProductView;
-  hoverView: ProductView;
-  frontClassName: string;
-  hoverClassName: string;
+  src: string;
+  alt: string;
+  className?: string;
 };
 
-const editorialViews: Record<string, EditorialView[]> = {
-  original: [
-    {
+type CollectionEditorialLayout = {
+  heroSide: "left" | "right";
+  hero: {
+    productId: string;
+    front: EditorialAsset;
+    hover: EditorialAsset;
+  };
+  grid: EditorialAsset[];
+};
+
+const collectionLayouts: Record<string, CollectionEditorialLayout> = {
+  original: {
+    heroSide: "left",
+    hero: {
       productId: "aja",
-      frontView: "front",
-      hoverView: "back",
-      frontClassName: "object-cover object-top",
-      hoverClassName: "object-cover object-top"
+      front: {
+        productId: "aja",
+        src: "/brand/products/original/aja/aja-front.webp",
+        alt: "AJA Heritage Collection full front view",
+        className: "object-cover object-top"
+      },
+      hover: {
+        productId: "aja",
+        src: "/brand/products/original/aja/aja-original.png",
+        alt: "AJA Heritage Collection original view",
+        className: "object-cover object-top"
+      }
     },
-    {
-      productId: "ohuru",
-      frontView: "mid",
-      hoverView: "angle",
-      frontClassName: "object-cover object-[50%_12%] scale-[1.38]",
-      hoverClassName: "object-cover object-[50%_14%] scale-[1.34]"
-    },
-    {
-      productId: "ndu",
-      frontView: "angle",
-      hoverView: "mid",
-      frontClassName: "object-cover object-top",
-      hoverClassName: "object-cover object-top"
-    },
-    {
-      productId: "ijeoma",
-      frontView: "mid",
-      hoverView: "angle",
-      frontClassName: "object-cover object-[50%_78%] scale-[1.2]",
-      hoverClassName: "object-cover object-[50%_76%] scale-[1.16]"
-    },
-    {
-      productId: "ebube",
-      frontView: "mid",
-      hoverView: "angle",
-      frontClassName: "object-cover object-[50%_24%]",
-      hoverClassName: "object-cover object-[50%_20%]"
-    }
-  ],
-  "with-button": [
-    {
+    grid: [
+      {
+        productId: "ebube",
+        src: "/brand/products/original/ebube/ebube-back.webp",
+        alt: "EBUBE Heritage Collection back view"
+      },
+      {
+        productId: "aja",
+        src: "/brand/products/original/aja/aja-mid.webp",
+        alt: "AJA Heritage Collection mid view"
+      },
+      {
+        productId: "ndu",
+        src: "/brand/products/original/ndu/ndu-studio-idris-source.png",
+        alt: "NDỤ Heritage Collection studio portrait"
+      },
+      {
+        productId: "ohuru",
+        src: "/brand/products/original/ohuru/ohuru-mid.webp",
+        alt: "ỌHỤRỤ Heritage Collection mid view"
+      }
+    ]
+  },
+  "with-button": {
+    heroSide: "right",
+    hero: {
       productId: "ndb2",
-      frontView: "front",
-      hoverView: "back",
-      frontClassName: "object-cover object-top",
-      hoverClassName: "object-cover object-top"
+      front: {
+        productId: "ndb2",
+        src: "/brand/products/button/ndb2/ndb2-studio-registered-source.png",
+        alt: "NDB2 Cowrie Collection studio portrait",
+        className: "object-cover object-top"
+      },
+      hover: {
+        productId: "ndb2",
+        src: "/brand/products/button/ndb2/ndb2-mid.webp",
+        alt: "NDB2 Cowrie Collection mid view",
+        className: "object-cover object-top"
+      }
     },
-    {
-      productId: "ndb1",
-      frontView: "mid",
-      hoverView: "front",
-      frontClassName: "object-cover object-[50%_10%] scale-[1.42]",
-      hoverClassName: "object-cover object-[50%_16%] scale-[1.55]"
-    },
-    {
-      productId: "ndb3",
-      frontView: "angle",
-      hoverView: "mid",
-      frontClassName: "object-cover object-top",
-      hoverClassName: "object-cover object-top"
-    },
-    {
-      productId: "ndb4",
-      frontView: "mid",
-      hoverView: "angle",
-      frontClassName: "object-cover object-[50%_80%] scale-[1.18]",
-      hoverClassName: "object-cover object-[50%_78%] scale-[1.15]"
-    },
-    {
-      productId: "ndb5",
-      frontView: "mid",
-      hoverView: "angle",
-      frontClassName: "object-cover object-[50%_22%]",
-      hoverClassName: "object-cover object-[50%_18%]"
-    }
-  ],
-  "without-button": [
-    {
-      productId: "nd3",
-      frontView: "front",
-      hoverView: "back",
-      frontClassName: "object-cover object-top",
-      hoverClassName: "object-cover object-top"
-    },
-    {
-      productId: "nd1",
-      frontView: "mid",
-      hoverView: "angle",
-      frontClassName: "object-cover object-[50%_10%] scale-[1.4]",
-      hoverClassName: "object-cover object-[50%_14%] scale-[1.34]"
-    },
-    {
-      productId: "nd2",
-      frontView: "angle",
-      hoverView: "mid",
-      frontClassName: "object-cover object-top",
-      hoverClassName: "object-cover object-top"
-    },
-    {
-      productId: "nd4",
-      frontView: "mid",
-      hoverView: "angle",
-      frontClassName: "object-cover object-[50%_80%] scale-[1.18]",
-      hoverClassName: "object-cover object-[50%_78%] scale-[1.15]"
-    },
-    {
+    grid: [
+      {
+        productId: "ndb1",
+        src: "/brand/products/button/ndb1/ndb1-back.webp",
+        alt: "NDB1 Cowrie Collection back view"
+      },
+      {
+        productId: "ndb3",
+        src: "/brand/products/button/ndb3/ndb3-mid.webp",
+        alt: "NDB3 Cowrie Collection mid view"
+      },
+      {
+        productId: "ndb4",
+        src: "/brand/products/button/ndb4/ndb4-angle.webp",
+        alt: "NDB4 Cowrie Collection angle view"
+      },
+      {
+        productId: "ndb5",
+        src: "/brand/products/button/ndb5/ndb5-studio-registered-source.png",
+        alt: "NDB5 Cowrie Collection studio portrait"
+      }
+    ]
+  },
+  "without-button": {
+    heroSide: "left",
+    hero: {
       productId: "nd5",
-      frontView: "mid",
-      hoverView: "angle",
-      frontClassName: "object-cover object-[50%_22%]",
-      hoverClassName: "object-cover object-[50%_18%]"
-    }
-  ]
+      front: {
+        productId: "nd5",
+        src: "/brand/products/buttonless/nd5/nd5-angle.webp",
+        alt: "ND5 Resort Collection angle view",
+        className: "object-cover object-top"
+      },
+      hover: {
+        productId: "nd5",
+        src: "/brand/products/buttonless/nd5/nd5-mid.webp",
+        alt: "ND5 Resort Collection mid view",
+        className: "object-cover object-top"
+      }
+    },
+    grid: [
+      {
+        productId: "nd4",
+        src: "/brand/products/buttonless/nd4/nd4-mid.webp",
+        alt: "ND4 Resort Collection mid view"
+      },
+      {
+        productId: "nd3",
+        src: "/brand/products/buttonless/nd3/nd3-angle.webp",
+        alt: "ND3 Resort Collection angle view"
+      },
+      {
+        productId: "nd2",
+        src: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png",
+        alt: "ND2 Resort Collection studio portrait"
+      },
+      {
+        productId: "nd1",
+        src: "/brand/products/buttonless/nd1/nd1-back.webp",
+        alt: "ND1 Resort Collection back view"
+      }
+    ]
+  }
 };
 
-function productFolder(sectionId: string) {
-  if (sectionId === "original") return "original";
-  if (sectionId === "with-button") return "button";
-  return "buttonless";
+function collectionProduct(section: CollectionSection, productId: string) {
+  return section.products.find((product) => product.id === productId) ?? section.products[0];
 }
 
-function productAsset(sectionId: string, productId: string, view: ProductView) {
-  const folder = productFolder(sectionId);
-  return `/brand/products/${folder}/${productId}/${productId}-${view}.webp`;
-}
-
-function EditorialProductView({
+function HeroProduct({
   section,
-  view,
+  layout,
   priority
 }: {
   section: CollectionSection;
-  view: EditorialView;
+  layout: CollectionEditorialLayout;
   priority: boolean;
 }) {
-  const product =
-    section.products.find((candidate) => candidate.id === view.productId) ?? section.products[0];
-
+  const product = collectionProduct(section, layout.hero.productId);
   if (!product) return null;
 
   const content = (
     <>
       <div className="relative aspect-[4/5] overflow-hidden bg-[#f1f0ec]">
         <Image
-          src={productAsset(section.id, view.productId, view.frontView)}
-          alt={`${section.title} editorial view`}
+          src={layout.hero.front.src}
+          alt={layout.hero.front.alt}
           fill
           priority={priority}
-          quality={91}
-          sizes="(min-width: 1280px) 20vw, (min-width: 768px) 25vw, 78vw"
-          className={`transition duration-700 ease-out group-hover:opacity-0 ${view.frontClassName}`}
+          quality={92}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          className={`transition duration-700 ease-out group-hover:opacity-0 ${layout.hero.front.className ?? "object-cover object-top"}`}
         />
         <Image
-          src={productAsset(section.id, view.productId, view.hoverView)}
-          alt=""
-          aria-hidden="true"
+          src={layout.hero.hover.src}
+          alt={layout.hero.hover.alt}
           fill
-          quality={91}
-          sizes="(min-width: 1280px) 20vw, (min-width: 768px) 25vw, 78vw"
-          className={`opacity-0 transition duration-700 ease-out group-hover:opacity-100 ${view.hoverClassName}`}
+          quality={92}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          className={`opacity-0 transition duration-700 ease-out group-hover:opacity-100 ${layout.hero.hover.className ?? "object-cover object-top"}`}
         />
-        <span className="absolute bottom-3 right-3 grid h-9 w-9 translate-y-2 place-items-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+        <span className="absolute bottom-4 right-4 grid h-10 w-10 translate-y-2 place-items-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
         </span>
       </div>
-      <div className="pt-3">
-        <ProductPrice className="text-sm font-semibold text-copy" />
-        <p className="mt-1 text-[10px] font-medium uppercase tracking-[0.04em] text-copy-muted">
+      <div className="pt-4">
+        <ProductPrice className="text-base font-semibold text-copy" />
+        <p className="mt-1.5 text-[10px] font-medium uppercase tracking-[0.04em] text-copy-muted">
           {PRODUCT_INCLUSION_LABEL}
         </p>
-        <p className="mt-1 text-[9px] text-copy-muted/75">Available In Different Colours</p>
       </div>
     </>
   );
@@ -214,11 +219,71 @@ function EditorialProductView({
   );
 }
 
+function SupportingGrid({
+  section,
+  assets,
+  priority
+}: {
+  section: CollectionSection;
+  assets: EditorialAsset[];
+  priority: boolean;
+}) {
+  return (
+    <div>
+      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        {assets.map((asset, index) => {
+          const product = collectionProduct(section, asset.productId);
+          const image = (
+            <div className="relative aspect-[4/5] overflow-hidden bg-[#f1f0ec]">
+              <Image
+                src={asset.src}
+                alt={asset.alt}
+                fill
+                priority={priority && index < 2}
+                quality={90}
+                sizes="(min-width: 1024px) 25vw, 50vw"
+                className={`transition duration-700 ease-out group-hover:scale-[1.015] ${asset.className ?? "object-cover object-top"}`}
+              />
+            </div>
+          );
+
+          if (!product?.href) {
+            return (
+              <div key={asset.src} className="group min-w-0">
+                {image}
+              </div>
+            );
+          }
+
+          return (
+            <Link
+              key={asset.src}
+              href={product.href}
+              className="gold-focus group block min-w-0"
+              aria-label={`Explore ${section.title} detail`}
+            >
+              {image}
+            </Link>
+          );
+        })}
+      </div>
+      <p className="mt-4 flex items-center gap-2 text-[9px] uppercase tracking-[0.05em] text-copy-muted/75">
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+        Available In Different Colours
+      </p>
+    </div>
+  );
+}
+
 export function CollectionBrowser({ sections }: { sections: CollectionSection[] }) {
   return (
     <div className="overflow-hidden">
       {sections.map((section, sectionIndex) => {
-        const views = editorialViews[section.id] ?? [];
+        const layout = collectionLayouts[section.id];
+        if (!layout) return null;
+
+        const heroOrder = layout.heroSide === "right" ? "lg:order-2" : "lg:order-1";
+        const gridOrder = layout.heroSide === "right" ? "lg:order-1" : "lg:order-2";
 
         return (
           <section
@@ -236,19 +301,17 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
                 <p className="mt-3 text-sm leading-6 text-copy-muted">{section.description}</p>
               </header>
 
-              <div className="hide-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 sm:gap-5 lg:grid lg:grid-cols-5 lg:overflow-visible lg:pb-0">
-                {views.map((view, viewIndex) => (
-                  <div
-                    key={`${section.id}-${view.productId}-${view.frontView}`}
-                    className="w-[78vw] shrink-0 snap-start sm:w-[42vw] md:w-[31vw] lg:w-auto"
-                  >
-                    <EditorialProductView
-                      section={section}
-                      view={view}
-                      priority={sectionIndex === 0 && viewIndex < 3}
-                    />
-                  </div>
-                ))}
+              <div className="grid gap-7 lg:grid-cols-2 lg:items-start lg:gap-6 xl:gap-8">
+                <div className={heroOrder}>
+                  <HeroProduct section={section} layout={layout} priority={sectionIndex === 0} />
+                </div>
+                <div className={gridOrder}>
+                  <SupportingGrid
+                    section={section}
+                    assets={layout.grid}
+                    priority={sectionIndex === 0}
+                  />
+                </div>
               </div>
             </div>
           </section>
