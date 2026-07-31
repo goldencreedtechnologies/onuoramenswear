@@ -7,33 +7,51 @@ import { useEffect, useRef, useState } from "react";
 import { newArrivalsPromotion } from "@/data/phase-one-collections";
 
 const OFFER_AUTO_OPENED_KEY = "onuora-current-offer-auto-opened";
-const AUTO_OPEN_DELAY_MS = 7000;
+const AUTO_OPEN_DELAY_MS = 8000;
 const HOVER_OPEN_DELAY_MS = 650;
 
 const campaignImages = [
   {
-    src: "/brand/products/buttonless/nd1/nd1-studio-registered.webp",
+    src: "/brand/products/buttonless/nd1/nd1-studio-registered-source.png",
     alt: "Kharn wearing the cobalt Resort Collection set",
     className:
-      "col-span-7 col-start-1 row-span-6 row-start-1 sm:col-span-5 sm:col-start-1"
+      "col-span-4 col-start-1 row-span-5 row-start-1 sm:col-span-5 sm:col-start-1 sm:row-span-6 sm:row-start-1"
   },
   {
-    src: "/brand/products/button/ndb2/ndb2-studio-registered.webp",
-    alt: "Edson wearing the earth Cowrie Collection set",
+    src: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png",
+    alt: "ỌNUỌRA Resort Collection studio portrait",
     className:
-      "col-span-5 col-start-8 row-span-3 row-start-1 sm:col-span-3 sm:col-start-6"
+      "col-span-2 col-start-5 row-span-3 row-start-1 sm:col-span-3 sm:col-start-6 sm:row-span-3 sm:row-start-1"
   },
   {
-    src: "/brand/products/buttonless/nd3/nd3-studio-registered.webp",
-    alt: "Charlie wearing the burgundy Resort Collection set",
+    src: "/brand/products/buttonless/nd3/nd3-angle.webp",
+    alt: "Burgundy Resort Collection outfit shown at an angle",
     className:
-      "col-span-5 col-start-8 row-span-3 row-start-4 sm:col-span-4 sm:col-start-9 sm:row-start-1"
+      "col-span-2 col-start-5 row-span-2 row-start-4 sm:col-span-4 sm:col-start-9 sm:row-span-3 sm:row-start-1"
   },
   {
-    src: "/brand/products/button/ndb5/ndb5-studio-registered.webp",
-    alt: "Idris wearing the royal purple Cowrie Collection set",
+    src: "/brand/products/button/ndb4/ndb4-mid.webp",
+    alt: "Cowrie Collection outfit shown from mid length",
     className:
-      "hidden sm:col-span-7 sm:col-start-6 sm:row-span-3 sm:row-start-4 sm:block"
+      "col-span-3 col-start-1 row-span-3 row-start-6 sm:col-span-3 sm:col-start-6 sm:row-span-3 sm:row-start-4"
+  },
+  {
+    src: "/brand/products/button/ndb1/ndb1-angle.webp",
+    alt: "Cobalt Cowrie Collection outfit shown at an angle",
+    className:
+      "col-span-3 col-start-4 row-span-3 row-start-6 sm:col-span-4 sm:col-start-9 sm:row-span-3 sm:row-start-4"
+  },
+  {
+    src: "/brand/products/button/ndb3/ndb3-angle.webp",
+    alt: "Burgundy Cowrie Collection outfit shown at an angle",
+    className:
+      "col-span-3 col-start-1 row-span-4 row-start-9 sm:col-span-6 sm:col-start-1 sm:row-span-4 sm:row-start-7"
+  },
+  {
+    src: "/brand/products/buttonless/nd5/nd5-studio-registered-source.png",
+    alt: "ỌNUỌRA Resort Collection studio portrait",
+    className:
+      "col-span-3 col-start-4 row-span-4 row-start-9 sm:col-span-6 sm:col-start-7 sm:row-span-4 sm:row-start-7"
   }
 ];
 
@@ -135,7 +153,7 @@ export function LimitedOfferCarousel() {
         onMouseLeave={leaveCampaign}
         onClick={handleCampaignClick}
       >
-        <div className="grid h-[66svh] min-h-[500px] max-h-[760px] grid-cols-12 grid-rows-6 gap-1 p-1 sm:min-h-[560px]">
+        <div className="grid h-[86svh] min-h-[760px] max-h-[980px] grid-cols-6 grid-rows-12 gap-1 p-1 sm:h-[82svh] sm:min-h-[700px] sm:grid-cols-12 sm:grid-rows-10">
           {campaignImages.map((image) => (
             <div
               key={image.src}
@@ -146,14 +164,14 @@ export function LimitedOfferCarousel() {
                 alt={image.alt}
                 fill
                 quality={92}
-                sizes="(min-width: 640px) 42vw, 60vw"
+                sizes="(min-width: 640px) 50vw, 67vw"
                 className="object-cover object-top transition duration-700 ease-out group-hover:scale-[1.018]"
               />
             </div>
           ))}
         </div>
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/5" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/66 via-transparent to-black/5" />
         <div className="absolute inset-x-0 bottom-0">
           <div className="container-luxe flex items-end pb-8 sm:pb-10">
             <div className="text-white">
