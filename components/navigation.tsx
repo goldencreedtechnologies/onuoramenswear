@@ -2,31 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  ArrowRight,
-  ChevronDown,
-  Menu,
-  Search,
-  ShoppingBag,
-  UserRound,
-  X
-} from "lucide-react";
+import { ChevronDown, Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import { CurrencySelector, useCurrency } from "@/components/currency-provider";
 import { products } from "@/data/catalog";
-import { newArrivalsPromotion } from "@/data/phase-one-collections";
 import { announcementCopy, fixedProductPriceLabel, getCollectionByFamily } from "@/data/site-config";
 import { readCart } from "@/lib/cart";
 import { cn } from "@/lib/cn";
-
-type MegaMenu = "collections" | "contact" | null;
-
-const desktopLinks = [
-  { href: "/collection", label: "SHOP" },
-  { href: "/about", label: "ABOUT" },
-  { href: "/journal", label: "JOURNAL" }
-];
 
 const permanentCollectionLinks = [
   { href: "/collection#original", igbo: "Nkwọ", english: "Heritage Collection" },
@@ -34,11 +17,11 @@ const permanentCollectionLinks = [
   { href: "/collection#without-button", igbo: "Uzọ", english: "Resort Collection" }
 ];
 
-const clientServiceLinks = [
-  { href: "/services#sizing", label: "Sizing" },
-  { href: "/services#care", label: "Care" },
-  { href: "/contact", label: "Contact" },
-  { href: "/services#faq", label: "FAQ" }
+const mobileLinks = [
+  { href: "/collection", label: "Shop" },
+  { href: "/collection#collections", label: "Collections" },
+  { href: "/journal", label: "Journal" },
+  { href: "/about", label: "Our Story" }
 ];
 
 function BrandLogo() {
@@ -54,73 +37,11 @@ function BrandLogo() {
   );
 }
 
-function PromotionCard({ closeMenus }: { closeMenus: () => void }) {
-  return (
-    <Link
-      href={newArrivalsPromotion.href}
-      onClick={closeMenus}
-      className="group grid min-h-[210px] grid-cols-[120px_1fr] items-center gap-5 bg-panel-muted p-4"
-    >
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#f1eee7]">
-        <Image
-          src="/brand/products/button/ndb3/ndb3-studio-registered.webp"
-          alt="ỌNUỌRA Burgundy Cowrie Collection Outfit"
-          fill
-          sizes="120px"
-          className="object-cover object-top transition duration-700 group-hover:scale-[1.025]"
-        />
-      </div>
-      <div>
-        <p className="text-[9px] font-bold uppercase text-gold">{newArrivalsPromotion.title}</p>
-        <p className="mt-2 text-lg font-semibold leading-6">{newArrivalsPromotion.offer}</p>
-        <span className="mt-5 inline-flex items-center gap-2 text-[10px] font-bold uppercase">
-          Shop The Offer
-          <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-1" />
-        </span>
-      </div>
-    </Link>
-  );
-}
-
-function PermanentCollectionLink({
-  href,
-  igbo,
-  english,
-  closeMenus,
-  compact = false
-}: {
-  href: string;
-  igbo: string;
-  english: string;
-  closeMenus: () => void;
-  compact?: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      onClick={closeMenus}
-      className="gold-focus group block w-fit border-b border-transparent pb-1 transition hover:border-gold"
-    >
-      <span className="block text-[9px] font-semibold uppercase tracking-[0.08em] text-gold">
-        {igbo}
-      </span>
-      <span
-        className={cn(
-          "mt-0.5 block font-semibold text-copy transition group-hover:text-gold",
-          compact ? "text-sm" : "text-[15px]"
-        )}
-      >
-        {english}
-      </span>
-    </Link>
-  );
-}
-
 export function Navigation() {
   const pathname = usePathname();
   const { currency } = useCurrency();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [megaMenu, setMegaMenu] = useState<MegaMenu>(null);
+  const [collectionsOpen, setCollectionsOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [cartCount, setCartCount] = useState(0);
@@ -128,12 +49,7 @@ export function Navigation() {
 
   function closeMenus() {
     setMobileOpen(false);
-    setMegaMenu(null);
-    setSearchOpen(false);
-  }
-
-  function toggleMegaMenu(menu: Exclude<MegaMenu, null>) {
-    setMegaMenu((current) => (current === menu ? null : menu));
+    setCollectionsOpen(false);
     setSearchOpen(false);
   }
 
@@ -160,16 +76,13 @@ export function Navigation() {
 
   const searchResults = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) {
-      return products.slice(0, 6);
-    }
+    if (!normalizedQuery) return products.slice(0, 6);
 
     return products
       .filter((product) =>
         [
           product.name,
           product.edition,
-          product.meaning,
           product.colorName,
           getCollectionByFamily(product.family).englishName,
           getCollectionByFamily(product.family).igboName
@@ -185,7 +98,7 @@ export function Navigation() {
     <header className={cn("inset-x-0 top-0 z-50", isHome ? "absolute" : "fixed")}>
       <div
         className={cn(
-          "flex h-8 items-center justify-center px-4 text-center text-[9px] font-semibold uppercase tracking-[0.12em]",
+          "flex min-h-8 items-center justify-center px-3 py-1.5 text-center text-[8px] font-semibold uppercase tracking-[0.08em] sm:text-[9px] sm:tracking-[0.12em]",
           isHome ? "bg-transparent text-[#171717]" : "bg-obsidian text-ivory"
         )}
       >
@@ -194,64 +107,24 @@ export function Navigation() {
 
       <div className="mx-3 h-[68px] rounded-[14px] border border-white/55 bg-[#f7f3e8]/94 text-[#171717] shadow-[0_12px_36px_rgb(0_0_0/0.10)] backdrop-blur-xl sm:mx-5 lg:mx-7">
         <div className="flex h-full items-center justify-between gap-5 px-5 sm:px-7">
-          <Link
-            href="/"
-            onClick={closeMenus}
-            className="gold-focus -my-4 flex shrink-0 items-center"
-            aria-label="ỌNUỌRA Home"
-          >
+          <Link href="/" onClick={closeMenus} className="gold-focus -my-4 flex shrink-0 items-center" aria-label="ỌNUỌRA Home">
             <BrandLogo />
           </Link>
 
-          <nav
-            className="hidden h-full items-center gap-7 text-[10px] font-semibold uppercase tracking-[0.08em] lg:flex"
-            aria-label="Main navigation"
-          >
-            <Link
-              href={desktopLinks[0].href}
-              onClick={closeMenus}
-              className="primary-nav-link gold-focus"
-            >
-              {desktopLinks[0].label}
-            </Link>
+          <nav className="hidden h-full items-center gap-7 text-[10px] font-semibold uppercase tracking-[0.08em] lg:flex" aria-label="Main navigation">
+            <Link href="/collection" className="primary-nav-link gold-focus">Shop</Link>
             <button
               type="button"
-              onClick={() => toggleMegaMenu("collections")}
+              onClick={() => setCollectionsOpen((value) => !value)}
               className="primary-nav-link gold-focus inline-flex h-full items-center gap-1.5"
-              aria-expanded={megaMenu === "collections"}
+              aria-expanded={collectionsOpen}
             >
-              COLLECTIONS
-              <ChevronDown
-                className={cn(
-                  "h-3.5 w-3.5 transition",
-                  megaMenu === "collections" && "rotate-180"
-                )}
-              />
+              Collections
+              <ChevronDown className={cn("h-3.5 w-3.5 transition", collectionsOpen && "rotate-180")} />
             </button>
-            {desktopLinks.slice(1).map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={closeMenus}
-                className="primary-nav-link gold-focus"
-              >
-                {link.label}
-              </Link>
-            ))}
-            <button
-              type="button"
-              onClick={() => toggleMegaMenu("contact")}
-              className="primary-nav-link gold-focus inline-flex h-full items-center gap-1.5"
-              aria-expanded={megaMenu === "contact"}
-            >
-              CLIENT SERVICES
-              <ChevronDown
-                className={cn(
-                  "h-3.5 w-3.5 transition",
-                  megaMenu === "contact" && "rotate-180"
-                )}
-              />
-            </button>
+            <Link href="/journal" className="primary-nav-link gold-focus">Journal</Link>
+            <Link href="/about" className="primary-nav-link gold-focus">Our Story</Link>
+            <Link href="/contact" className="primary-nav-link gold-focus">Client Services</Link>
           </nav>
 
           <div className="flex items-center gap-1.5">
@@ -260,7 +133,7 @@ export function Navigation() {
               type="button"
               onClick={() => {
                 setSearchOpen((value) => !value);
-                setMegaMenu(null);
+                setCollectionsOpen(false);
               }}
               className="gold-focus inline-flex h-10 w-10 items-center justify-center"
               aria-label="Search"
@@ -268,11 +141,7 @@ export function Navigation() {
             >
               <Search className="h-[18px] w-[18px]" />
             </button>
-            <Link
-              href="/account"
-              className="gold-focus hidden h-10 w-10 items-center justify-center sm:inline-flex"
-              aria-label="Account"
-            >
+            <Link href="/account" className="gold-focus hidden h-10 w-10 items-center justify-center sm:inline-flex" aria-label="Account">
               <UserRound className="h-[18px] w-[18px]" />
             </Link>
             <button
@@ -283,7 +152,7 @@ export function Navigation() {
             >
               <ShoppingBag className="h-[18px] w-[18px]" />
               {cartCount ? (
-                <span className="absolute right-0.5 top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-gold px-1 text-[8px] font-bold text-obsidian">
+                <span className="absolute right-0.5 top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-obsidian px-1 text-[8px] font-bold text-white">
                   {cartCount}
                 </span>
               ) : null}
@@ -292,7 +161,7 @@ export function Navigation() {
               type="button"
               onClick={() => {
                 setMobileOpen((value) => !value);
-                setMegaMenu(null);
+                setCollectionsOpen(false);
                 setSearchOpen(false);
               }}
               className="gold-focus inline-flex h-10 w-10 items-center justify-center lg:hidden"
@@ -305,98 +174,40 @@ export function Navigation() {
         </div>
       </div>
 
-      {megaMenu ? (
-        <div
-          className="mx-7 mt-2 hidden overflow-hidden rounded-[14px] border border-line bg-page text-copy shadow-2xl shadow-black/10 lg:block"
-          onMouseLeave={() => setMegaMenu(null)}
-        >
-          {megaMenu === "collections" ? (
-            <div className="container-luxe grid grid-cols-[0.9fr_1.35fr] gap-8 py-9">
-              <div>
-                <p className="mb-5 text-[10px] font-bold uppercase text-copy-muted">
-                  Permanent Collections
-                </p>
-                <div className="flex flex-col gap-4">
-                  {permanentCollectionLinks.map((link) => (
-                    <PermanentCollectionLink
-                      key={link.href}
-                      {...link}
-                      closeMenus={closeMenus}
-                    />
-                  ))}
-                  <Link
-                    href="/collection"
-                    onClick={closeMenus}
-                    className="gold-focus mt-1 w-fit border-b border-copy/30 pb-1 text-[10px] font-semibold uppercase transition hover:border-gold hover:text-gold"
-                  >
-                    View All Collections
-                  </Link>
-                </div>
-              </div>
-              <PromotionCard closeMenus={closeMenus} />
-            </div>
-          ) : (
-            <div className="container-luxe grid grid-cols-[0.75fr_1.35fr] gap-8 py-9">
-              <div>
-                <p className="mb-5 text-[10px] font-bold uppercase text-copy-muted">
-                  Client Services
-                </p>
-                <div className="flex flex-col gap-3.5 text-sm">
-                  {clientServiceLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={closeMenus}
-                      className="w-fit border-b border-transparent pb-0.5 transition hover:border-gold hover:text-gold"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              <PromotionCard closeMenus={closeMenus} />
-            </div>
-          )}
+      {collectionsOpen ? (
+        <div className="mx-7 mt-2 hidden overflow-hidden rounded-[14px] border border-line bg-page text-copy shadow-2xl shadow-black/10 lg:block">
+          <div className="container-luxe grid grid-cols-3 gap-8 py-8">
+            {permanentCollectionLinks.map((link) => (
+              <Link key={link.href} href={link.href} onClick={closeMenus} className="gold-focus border-b border-line pb-4 transition hover:border-gold">
+                <span className="block text-[9px] font-semibold uppercase text-gold">{link.igbo}</span>
+                <span className="mt-1 block text-base font-semibold">{link.english}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       ) : null}
 
       {searchOpen ? (
         <div className="mx-3 mt-2 overflow-hidden rounded-[14px] border border-line bg-page text-copy shadow-xl shadow-black/10 sm:mx-5 lg:mx-7">
-          <div className="container-luxe py-7">
+          <div className="container-luxe py-6">
             <div className="flex items-center border-b border-copy/30">
               <Search className="h-5 w-5 text-copy-muted" />
               <input
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search Products, Collections Or Colours"
+                placeholder="Search products, collections or colours"
                 className="min-h-14 flex-1 bg-transparent px-4 text-base outline-none placeholder:text-copy-muted/70"
                 aria-label="Search ỌNUỌRA"
               />
-              <button
-                type="button"
-                onClick={() => setSearchOpen(false)}
-                className="gold-focus inline-flex h-10 w-10 items-center justify-center"
-                aria-label="Close search"
-              >
+              <button type="button" onClick={() => setSearchOpen(false)} className="gold-focus inline-flex h-10 w-10 items-center justify-center" aria-label="Close search">
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {searchResults.map((product) => (
-                <Link
-                  key={product.slug}
-                  href={`/products/${product.slug}`}
-                  onClick={closeMenus}
-                  className="group flex items-center gap-3 border-b border-copy/10 pb-3"
-                >
+                <Link key={product.slug} href={`/products/${product.slug}`} onClick={closeMenus} className="group flex items-center gap-3 border-b border-copy/10 pb-3">
                   <span className="relative h-16 w-12 shrink-0 overflow-hidden bg-page">
-                    <Image
-                      src={product.image}
-                      alt=""
-                      fill
-                      sizes="48px"
-                      className="object-cover"
-                    />
+                    <Image src={product.image} alt="" fill sizes="48px" className="object-cover" />
                   </span>
                   <span>
                     <span className="block text-sm font-semibold">{product.name}</span>
@@ -406,9 +217,7 @@ export function Navigation() {
                   </span>
                 </Link>
               ))}
-              {!searchResults.length ? (
-                <p className="text-sm text-copy-muted">No products match that search.</p>
-              ) : null}
+              {!searchResults.length ? <p className="text-sm text-copy-muted">No products match that search.</p> : null}
             </div>
           </div>
         </div>
@@ -416,87 +225,22 @@ export function Navigation() {
 
       {mobileOpen ? (
         <div className="fixed inset-x-0 bottom-0 top-[100px] overflow-y-auto bg-page text-copy lg:hidden">
-          <nav className="container-luxe flex min-h-full flex-col py-7" aria-label="Mobile navigation">
-            <div className="mb-5 flex items-center justify-between border-b border-copy/12 pb-5">
+          <nav className="container-luxe flex min-h-full flex-col py-6" aria-label="Mobile navigation">
+            <div className="mb-3 flex items-center justify-between border-b border-copy/12 pb-4">
               <span className="text-xs font-semibold uppercase">Currency</span>
               <CurrencySelector />
             </div>
-
-            <Link
-              href="/collection"
-              onClick={closeMenus}
-              className="flex min-h-14 items-center justify-between border-b border-copy/12 text-sm font-semibold uppercase tracking-[0.06em]"
-            >
-              SHOP
-              <ArrowRight className="h-4 w-4 text-copy-muted" />
-            </Link>
-
-            <section className="border-b border-copy/12 py-5">
-              <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-copy-muted">
-                Collections
-              </p>
-              <div className="mt-4 grid gap-4">
-                {permanentCollectionLinks.map((link) => (
-                  <PermanentCollectionLink
-                    key={link.href}
-                    {...link}
-                    closeMenus={closeMenus}
-                    compact
-                  />
-                ))}
-              </div>
-            </section>
-
-            {[
-              { href: "/about", label: "ABOUT" },
-              { href: "/journal", label: "JOURNAL" }
-            ].map((link) => (
+            {mobileLinks.map((link) => (
               <Link
-                key={link.href}
+                key={link.label}
                 href={link.href}
                 onClick={closeMenus}
-                className="flex min-h-14 items-center justify-between border-b border-copy/12 text-sm font-semibold uppercase tracking-[0.06em]"
+                className="gold-focus flex min-h-16 items-center justify-between border-b border-copy/12 text-base font-semibold uppercase tracking-[0.06em]"
               >
                 {link.label}
-                <ArrowRight className="h-4 w-4 text-copy-muted" />
+                <span aria-hidden="true">→</span>
               </Link>
             ))}
-
-            <section className="border-b border-copy/12 py-5">
-              <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-copy-muted">
-                Client Services
-              </p>
-              <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1">
-                {clientServiceLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={closeMenus}
-                    className="gold-focus flex min-h-11 items-center border-b border-copy/8 text-sm font-medium"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            </section>
-
-            <Link
-              href="/account"
-              onClick={closeMenus}
-              className="flex min-h-14 items-center justify-between border-b border-copy/12 text-sm font-semibold uppercase tracking-[0.06em]"
-            >
-              ACCOUNT
-              <ArrowRight className="h-4 w-4 text-copy-muted" />
-            </Link>
-
-            <Link
-              href={newArrivalsPromotion.href}
-              onClick={closeMenus}
-              className="mt-6 bg-panel-muted p-5"
-            >
-              <p className="text-[9px] font-bold uppercase text-gold">Current Offer</p>
-              <p className="mt-2 text-lg font-semibold">{newArrivalsPromotion.offer}</p>
-            </Link>
           </nav>
         </div>
       ) : null}
