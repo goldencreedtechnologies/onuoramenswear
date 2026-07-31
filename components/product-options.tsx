@@ -36,13 +36,7 @@ type SelectedColour = {
   usesCurrentPhotography: boolean;
 };
 
-export function ProductOptions({
-  product,
-  colorOptions
-}: {
-  product: StoreProduct;
-  colorOptions: ColorOption[];
-}) {
+export function ProductOptions({ product, colorOptions }: { product: StoreProduct; colorOptions: ColorOption[] }) {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColour, setSelectedColour] = useState<SelectedColour>({
     name: product.colorName,
@@ -68,18 +62,14 @@ export function ProductOptions({
 
   useEffect(() => {
     let cancelled = false;
-
     fetch(`/api/inventory/${product.slug}`)
       .then((response) => response.json())
       .then((result) => {
-        if (!cancelled && Array.isArray(result?.inventory)) {
-          setInventory(result.inventory);
-        }
+        if (!cancelled && Array.isArray(result?.inventory)) setInventory(result.inventory);
       })
       .catch(() => {
         if (!cancelled) setInventory([]);
       });
-
     return () => {
       cancelled = true;
     };
@@ -109,7 +99,6 @@ export function ProductOptions({
       setNeedsSize(true);
       return;
     }
-
     if (selectedInventory?.isSoldOut || allSoldOut) return;
 
     const item = productToCartItem(product, selectedSize, {
@@ -131,17 +120,13 @@ export function ProductOptions({
 
   return (
     <>
-      <div className="mt-7 border-t border-line pt-6">
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-xs font-semibold uppercase">
-            Colour <span className="ml-2 font-normal text-copy-muted">{selectedColour.name}</span>
-          </p>
-        </div>
-        <div className="mt-4 flex flex-wrap gap-3" aria-label="Available colours">
+      <div className="mt-5 border-t border-line pt-5">
+        <p className="text-xs font-semibold uppercase">
+          Colour <span className="ml-2 font-normal text-copy-muted">{selectedColour.name}</span>
+        </p>
+        <div className="mt-3 flex flex-wrap gap-3" aria-label="Available colours">
           {colorOptions.map((option) => {
-            const isSelected =
-              !selectedColour.usesCurrentPhotography && option.slug === product.slug;
-
+            const isSelected = !selectedColour.usesCurrentPhotography && option.slug === product.slug;
             return (
               <Link
                 key={option.slug}
@@ -163,28 +148,17 @@ export function ProductOptions({
                 aria-current={isSelected ? "page" : undefined}
                 title={`${option.name} / ${option.colorName}`}
               >
-                <span
-                  className="h-5 w-5 rounded-full border border-black/15"
-                  style={{ backgroundColor: option.colorValue }}
-                />
+                <span className="h-5 w-5 rounded-full border border-black/15" style={{ backgroundColor: option.colorValue }} />
               </Link>
             );
           })}
           {ADDITIONAL_PRODUCT_COLOURS.map((colour) => {
-            const isSelected =
-              selectedColour.usesCurrentPhotography && selectedColour.name === colour.name;
-
+            const isSelected = selectedColour.usesCurrentPhotography && selectedColour.name === colour.name;
             return (
               <button
                 key={colour.id}
                 type="button"
-                onClick={() =>
-                  setSelectedColour({
-                    name: colour.name,
-                    value: colour.value,
-                    usesCurrentPhotography: true
-                  })
-                }
+                onClick={() => setSelectedColour({ name: colour.name, value: colour.value, usesCurrentPhotography: true })}
                 className={cn(
                   "gold-focus grid h-8 w-8 place-items-center rounded-full border transition",
                   isSelected
@@ -195,39 +169,34 @@ export function ProductOptions({
                 aria-pressed={isSelected}
                 title={`${colour.name} / Photography coming soon`}
               >
-                <span
-                  className="h-5 w-5 rounded-full border border-black/15"
-                  style={{ backgroundColor: colour.value }}
-                />
+                <span className="h-5 w-5 rounded-full border border-black/15" style={{ backgroundColor: colour.value }} />
               </button>
             );
           })}
         </div>
         {selectedColour.usesCurrentPhotography ? (
           <p className="mt-3 text-[11px] leading-5 text-copy-muted">
-            This colour is available to order. The current product photography remains on screen
-            until its dedicated imagery is ready.
+            This colour is available to order. Its dedicated photography will be added when approved.
           </p>
         ) : null}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-5">
         <div className="flex items-center justify-between gap-4">
-          <p className="text-xs font-semibold uppercase">Select size</p>
+          <p className="text-xs font-semibold uppercase">Size</p>
           <button
             type="button"
             onClick={() => setSizeGuideOpen(true)}
             className="gold-focus inline-flex items-center gap-2 text-[10px] font-semibold uppercase text-copy-muted underline underline-offset-4 hover:text-copy"
           >
             <Ruler className="h-3.5 w-3.5" />
-            View size details
+            Size Guide
           </button>
         </div>
         <div className="mt-3 grid grid-cols-5 gap-2">
           {sizes.map((size) => {
             const sizeInventory = inventoryBySize.get(size.label);
             const isSoldOut = Boolean(sizeInventory?.isSoldOut);
-
             return (
               <button
                 key={size.label}
@@ -236,8 +205,7 @@ export function ProductOptions({
                 disabled={isSoldOut}
                 className={cn(
                   "size-choice gold-focus relative h-11 border text-xs font-semibold transition",
-                  isSoldOut &&
-                    "cursor-not-allowed text-copy-muted/45 after:absolute after:left-1/2 after:top-1/2 after:h-px after:w-8 after:-translate-x-1/2 after:-translate-y-1/2 after:-rotate-45 after:bg-copy-muted/45"
+                  isSoldOut && "cursor-not-allowed text-copy-muted/45 after:absolute after:left-1/2 after:top-1/2 after:h-px after:w-8 after:-translate-x-1/2 after:-translate-y-1/2 after:-rotate-45 after:bg-copy-muted/45"
                 )}
                 data-selected={selectedSize === size.label}
                 aria-pressed={selectedSize === size.label}
@@ -251,80 +219,54 @@ export function ProductOptions({
         <div className="mt-2 min-h-5 text-[11px]">
           {needsSize ? <p className="font-medium text-wine">Choose a size before continuing.</p> : null}
           {selectedInventory?.isLowStock && !needsSize ? (
-            <p className="font-medium text-gold">
-              Only {selectedInventory.availableQuantity} left in {selectedSize}
-            </p>
+            <p className="font-medium text-gold">Only {selectedInventory.availableQuantity} left in {selectedSize}</p>
           ) : null}
           {allSoldOut ? <p className="font-medium text-wine">This style is currently sold out.</p> : null}
         </div>
+
+        <button
+          type="button"
+          onClick={() => addSelectedProduct(false)}
+          disabled={allSoldOut}
+          className="gold-focus mt-2 inline-flex min-h-13 w-full items-center justify-center gap-3 bg-obsidian px-5 py-4 text-xs font-semibold uppercase text-white transition hover:bg-gold hover:text-obsidian disabled:cursor-not-allowed disabled:opacity-45"
+        >
+          {added ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
+          {allSoldOut ? "Sold Out" : added ? "Added To Cart" : "Add To Cart"}
+        </button>
       </div>
 
-      <div className="mt-4 flex items-center justify-between border-y border-line py-4">
+      <div className="mt-3 flex items-center justify-between border-y border-line py-3">
         <p className="text-xs font-semibold uppercase">Quantity</p>
         <div className="flex h-10 items-center border border-line">
-          <button
-            type="button"
-            onClick={() => setQuantity((value) => Math.max(1, value - 1))}
-            className="gold-focus flex h-full w-10 items-center justify-center hover:bg-surface-subtle"
-            aria-label="Decrease quantity"
-          >
+          <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} className="gold-focus flex h-full w-10 items-center justify-center hover:bg-surface-subtle" aria-label="Decrease quantity">
             <Minus className="h-3.5 w-3.5" />
           </button>
-          <span className="grid h-full w-10 place-items-center border-x border-line text-xs font-semibold">
-            {quantity}
-          </span>
-          <button
-            type="button"
-            onClick={() => setQuantity((value) => Math.min(maxQuantity, value + 1))}
-            disabled={quantity >= maxQuantity}
-            className="gold-focus flex h-full w-10 items-center justify-center hover:bg-surface-subtle disabled:opacity-30"
-            aria-label="Increase quantity"
-          >
+          <span className="grid h-full w-10 place-items-center border-x border-line text-xs font-semibold">{quantity}</span>
+          <button type="button" onClick={() => setQuantity((value) => Math.min(maxQuantity, value + 1))} disabled={quantity >= maxQuantity} className="gold-focus flex h-full w-10 items-center justify-center hover:bg-surface-subtle disabled:opacity-30" aria-label="Increase quantity">
             <Plus className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
 
-      <div className="mt-5 grid gap-2">
-        <button
-          type="button"
-          onClick={() => addSelectedProduct(false)}
-          disabled={allSoldOut}
-          className="gold-focus inline-flex min-h-12 items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-white transition hover:bg-gold hover:text-obsidian disabled:cursor-not-allowed disabled:opacity-45"
-        >
-          {added ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
-          {allSoldOut ? "Sold out" : added ? "Added to bag" : "Add to bag"}
-        </button>
-        <button
-          type="button"
-          onClick={() => addSelectedProduct(true)}
-          disabled={allSoldOut}
-          className="gold-focus min-h-12 border border-copy px-5 text-xs font-semibold uppercase text-copy transition hover:bg-copy hover:text-white disabled:cursor-not-allowed disabled:opacity-45"
-        >
-          Buy now
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => addSelectedProduct(true)}
+        disabled={allSoldOut}
+        className="gold-focus mt-3 min-h-12 w-full border border-copy px-5 text-xs font-semibold uppercase text-copy transition hover:bg-copy hover:text-white disabled:cursor-not-allowed disabled:opacity-45"
+      >
+        Buy Now
+      </button>
 
       {sizeGuideOpen ? (
-        <div
-          className="fixed inset-0 z-[100] grid place-items-center bg-black/62 p-4 backdrop-blur-sm"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Size details"
-        >
+        <div className="fixed inset-0 z-[160] grid place-items-center bg-black/62 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Size guide">
           <div className="max-h-[90vh] w-full max-w-2xl overflow-auto bg-page p-5 text-copy shadow-2xl md:p-8">
             <div className="flex items-start justify-between gap-5 border-b border-line pb-5">
               <div>
-                <p className="text-[10px] font-semibold uppercase text-gold">Stretch-fit guide</p>
-                <h2 className="mt-2 text-2xl font-semibold">Available sizes</h2>
+                <p className="text-[10px] font-semibold uppercase text-gold">Size Guide</p>
+                <h2 className="mt-2 text-2xl font-semibold">Available Sizes</h2>
               </div>
-              <button
-                type="button"
-                className="gold-focus flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-subtle"
-                onClick={() => setSizeGuideOpen(false)}
-                aria-label="Close size details"
-              >
-                <X className="h-5 w-5" />
+              <button type="button" className="gold-focus flex h-12 w-12 items-center justify-center rounded-full hover:bg-surface-subtle" onClick={() => setSizeGuideOpen(false)} aria-label="Close size guide">
+                <X className="h-6 w-6" />
               </button>
             </div>
             <div className="overflow-x-auto">
@@ -350,8 +292,7 @@ export function ProductOptions({
               </table>
             </div>
             <p className="mt-6 text-sm leading-6 text-copy-muted">
-              The four-way stretch allows natural flexibility. Choose the smaller size for a
-              closer tailored line, or the larger size for a more relaxed fit.
+              Choose the smaller size for a closer tailored line or the larger size for a more relaxed fit.
             </p>
           </div>
         </div>
