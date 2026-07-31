@@ -197,7 +197,8 @@ function HeroProduct({
         </span>
       </div>
       <div className="pt-4">
-        <ProductPrice className="text-lg font-semibold leading-none text-copy md:text-xl" />
+        <p className="mb-1.5 text-sm font-semibold text-copy md:text-base">{section.title}</p>
+        <ProductPrice className="text-xl font-semibold leading-none text-copy md:text-2xl" />
         <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.04em] text-copy-muted">
           {PRODUCT_INCLUSION_LABEL}
         </p>
@@ -285,15 +286,33 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
 
         const heroOrder = layout.heroSide === "right" ? "md:order-2" : "md:order-1";
         const gridOrder = layout.heroSide === "right" ? "md:order-1" : "md:order-2";
+        const monogramPosition =
+          layout.heroSide === "right"
+            ? "-left-20 md:left-[2%]"
+            : "-right-20 md:right-[2%]";
 
         return (
           <section
             key={section.id}
             id={section.id}
             aria-labelledby={`${section.id}-title`}
-            className="scroll-mt-[112px] border-b border-line py-10 md:py-14"
+            className="relative isolate scroll-mt-[112px] overflow-hidden border-b border-line py-10 md:py-14"
           >
-            <div className="container-luxe">
+            <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+              <div className="absolute left-1/2 top-[62%] h-[74%] w-[min(96%,920px)] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle_at_center,rgba(245,230,200,0.22),rgba(245,230,200,0.08)_38%,transparent_70%)]" />
+              <span
+                className={`absolute top-[58%] -translate-y-1/2 select-none font-semibold leading-none ${monogramPosition}`}
+                style={{
+                  fontSize: "clamp(18rem,34vw,34rem)",
+                  color: "transparent",
+                  WebkitTextStroke: "1px rgba(101, 67, 33, 0.09)"
+                }}
+              >
+                Ọ
+              </span>
+            </div>
+
+            <div className="container-luxe relative z-10">
               <header className="mb-7 max-w-2xl md:mb-8">
                 <p className="text-[10px] font-semibold uppercase text-gold">{section.eyebrow}</p>
                 <h2 id={`${section.id}-title`} className="mt-2 text-3xl font-semibold md:text-4xl">
