@@ -6,6 +6,10 @@ import { ArrowRight, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { newArrivalsPromotion } from "@/data/phase-one-collections";
 
+const OFFER_AUTO_OPENED_KEY = "onuora-current-offer-auto-opened";
+const AUTO_OPEN_DELAY_MS = 7000;
+const HOVER_OPEN_DELAY_MS = 650;
+
 const campaignImages = [
   {
     src: "/brand/products/buttonless/nd1/nd1-studio-registered.webp",
@@ -36,7 +40,8 @@ const campaignImages = [
 export function LimitedOfferCarousel() {
   const [modalOpen, setModalOpen] = useState(false);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const dismissedDuringHover = useRef(false);
+  const autoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoOpened = useRef(false);
 
   function clearHoverTimer() {
     if (hoverTimer.current) {
@@ -45,26 +50,68 @@ export function LimitedOfferCarousel() {
     }
   }
 
+  function clearAutoTimer() {
+    if (autoTimer.current) {
+      clearTimeout(autoTimer.current);
+      autoTimer.current = null;
+    }
+  }
+
+  function markAutoOpened() {
+    autoOpened.current = true;
+    clearAutoTimer();
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(OFFER_AUTO_OPENED_KEY, "true");
+    }
+  }
+
+  function openAutomatically() {
+    if (autoOpened.current) {
+      return;
+    }
+
+    markAutoOpened();
+    setModalOpen(true);
+  }
+
+  function openManually() {
+    markAutoOpened();
+    clearHoverTimer();
+    setModalOpen(true);
+  }
+
   function scheduleModal() {
-    if (dismissedDuringHover.current || window.matchMedia("(hover: none)").matches) {
+    if (autoOpened.current || window.matchMedia("(hover: none)").matches) {
       return;
     }
 
     clearHoverTimer();
-    hoverTimer.current = setTimeout(() => setModalOpen(true), 650);
+    hoverTimer.current = setTimeout(openAutomatically, HOVER_OPEN_DELAY_MS);
   }
 
   function leaveCampaign() {
     clearHoverTimer();
-    dismissedDuringHover.current = false;
   }
 
   function closeModal() {
-    dismissedDuringHover.current = true;
     setModalOpen(false);
   }
 
+  function handleCampaignClick(event: React.MouseEvent<HTMLElement>) {
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button")) {
+      return;
+    }
+    openManually();
+  }
+
   useEffect(() => {
+    autoOpened.current = window.sessionStorage.getItem(OFFER_AUTO_OPENED_KEY) === "true";
+
+    if (!autoOpened.current) {
+      autoTimer.current = setTimeout(openAutomatically, AUTO_OPEN_DELAY_MS);
+    }
+
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         closeModal();
@@ -74,6 +121,7 @@ export function LimitedOfferCarousel() {
     window.addEventListener("keydown", onKeyDown);
     return () => {
       clearHoverTimer();
+      clearAutoTimer();
       window.removeEventListener("keydown", onKeyDown);
     };
   }, []);
@@ -85,6 +133,7 @@ export function LimitedOfferCarousel() {
         aria-labelledby="new-arrivals-heading"
         onMouseEnter={scheduleModal}
         onMouseLeave={leaveCampaign}
+        onClick={handleCampaignClick}
       >
         <div className="grid h-[66svh] min-h-[500px] max-h-[760px] grid-cols-12 grid-rows-6 gap-1 p-1 sm:min-h-[560px]">
           {campaignImages.map((image) => (
@@ -116,7 +165,7 @@ export function LimitedOfferCarousel() {
               </h2>
               <button
                 type="button"
-                onClick={() => setModalOpen(true)}
+                onClick={openManually}
                 className="gold-focus pointer-events-auto mt-3 inline-flex items-center gap-2 border-b border-white/70 pb-1 text-[10px] font-semibold uppercase transition hover:border-gold hover:text-gold"
               >
                 Shop the Offer
