@@ -95,7 +95,7 @@ export default async function HomePage() {
               <Link
                 key={collection.id}
                 href={collection.href}
-                data-collection={collection.id === "original" ? collection.id : undefined}
+                data-collection={collection.id}
                 className="collection-image-pair home-collection-card gold-focus group relative block aspect-[4/5] overflow-hidden bg-[#f4eee6]"
               >
                 <CollectionImageSwap
@@ -103,7 +103,11 @@ export default async function HomePage() {
                   alt={`${collection.eyebrow}: ${collection.title}`}
                   sizes="(min-width: 640px) 33vw, 100vw"
                   priority={index === 0}
-                  className="object-cover object-top"
+                  className={
+                    index < 2
+                      ? "object-cover !object-top !scale-100"
+                      : "object-cover object-top"
+                  }
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/76 via-transparent to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
@@ -145,7 +149,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="py-14 md:py-20">
+      <section
+        className="py-20 md:py-28"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(245,230,200,0) 0%, rgba(245,230,200,0.78) 18%, rgba(245,230,200,0.78) 82%, rgba(245,230,200,0) 100%)"
+        }}
+      >
         <div className="container-luxe grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div className="relative aspect-[16/11] overflow-hidden bg-surface-subtle">
             <Image
