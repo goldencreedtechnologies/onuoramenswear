@@ -34,17 +34,17 @@ export type PhaseOneCollection = {
 };
 
 export const phaseOneImagePairs = {
-  withoutButton: {
-    front: "/brand/products/buttonless/nd3/nd3-front.webp",
-    hover: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png"
+  original: {
+    front: "/brand/products/original/aja/aja-front.webp",
+    hover: "/brand/products/original/ndu/ndu-studio-idris-source.png"
   },
   withButton: {
     front: "/brand/products/button/ndb2/ndb2-front.webp",
     hover: "/brand/products/button/ndb1/ndb1-studio-registered-source.png"
   },
-  original: {
-    front: "/brand/products/original/aja/aja-front.webp",
-    hover: "/brand/products/original/ndu/ndu-studio-idris-source.png"
+  withoutButton: {
+    front: "/brand/products/buttonless/nd3/nd3-front.webp",
+    hover: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png"
   }
 } satisfies Record<string, CollectionImagePair>;
 
@@ -106,12 +106,12 @@ export const phaseOneCollections: PhaseOneCollection[] = [
 
 export const homepageCollectionCards = [
   {
-    id: "without-button",
-    eyebrow: resort.igboName,
-    title: resort.englishName,
-    description: resort.description,
-    href: "/collection#without-button",
-    images: phaseOneImagePairs.withoutButton
+    id: "original",
+    eyebrow: heritage.igboName,
+    title: heritage.englishName,
+    description: heritage.description,
+    href: "/collection#original",
+    images: phaseOneImagePairs.original
   },
   {
     id: "with-button",
@@ -122,12 +122,12 @@ export const homepageCollectionCards = [
     images: phaseOneImagePairs.withButton
   },
   {
-    id: "original",
-    eyebrow: heritage.igboName,
-    title: heritage.englishName,
-    description: heritage.description,
-    href: "/collection#original",
-    images: phaseOneImagePairs.original
+    id: "without-button",
+    eyebrow: resort.igboName,
+    title: resort.englishName,
+    description: resort.description,
+    href: "/collection#without-button",
+    images: phaseOneImagePairs.withoutButton
   }
 ];
 
@@ -136,8 +136,7 @@ const activeCampaign = PROMOTIONS.campaigns[PROMOTIONS.activeCampaign];
 export const newArrivalsPromotion = {
   title: "Current Offer",
   offer: activeCampaign.title,
-  explanation:
-    "The discount applies to the lowest-priced qualifying outfit. Promotions do not stack, and shipping is excluded.",
+  explanation: "Shipping is calculated separately.",
   href: "/collection",
   fullPriceQuantity: 2,
   discountedPosition: 3,
