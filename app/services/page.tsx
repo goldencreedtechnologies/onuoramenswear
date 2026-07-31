@@ -11,7 +11,7 @@ import {
 
 export const metadata = {
   title: "Client Services",
-  description: "ỌNUỌRA styling, sizing, delivery, order, and private client services."
+  description: "ỌNUỌRA styling, sizing, delivery, order and private client services."
 };
 
 const services = [
@@ -19,37 +19,37 @@ const services = [
     id: "sizing",
     icon: Ruler,
     title: "Fit & sizing",
-    copy: "Personal guidance across stretch fit, chest, waist, trouser length, and the silhouette best suited to your preference."
+    copy: "Personal guidance across chest, waist, trouser length and the silhouette best suited to your preference."
   },
   {
     id: "styling",
     icon: Sparkles,
     title: "Private styling",
-    copy: "Occasion-led advice on colour, edition, footwear, and building a considered ỌNUỌRA wardrobe."
+    copy: "Occasion-led advice on colour, collection, footwear and building a considered ỌNUỌRA wardrobe."
   },
   {
     id: "care",
     icon: PackageCheck,
     title: "Order & garment care",
-    copy: "Support with garment care, order status, exchanges, garment condition, fulfilment, and post-purchase questions."
+    copy: "Support with garment care, order status, exchanges, garment condition, fulfilment and post-purchase questions."
   },
   {
     id: "delivery",
     icon: Globe2,
     title: "Global delivery",
-    copy: "Destination guidance, delivery estimates, customs context, and tracked service across the UK, USA, Europe, and worldwide."
+    copy: "Destination guidance, delivery estimates, customs context and tracked service across the UK, USA, Europe and worldwide."
   },
   {
     id: "circle",
     icon: CircleUserRound,
     title: "ỌNUỌRA Circle",
-    copy: "Private previews, early collection access, fit notes, and considered communication from the house."
+    copy: "Private previews, early collection access, sizing guidance and considered communication from the house."
   },
   {
     id: "contact",
     icon: MessageCircle,
     title: "Concierge enquiry",
-    copy: "A direct route for gifting, group orders, press, partnerships, and requests that need a human response."
+    copy: "A direct route for gifting, group orders, press, partnerships and requests that need a human response."
   }
 ];
 
@@ -65,8 +65,7 @@ export default function ServicesPage() {
             </h1>
           </div>
           <p className="text-sm leading-7 text-copy-muted">
-            Speak with the house for a more personal path through fit, styling, delivery, and
-            ownership.
+            Speak with the house for a more personal path through fit, styling, delivery and ownership.
           </p>
         </div>
       </header>
@@ -93,10 +92,7 @@ export default function ServicesPage() {
             Tell us where you are going. We will help you arrive well.
           </h2>
         </div>
-        <Link
-          href="/contact"
-          className="gold-focus inline-flex min-h-11 shrink-0 items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian"
-        >
+        <Link href="/contact" className="gold-focus inline-flex min-h-11 shrink-0 items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian">
           Contact the house
           <ArrowRight className="h-4 w-4" />
         </Link>
