@@ -15,43 +15,31 @@ const campaignImages = [
     src: "/brand/products/buttonless/nd1/nd1-studio-registered-source.png",
     alt: "Kharn wearing the cobalt Resort Collection set",
     className:
-      "col-span-4 col-start-1 row-span-5 row-start-1 sm:col-span-5 sm:col-start-1 sm:row-span-6 sm:row-start-1"
+      "col-span-4 col-start-1 row-span-5 row-start-1 sm:col-span-5 sm:col-start-1 sm:row-span-8 sm:row-start-1"
   },
   {
     src: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png",
     alt: "ỌNUỌRA Resort Collection studio portrait",
     className:
-      "col-span-2 col-start-5 row-span-3 row-start-1 sm:col-span-3 sm:col-start-6 sm:row-span-3 sm:row-start-1"
+      "col-span-2 col-start-5 row-span-3 row-start-1 sm:col-span-3 sm:col-start-6 sm:row-span-4 sm:row-start-1"
   },
   {
     src: "/brand/products/buttonless/nd3/nd3-angle.webp",
     alt: "Burgundy Resort Collection outfit shown at an angle",
     className:
-      "col-span-2 col-start-5 row-span-2 row-start-4 sm:col-span-4 sm:col-start-9 sm:row-span-3 sm:row-start-1"
+      "col-span-2 col-start-5 row-span-2 row-start-4 sm:col-span-4 sm:col-start-9 sm:row-span-4 sm:row-start-1"
   },
   {
     src: "/brand/products/button/ndb4/ndb4-mid.webp",
     alt: "Cowrie Collection outfit shown from mid length",
     className:
-      "col-span-3 col-start-1 row-span-3 row-start-6 sm:col-span-3 sm:col-start-6 sm:row-span-3 sm:row-start-4"
-  },
-  {
-    src: "/brand/products/button/ndb1/ndb1-angle.webp",
-    alt: "Cobalt Cowrie Collection outfit shown at an angle",
-    className:
-      "col-span-3 col-start-4 row-span-3 row-start-6 sm:col-span-4 sm:col-start-9 sm:row-span-3 sm:row-start-4"
+      "col-span-3 col-start-1 row-span-4 row-start-6 sm:col-span-4 sm:col-start-6 sm:row-span-4 sm:row-start-5"
   },
   {
     src: "/brand/products/button/ndb3/ndb3-angle.webp",
     alt: "Burgundy Cowrie Collection outfit shown at an angle",
     className:
-      "col-span-3 col-start-1 row-span-4 row-start-9 sm:col-span-6 sm:col-start-1 sm:row-span-4 sm:row-start-7"
-  },
-  {
-    src: "/brand/products/buttonless/nd5/nd5-studio-registered-source.png",
-    alt: "ỌNUỌRA Resort Collection studio portrait",
-    className:
-      "col-span-3 col-start-4 row-span-4 row-start-9 sm:col-span-6 sm:col-start-7 sm:row-span-4 sm:row-start-7"
+      "col-span-3 col-start-4 row-span-4 row-start-6 sm:col-span-3 sm:col-start-10 sm:row-span-4 sm:row-start-5"
   }
 ];
 
@@ -153,7 +141,7 @@ export function LimitedOfferCarousel() {
         onMouseLeave={leaveCampaign}
         onClick={handleCampaignClick}
       >
-        <div className="grid h-[86svh] min-h-[760px] max-h-[980px] grid-cols-6 grid-rows-12 gap-1 p-1 sm:h-[82svh] sm:min-h-[700px] sm:grid-cols-12 sm:grid-rows-10">
+        <div className="grid h-[76svh] min-h-[660px] max-h-[860px] grid-cols-6 grid-rows-9 gap-1 p-1 sm:h-[74svh] sm:min-h-[620px] sm:grid-cols-12 sm:grid-rows-8">
           {campaignImages.map((image) => (
             <div
               key={image.src}
@@ -164,8 +152,8 @@ export function LimitedOfferCarousel() {
                 alt={image.alt}
                 fill
                 quality={92}
-                sizes="(min-width: 640px) 50vw, 67vw"
-                className="object-cover object-top transition duration-700 ease-out group-hover:scale-[1.018]"
+                sizes="(min-width: 640px) 42vw, 67vw"
+                className="object-cover object-top transition duration-700 ease-out group-hover:brightness-[1.03]"
               />
             </div>
           ))}
