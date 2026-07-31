@@ -41,13 +41,13 @@ export default async function HomePage() {
     <main className="bg-page text-copy">
       <section className="relative min-h-[min(680px,calc(100svh-56px))] overflow-hidden bg-[#f4eee6] text-[#171717] md:min-h-[min(820px,calc(100svh-72px))]">
         <Image
-          src="/brand/main-hero-mobile.png"
+          src="/brand/main-hero.png"
           alt="Registered ỌNUỌRA models wearing the purple, forest and black two-piece outfits"
           fill
           priority
           quality={95}
           sizes="(max-width: 639px) 100vw, 1px"
-          className="object-contain object-top sm:hidden"
+          className="object-cover object-center sm:hidden"
         />
         <Image
           src="/brand/main-hero.png"
@@ -90,13 +90,13 @@ export default async function HomePage() {
             href="/collection"
             linkLabel="Explore All"
           />
-          <div className="grid auto-rows-fr items-stretch gap-3 sm:grid-cols-3 md:gap-5">
+          <div className="grid gap-3 sm:grid-cols-3 md:gap-5">
             {homepageCollectionCards.map((collection, index) => (
               <Link
                 key={collection.id}
                 href={collection.href}
-                data-collection={collection.id}
-                className="collection-image-pair home-collection-card gold-focus group relative block h-full aspect-[4/5] overflow-hidden bg-[#f4eee6]"
+                data-collection={collection.id === "original" ? collection.id : undefined}
+                className="collection-image-pair home-collection-card gold-focus group relative block aspect-[4/5] overflow-hidden bg-[#f4eee6]"
               >
                 <CollectionImageSwap
                   images={collection.images}
@@ -111,14 +111,8 @@ export default async function HomePage() {
                       {collection.eyebrow}
                     </p>
                     <h2 className="mt-1.5 text-xl font-semibold">{collection.title}</h2>
-                    <p className="mt-2 text-xs leading-5 text-white/75">
-                      {collection.description}
-                    </p>
-                    <span className="mt-3 inline-flex items-center gap-1.5 text-[9px] font-semibold uppercase">
-                      Explore
-                      <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-                    </span>
                   </div>
+                  <ArrowRight className="h-5 w-5 shrink-0 transition group-hover:translate-x-1" />
                 </div>
               </Link>
             ))}
@@ -136,7 +130,13 @@ export default async function HomePage() {
           />
           <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 lg:grid-cols-4">
             {originals.slice(0, 4).map((product, index) => (
-              <ProductCard key={product.slug} product={product} priority={index < 2} badge="Heritage Collection" />
+              <ProductCard
+                key={product.slug}
+                product={product}
+                priority={index < 2}
+                badge="Heritage Collection"
+                visualVariant="july29"
+              />
             ))}
           </div>
         </div>
@@ -148,7 +148,7 @@ export default async function HomePage() {
         <div className="container-luxe grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div className="relative aspect-[16/11] overflow-hidden bg-surface-subtle">
             <Image
-              src="/brand/Heritage.jpg"
+              src="/brand/hero.jpg"
               alt="The ỌNUỌRA house wearing contemporary menswear in Lagos"
               fill
               quality={94}
