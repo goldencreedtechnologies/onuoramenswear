@@ -13,7 +13,7 @@ export const COLLECTIONS = [
     legacyHash: "original",
     englishName: "Heritage Collection",
     igboName: "Nkwọ",
-    navigationLabel: "Heritage — Nkwọ",
+    navigationLabel: "Heritage Collection",
     description:
       "A contemporary interpretation of the original ỌNUỌRA silhouette, defined by its signature three-quarter sleeve."
   },
@@ -23,7 +23,7 @@ export const COLLECTIONS = [
     legacyHash: "with-button",
     englishName: "Cowrie Collection",
     igboName: "Ọzọ",
-    navigationLabel: "Cowrie — Ọzọ",
+    navigationLabel: "Cowrie Collection",
     description:
       "A refined contemporary silhouette distinguished by signature cowrie detailing."
   },
@@ -33,7 +33,7 @@ export const COLLECTIONS = [
     legacyHash: "without-button",
     englishName: "Resort Collection",
     igboName: "Uzọ",
-    navigationLabel: "Resort — Uzọ",
+    navigationLabel: "Resort Collection",
     description:
       "A clean collarless silhouette designed for relaxed, effortless dressing."
   }
@@ -86,11 +86,6 @@ export function fixedProductPriceLabel(currency: CurrencyCode, quantity = 1) {
   return formatCurrency(currency, fixedProductPrice(currency) * quantity);
 }
 
-/**
- * Existing delivery APIs currently calculate in USD. Until the shipping-band
- * work is completed, this deterministic display ratio keeps the selected
- * currency consistent without calling an exchange-rate API.
- */
 export function operationalUsdAmountInCurrency(amountUsd: number, currency: CurrencyCode) {
   return Math.round((amountUsd * PRODUCT_PRICES[currency]) / PRODUCT_PRICES.USD);
 }
@@ -167,10 +162,10 @@ export function isAdditionalProductColour(name: string, value?: string) {
 }
 
 export const DELIVERY_COPY =
-  "Worldwide delivery is available. International delivery is charged at a $50 flat rate, Lagos delivery is complimentary for valid addresses, and delivery outside Lagos is charged at a single ₦15,000 flat rate.";
+  "Prepared for dispatch within three working days. Worldwide delivery is available. International delivery is charged at a $50 flat rate, Lagos delivery is complimentary for valid addresses, and delivery outside Lagos is charged at a single ₦15,000 flat rate.";
 
-export function announcementCopy(currency: CurrencyCode) {
-  return `Designed And Made In Nigeria · Prices Shown In ${currency} · Worldwide Delivery Available`;
+export function announcementCopy(_currency: CurrencyCode) {
+  return "Prepared for Dispatch Within Three Working Days | Worldwide Delivery";
 }
 
 export const PROMOTIONS = {
