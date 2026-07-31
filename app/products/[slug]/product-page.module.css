@@ -1,0 +1,3 @@
+.options > :first-child {
+  display: none;
+}
