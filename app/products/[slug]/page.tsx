@@ -8,6 +8,7 @@ import { ProductCard } from "@/components/product-card";
 import { getStoreProductBySlug, getStoreProducts } from "@/lib/backend/catalog";
 import { getCollectionByFamily } from "@/data/site-config";
 import { priceToUsd } from "@/lib/cart";
+import styles from "./product-page.module.css";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -24,9 +25,11 @@ export async function generateMetadata({ params }: ProductPageProps) {
 
   if (!product) return {};
 
+  const collection = getCollectionByFamily(product.family);
+
   return {
-    title: product.name,
-    description: `${product.name}, ${product.meaning}. ${product.story}`
+    title: collection.englishName,
+    description: `${collection.englishName}. ${product.story}`
   };
 }
 
@@ -55,34 +58,43 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   return (
     <main className="bg-page pt-[104px] text-copy">
-      <div className="container-luxe py-4">
-        <nav className="flex items-center gap-1.5 text-[10px] uppercase text-copy-muted" aria-label="Breadcrumb">
-          <Link href="/" className="gold-focus hover:text-copy">
-            Home
-          </Link>
-          <ChevronRight className="h-3 w-3" />
-          <Link href={`/collection#${collectionHash}`} className="gold-focus hover:text-copy">
-            {collectionLabel}
-          </Link>
-          <ChevronRight className="h-3 w-3" />
-          <span className="text-copy">{product.name}</span>
-        </nav>
-      </div>
-
-      <section className="container-luxe grid gap-8 pb-14 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] lg:gap-12 lg:pb-20">
+      <section className="container-luxe grid gap-8 pb-14 pt-6 md:pt-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] lg:gap-12 lg:pb-20">
         <ProductGallery
           images={Array.from(new Set([product.image, ...product.images]))}
-          productName={product.name}
+          productName={collectionLabel}
         />
         <aside className="lg:sticky lg:top-[124px] lg:self-start">
-          <p className="text-[10px] font-semibold uppercase text-gold">{product.edition}</p>
+          <nav
+            className="mb-7 flex flex-wrap items-center gap-1.5 text-[10px] uppercase text-copy-muted"
+            aria-label="Breadcrumb"
+          >
+            <Link href="/" className="gold-focus hover:text-copy">
+              Home
+            </Link>
+            <ChevronRight className="h-3 w-3" />
+            <Link href="/collection" className="gold-focus hover:text-copy">
+              Shop
+            </Link>
+            <ChevronRight className="h-3 w-3" />
+            <Link
+              href={`/collection#${collectionHash}`}
+              className="gold-focus text-copy hover:text-gold"
+            >
+              {collectionLabel}
+            </Link>
+          </nav>
+
+          <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-gold">
+            {collection.igboName}
+          </p>
           <h1 className="product-title mt-2 text-3xl font-semibold leading-none sm:text-4xl">
-            {product.name}
+            {collectionLabel}
           </h1>
-          <p className="mt-2 text-sm text-copy-muted">{product.meaning}</p>
           <p className="mt-5 text-xl font-medium">{product.price}</p>
           <CurrencyConverter priceUsd={priceToUsd(product.price)} />
-          <ProductOptions product={product} colorOptions={colorOptions} />
+          <div className={styles.options}>
+            <ProductOptions product={product} colorOptions={colorOptions} />
+          </div>
 
           <div className="mt-6 grid grid-cols-3 border-y border-line py-5">
             {[
@@ -158,7 +170,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         </div>
         <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 lg:grid-cols-4">
           {related.map((item) => (
-            <ProductCard key={item.slug} product={item} />
+            <ProductCard key={item.slug} product={item} collectionOnly />
           ))}
         </div>
       </section>
