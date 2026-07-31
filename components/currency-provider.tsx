@@ -28,17 +28,21 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const [currency, setCurrencyState] = useState<CurrencyCode>("USD");
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(CURRENCY_PREFERENCE_KEY);
-    if (isCurrencyCode(saved)) {
-      setCurrencyState(saved);
-      return;
-    }
+    const timer = window.setTimeout(() => {
+      const saved = window.localStorage.getItem(CURRENCY_PREFERENCE_KEY);
+      if (isCurrencyCode(saved)) {
+        setCurrencyState(saved);
+        return;
+      }
 
-    const suggested = detectSuggestedCurrency(
-      navigator.languages?.length ? navigator.languages : [navigator.language],
-      Intl.DateTimeFormat().resolvedOptions().timeZone
-    );
-    setCurrencyState(suggested);
+      const suggested = detectSuggestedCurrency(
+        navigator.languages?.length ? navigator.languages : [navigator.language],
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+      );
+      setCurrencyState(suggested);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   function setCurrency(nextCurrency: CurrencyCode) {
