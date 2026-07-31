@@ -72,7 +72,7 @@ export function CurrencySelector({ className }: { className?: string }) {
         <ChevronDown className={cn("h-3.5 w-3.5 transition", open && "rotate-180")} />
       </button>
       {open ? (
-        <div className="absolute right-0 top-full z-[130] mt-2 min-w-28 bg-page p-1.5 text-copy shadow-xl ring-1 ring-line">
+        <div className="absolute right-0 top-full z-[130] mt-2 w-20 bg-page p-1 text-copy shadow-xl ring-1 ring-line">
           {SUPPORTED_CURRENCIES.map((code) => (
             <button
               key={code}
@@ -82,7 +82,7 @@ export function CurrencySelector({ className }: { className?: string }) {
                 setOpen(false);
               }}
               className={cn(
-                "gold-focus flex min-h-9 w-full items-center px-3 text-left text-xs hover:bg-surface-subtle",
+                "gold-focus flex min-h-9 w-full items-center justify-center px-2 text-center text-xs hover:bg-surface-subtle",
                 code === currency && "font-semibold"
               )}
               aria-pressed={code === currency}
