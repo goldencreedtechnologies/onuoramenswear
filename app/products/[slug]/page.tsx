@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: ProductPageProps) {
 
   return {
     title: collection.englishName,
-    description: `${collection.englishName}. ${product.story}`
+    description: collection.description
   };
 }
 
@@ -116,9 +116,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <div className="divide-y divide-line border-b border-line text-sm">
             {[
-              ["Details", product.details],
+              [
+                "Details",
+                "A complete two-piece outfit with a coordinated top and tapered trousers, functional pockets, signature ỌNUỌRA detailing, and stretch construction."
+              ],
               ["Fit", product.fit],
-              ["Fabric & care", product.fabricCare],
+              [
+                "Fabric & care",
+                "Four-way stretch suiting. Wash gently in cold water with mild detergent, reshape while damp, dry flat in shade, and cool iron inside out. Do not bleach or tumble dry."
+              ],
               ["Delivery", product.delivery]
             ].map(([title, text]) => (
               <details key={title} className="group py-4">
@@ -139,17 +145,19 @@ export default async function ProductPage({ params }: ProductPageProps) {
       >
         <div className="container-luxe grid gap-6 md:grid-cols-[0.8fr_1.2fr] md:items-start">
           <div>
-            <p className="text-[10px] font-semibold uppercase text-gold-soft">{product.storyKicker}</p>
+            <p className="text-[10px] font-semibold uppercase text-gold-soft">
+              {collection.igboName}
+            </p>
             <h2 className="mt-3 max-w-lg text-3xl font-semibold leading-tight md:text-4xl">
-              {product.storyTitle}
+              {collectionLabel}
             </h2>
           </div>
           <div>
             <p className="max-w-2xl text-base leading-8" style={{ color: product.pageMuted }}>
-              {product.story}
+              {collection.description}
             </p>
             <p className="mt-6 text-[10px] font-semibold uppercase" style={{ color: product.pageMuted }}>
-              Designed for {product.occasion}
+              Designed And Made In Nigeria For Work, Travel, And Celebration.
             </p>
           </div>
         </div>
