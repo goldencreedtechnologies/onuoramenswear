@@ -4,8 +4,7 @@ import { phaseOneCollections } from "@/data/phase-one-collections";
 
 export const metadata = {
   title: "Shop Collections",
-  description:
-    "Explore ỌNUỌRA Menswear's Heritage, Cowrie, and Resort collections.",
+  description: "Explore ỌNUỌRA Menswear's Heritage, Cowrie and Resort collections.",
   alternates: {
     canonical: "/collection"
   }
@@ -14,7 +13,7 @@ export const metadata = {
 export default function CollectionsPage() {
   return (
     <main className="bg-page pt-[104px] text-copy">
-      <section className="relative isolate overflow-hidden bg-obsidian py-14 text-ivory md:py-20">
+      <section className="relative isolate overflow-hidden bg-obsidian py-12 text-ivory md:py-20">
         <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
           <Image
             src="/brand/onuora-logo-gold.png"
@@ -27,15 +26,15 @@ export default function CollectionsPage() {
           />
         </div>
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(31,31,31,0.18),rgba(31,31,31,0.78)_70%)]" />
-        <div className="container-luxe relative grid gap-7 md:grid-cols-[1fr_0.6fr] md:items-end">
+        <div className="container-luxe relative grid gap-5 md:grid-cols-[1fr_0.6fr] md:items-end md:gap-7">
           <div>
-            <p className="text-[10px] font-semibold uppercase text-gold-soft">Permanent Collections</p>
+            <p className="text-[10px] font-semibold uppercase text-gold-soft">THE PERMANENT COLLECTIONS</p>
             <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl">
-              Made To Move. Designed To Be Remembered.
+              Three Collections. One Philosophy.
             </h1>
           </div>
           <p className="max-w-lg text-sm leading-6 text-ivory/68">
-            Three permanent silhouettes, designed and made in Nigeria for work, travel, and celebration.
+            Three distinct expressions of contemporary African menswear designed for different occasions.
           </p>
         </div>
       </section>
