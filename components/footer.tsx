@@ -1,25 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Instagram, Mail, MessageCircle } from "lucide-react";
+import { Instagram, Mail, MessageCircle } from "lucide-react";
+
+const permanentCollectionLinks = [
+  { href: "/collection#original", igbo: "Nkwọ", english: "Heritage Collection" },
+  { href: "/collection#with-button", igbo: "Ọzọ", english: "Cowrie Collection" },
+  { href: "/collection#without-button", igbo: "Uzọ", english: "Resort Collection" }
+];
 
 const footerGroups = [
   {
-    title: "Shop",
+    title: "Client Services",
     links: [
-      { href: "/collection#original", label: "Heritage — Nkwọ" },
-      { href: "/collection#with-button", label: "Cowrie — Ọzọ" },
-      { href: "/collection#without-button", label: "Resort — Uzọ" },
-      { href: "/cart", label: "Shopping Bag" }
+      { href: "/services#sizing", label: "Sizing" },
+      { href: "/services#care", label: "Care" },
+      { href: "/contact", label: "Contact" },
+      { href: "/services#faq", label: "FAQ" },
+      { href: "/account", label: "My Account" }
     ]
   },
   {
-    title: "Client Services",
+    title: "Orders & Policies",
     links: [
-      { href: "/contact", label: "Contact" },
-      { href: "/services", label: "Services" },
       { href: "/shipping", label: "Delivery" },
       { href: "/returns", label: "Returns & Exchanges" },
-      { href: "/account", label: "My Account" }
+      { href: "/privacy", label: "Privacy" },
+      { href: "/terms", label: "Terms" },
+      { href: "/accessibility", label: "Accessibility" }
     ]
   },
   {
@@ -35,7 +42,7 @@ const footerGroups = [
 export function Footer() {
   return (
     <footer className="bg-obsidian text-ivory">
-      <div className="container-luxe grid gap-10 border-t border-white/10 py-12 lg:grid-cols-[1.25fr_repeat(3,0.7fr)] lg:py-16">
+      <div className="container-luxe grid gap-10 border-t border-white/10 py-12 lg:grid-cols-[1.2fr_0.8fr_repeat(3,0.7fr)] lg:py-16">
         <div>
           <Link href="/" className="inline-flex" aria-label="ỌNUỌRA Home">
             <span className="relative block h-20 w-[220px] overflow-hidden">
@@ -51,25 +58,27 @@ export function Footer() {
           <p className="mt-4 max-w-sm text-sm leading-6 text-white/55">
             Contemporary African Menswear. Designed And Made In Nigeria For A Global Wardrobe.
           </p>
-          <form action="/contact" method="get" className="mt-7 flex max-w-md border-b border-white/35">
-            <label className="sr-only" htmlFor="footer-email">
-              Email address
-            </label>
-            <input
-              id="footer-email"
-              name="email"
-              type="email"
-              placeholder="Email For Private Previews"
-              className="min-h-12 flex-1 bg-transparent pr-4 text-sm text-white outline-none placeholder:text-white/40"
-            />
-            <button
-              type="submit"
-              className="gold-focus inline-flex h-12 w-12 items-center justify-center text-gold"
-              aria-label="Join ỌNUỌRA Circle"
-            >
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </form>
+        </div>
+
+        <div>
+          <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.1em] text-gold-soft">
+            Shop
+          </p>
+          <div className="flex flex-col gap-4">
+            {permanentCollectionLinks.map((link) => (
+              <Link key={link.href} href={link.href} className="group w-fit">
+                <span className="block text-[9px] font-semibold uppercase tracking-[0.08em] text-gold-soft">
+                  {link.igbo}
+                </span>
+                <span className="mt-0.5 block text-sm font-semibold text-white/72 transition group-hover:text-white">
+                  {link.english}
+                </span>
+              </Link>
+            ))}
+            <Link href="/cart" className="w-fit text-sm text-white/62 transition hover:text-white">
+              Shopping Bag
+            </Link>
+          </div>
         </div>
 
         {footerGroups.map((group) => (
@@ -93,15 +102,6 @@ export function Footer() {
           © 2026 ỌNUỌRA. Wear Your Identity.
         </span>
         <div className="flex flex-wrap items-center gap-x-5 gap-y-3 text-[10px] uppercase tracking-[0.06em] text-white/48">
-          <Link href="/privacy" className="transition hover:text-white">
-            Privacy
-          </Link>
-          <Link href="/terms" className="transition hover:text-white">
-            Terms
-          </Link>
-          <Link href="/accessibility" className="transition hover:text-white">
-            Accessibility
-          </Link>
           <Link href="/contact" aria-label="Instagram" className="transition hover:text-white">
             <Instagram className="h-4 w-4" />
           </Link>
