@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from "lucide-react";
-import { CollectionProductCard } from "@/components/collection-product-card";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
+import { ProductPrice } from "@/components/currency-provider";
 import type { PhaseOneCollectionProduct } from "@/data/phase-one-collections";
+import { PRODUCT_INCLUSION_LABEL } from "@/data/site-config";
 
 type CollectionSection = {
   id: string;
@@ -13,302 +15,328 @@ type CollectionSection = {
   products: PhaseOneCollectionProduct[];
 };
 
-function productPrice(product: PhaseOneCollectionProduct) {
-  return product.prices.USD;
-}
+type EditorialAsset = {
+  productId: string;
+  src: string;
+  alt: string;
+  className?: string;
+};
 
-function sortProducts(products: PhaseOneCollectionProduct[], sort: string) {
-  return [...products].sort((a, b) => {
-    if (sort === "price-asc") return productPrice(a) - productPrice(b);
-    if (sort === "price-desc") return productPrice(b) - productPrice(a);
-    if (sort === "name") return a.name.localeCompare(b.name);
-    return 0;
-  });
-}
+type CollectionEditorialLayout = {
+  heroSide: "left" | "right";
+  hero: {
+    productId: string;
+    front: EditorialAsset;
+    hover: EditorialAsset;
+  };
+  grid: EditorialAsset[];
+};
 
-export function CollectionBrowser({ sections }: { sections: CollectionSection[] }) {
-  const railRefs = useRef<Record<string, HTMLDivElement | null>>({});
-  const [sort, setSort] = useState("featured");
-  const [selectedColor, setSelectedColor] = useState("all");
-  const [selectedCollection, setSelectedCollection] = useState("all");
-  const [filtersOpen, setFiltersOpen] = useState(false);
-
-  const colors = useMemo(
-    () =>
-      Array.from(
-        new Map(
-          sections
-            .flatMap((section) => section.products)
-            .map((product) => [product.color, product.colorValue] as const)
-        )
-      ),
-    [sections]
-  );
-
-  const visibleSections = useMemo(
-    () =>
-      sections
-        .filter((section) => selectedCollection === "all" || section.id === selectedCollection)
-        .map((section) => ({
-          ...section,
-          products: sortProducts(
-            section.products.filter(
-              (product) => selectedColor === "all" || product.color === selectedColor
-            ),
-            sort
-          )
-        }))
-        .filter((section) => section.products.length),
-    [sections, selectedCollection, selectedColor, sort]
-  );
-
-  const visibleProductCount = visibleSections.reduce(
-    (total, section) => total + section.products.length,
-    0
-  );
-
-  function changeCollection(id: string) {
-    setSelectedCollection(id);
-    requestAnimationFrame(() => {
-      Object.values(railRefs.current).forEach((rail) =>
-        rail?.scrollTo({ left: 0, behavior: "smooth" })
-      );
-    });
+const collectionLayouts: Record<string, CollectionEditorialLayout> = {
+  original: {
+    heroSide: "left",
+    hero: {
+      productId: "aja",
+      front: {
+        productId: "aja",
+        src: "/brand/products/original/aja/aja-front.webp",
+        alt: "AJA Heritage Collection full front view",
+        className: "object-cover object-top"
+      },
+      hover: {
+        productId: "aja",
+        src: "/brand/products/original/aja/aja-original.png",
+        alt: "AJA Heritage Collection original view",
+        className: "object-cover object-top"
+      }
+    },
+    grid: [
+      {
+        productId: "ebube",
+        src: "/brand/products/original/ebube/ebube-back.webp",
+        alt: "EBUBE Heritage Collection back view"
+      },
+      {
+        productId: "aja",
+        src: "/brand/products/original/aja/aja-mid.webp",
+        alt: "AJA Heritage Collection mid view"
+      },
+      {
+        productId: "ndu",
+        src: "/brand/products/original/ndu/ndu-studio-idris-source.png",
+        alt: "NDỤ Heritage Collection studio portrait"
+      },
+      {
+        productId: "ohuru",
+        src: "/brand/products/original/ohuru/ohuru-mid.webp",
+        alt: "ỌHỤRỤ Heritage Collection mid view"
+      }
+    ]
+  },
+  "with-button": {
+    heroSide: "right",
+    hero: {
+      productId: "ndb2",
+      front: {
+        productId: "ndb2",
+        src: "/brand/products/button/ndb2/ndb2-studio-registered-source.png",
+        alt: "NDB2 Cowrie Collection studio portrait",
+        className: "object-cover object-top"
+      },
+      hover: {
+        productId: "ndb2",
+        src: "/brand/products/button/ndb2/ndb2-mid.webp",
+        alt: "NDB2 Cowrie Collection mid view",
+        className: "object-cover object-top"
+      }
+    },
+    grid: [
+      {
+        productId: "ndb1",
+        src: "/brand/products/button/ndb1/ndb1-back.webp",
+        alt: "NDB1 Cowrie Collection back view"
+      },
+      {
+        productId: "ndb3",
+        src: "/brand/products/button/ndb3/ndb3-mid.webp",
+        alt: "NDB3 Cowrie Collection mid view"
+      },
+      {
+        productId: "ndb4",
+        src: "/brand/products/button/ndb4/ndb4-angle.webp",
+        alt: "NDB4 Cowrie Collection angle view"
+      },
+      {
+        productId: "ndb5",
+        src: "/brand/products/button/ndb5/ndb5-studio-registered-source.png",
+        alt: "NDB5 Cowrie Collection studio portrait"
+      }
+    ]
+  },
+  "without-button": {
+    heroSide: "left",
+    hero: {
+      productId: "nd5",
+      front: {
+        productId: "nd5",
+        src: "/brand/products/buttonless/nd5/nd5-angle.webp",
+        alt: "ND5 Resort Collection angle view",
+        className: "object-cover object-top"
+      },
+      hover: {
+        productId: "nd5",
+        src: "/brand/products/buttonless/nd5/nd5-mid.webp",
+        alt: "ND5 Resort Collection mid view",
+        className: "object-cover object-top"
+      }
+    },
+    grid: [
+      {
+        productId: "nd4",
+        src: "/brand/products/buttonless/nd4/nd4-mid.webp",
+        alt: "ND4 Resort Collection mid view"
+      },
+      {
+        productId: "nd3",
+        src: "/brand/products/buttonless/nd3/nd3-angle.webp",
+        alt: "ND3 Resort Collection angle view"
+      },
+      {
+        productId: "nd2",
+        src: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png",
+        alt: "ND2 Resort Collection studio portrait"
+      },
+      {
+        productId: "nd1",
+        src: "/brand/products/buttonless/nd1/nd1-back.webp",
+        alt: "ND1 Resort Collection back view"
+      }
+    ]
   }
+};
 
-  function moveRail(sectionId: string, direction: -1 | 1) {
-    const rail = railRefs.current[sectionId];
-    if (!rail) return;
+function collectionProduct(section: CollectionSection, productId: string) {
+  return section.products.find((product) => product.id === productId) ?? section.products[0];
+}
 
-    rail.scrollBy({
-      left: direction * Math.max(280, rail.clientWidth * 0.82),
-      behavior: "smooth"
-    });
+function HeroProduct({
+  section,
+  layout,
+  priority
+}: {
+  section: CollectionSection;
+  layout: CollectionEditorialLayout;
+  priority: boolean;
+}) {
+  const product = collectionProduct(section, layout.hero.productId);
+  if (!product) return null;
+
+  const content = (
+    <>
+      <div className="relative aspect-[4/5] overflow-hidden bg-[#f1f0ec]">
+        <Image
+          src={layout.hero.front.src}
+          alt={layout.hero.front.alt}
+          fill
+          priority={priority}
+          quality={92}
+          sizes="(min-width: 768px) 320px, 86vw"
+          className={`transition duration-700 ease-out group-hover:opacity-0 ${layout.hero.front.className ?? "object-cover object-top"}`}
+        />
+        <Image
+          src={layout.hero.hover.src}
+          alt=""
+          aria-hidden="true"
+          fill
+          quality={92}
+          sizes="(min-width: 768px) 320px, 86vw"
+          className={`opacity-0 transition duration-700 ease-out group-hover:opacity-100 ${layout.hero.hover.className ?? "object-cover object-top"}`}
+        />
+        <span className="absolute bottom-3 right-3 grid h-9 w-9 translate-y-2 place-items-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+        </span>
+      </div>
+      <div className="pt-4">
+        <p className="mb-1.5 text-sm font-semibold text-copy md:text-base">{section.title}</p>
+        <ProductPrice className="text-xl font-semibold leading-none text-copy md:text-2xl" />
+        <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.04em] text-copy-muted">
+          {PRODUCT_INCLUSION_LABEL}
+        </p>
+      </div>
+    </>
+  );
+
+  if (!product.href) {
+    return <article className="group min-w-0">{content}</article>;
   }
 
   return (
-    <>
-      <div className="sticky top-[104px] z-20 border-y border-line bg-page/95 backdrop-blur-xl">
-        <div className="container-luxe flex flex-col sm:min-h-14 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <nav
-            className="hide-scrollbar flex min-w-0 gap-5 overflow-x-auto border-b border-line sm:border-b-0"
-            aria-label="Collections"
-          >
-            <button
-              type="button"
-              onClick={() => changeCollection("all")}
-              className={`gold-focus shrink-0 border-b-2 py-4 text-[10px] font-semibold uppercase transition sm:py-5 ${
-                selectedCollection === "all"
-                  ? "border-copy text-copy"
-                  : "border-transparent text-copy-muted hover:text-copy"
-              }`}
-              aria-current={selectedCollection === "all" ? "page" : undefined}
-            >
-              All
-            </button>
-            {sections.map((section) => (
-              <button
-                key={section.id}
-                type="button"
-                onClick={() => changeCollection(section.id)}
-                className={`gold-focus shrink-0 border-b-2 py-4 text-[10px] font-semibold uppercase transition sm:py-5 ${
-                  selectedCollection === section.id
-                    ? "border-copy text-copy"
-                    : "border-transparent text-copy-muted hover:text-copy"
-                }`}
-                aria-current={selectedCollection === section.id ? "page" : undefined}
-              >
-                {section.title}
-              </button>
-            ))}
-          </nav>
-          <div className="grid shrink-0 grid-cols-2 items-center sm:flex sm:gap-1">
-            <button
-              type="button"
-              onClick={() => setFiltersOpen(true)}
-              className="gold-focus inline-flex h-11 items-center justify-center gap-2 px-3 text-[10px] font-semibold uppercase text-copy transition hover:bg-surface-subtle sm:h-10"
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              Filter
-              {selectedColor !== "all" ? <span className="h-1.5 w-1.5 rounded-full bg-gold" /> : null}
-            </button>
-            <label className="sr-only" htmlFor="collection-sort">
-              Sort collection
-            </label>
-            <select
-              id="collection-sort"
-              value={sort}
-              onChange={(event) => setSort(event.target.value)}
-              className="gold-focus h-11 w-full bg-transparent px-3 text-[10px] font-semibold uppercase text-copy outline-none sm:h-10 sm:w-auto"
-            >
-              <option value="featured">Featured</option>
-              <option value="price-asc">Price: Low To High</option>
-              <option value="price-desc">Price: High To Low</option>
-              <option value="name">Name</option>
-            </select>
-          </div>
-        </div>
-      </div>
+    <Link
+      href={product.href}
+      className="gold-focus group block min-w-0"
+      aria-label={`Explore ${section.title}`}
+    >
+      {content}
+    </Link>
+  );
+}
 
-      <section className="overflow-hidden py-9 md:py-12" aria-labelledby="collection-browser-title">
-        <div className="container-luxe">
-          <header className="mb-9">
-            <p className="text-[10px] font-semibold uppercase text-gold">
-              {visibleProductCount} {visibleProductCount === 1 ? "Style" : "Styles"}
-            </p>
-            <h2 id="collection-browser-title" className="mt-2 text-2xl font-semibold md:text-3xl">
-              {selectedCollection === "all"
-                ? "The Permanent Collections"
-                : sections.find((section) => section.id === selectedCollection)?.title}
-            </h2>
-          </header>
-
-          {visibleSections.length ? (
-            <div className="grid gap-12 md:gap-16">
-              {visibleSections.map((section, sectionIndex) => (
-                <section key={section.id} id={section.id} aria-labelledby={`${section.id}-title`}>
-                  <header className="mb-6 flex items-end justify-between gap-6">
-                    <div className="max-w-2xl">
-                      <p className="text-[10px] font-semibold uppercase text-gold">
-                        {section.eyebrow}
-                      </p>
-                      <h3 id={`${section.id}-title`} className="mt-2 text-2xl font-semibold">
-                        {section.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-6 text-copy-muted">{section.description}</p>
-                    </div>
-                    <div className="hidden shrink-0 gap-2 sm:flex">
-                      <button
-                        type="button"
-                        onClick={() => moveRail(section.id, -1)}
-                        className="gold-focus grid h-10 w-10 place-items-center border border-line text-copy transition hover:border-copy hover:bg-copy hover:text-white"
-                        aria-label={`Scroll ${section.title} products left`}
-                      >
-                        <ChevronLeft className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => moveRail(section.id, 1)}
-                        className="gold-focus grid h-10 w-10 place-items-center border border-line text-copy transition hover:border-copy hover:bg-copy hover:text-white"
-                        aria-label={`Scroll ${section.title} products right`}
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </header>
-
-                  <div
-                    ref={(node) => {
-                      railRefs.current[section.id] = node;
-                    }}
-                    className="hide-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth pb-4 sm:gap-5"
-                  >
-                    {section.products.map((product, index) => (
-                      <div
-                        key={product.id}
-                        className="min-w-0 shrink-0 basis-[78vw] snap-start sm:basis-[42vw] md:basis-[calc((100%-2.5rem)/3)] lg:basis-[calc((100%-3.75rem)/4)]"
-                      >
-                        <CollectionProductCard
-                          product={product}
-                          priority={sectionIndex === 0 && index < 4}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </section>
-              ))}
+function SupportingGrid({
+  section,
+  assets,
+  priority
+}: {
+  section: CollectionSection;
+  assets: EditorialAsset[];
+  priority: boolean;
+}) {
+  return (
+    <div>
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+        {assets.map((asset, index) => {
+          const product = collectionProduct(section, asset.productId);
+          const image = (
+            <div className="relative aspect-[4/5] overflow-hidden bg-[#f1f0ec]">
+              <Image
+                src={asset.src}
+                alt={asset.alt}
+                fill
+                priority={priority && index < 2}
+                quality={90}
+                sizes="(min-width: 768px) 195px, 44vw"
+                className={`transition duration-700 ease-out group-hover:scale-[1.015] ${asset.className ?? "object-cover object-top"}`}
+              />
             </div>
-          ) : (
-            <div className="border-y border-line py-16 text-center">
-              <p className="text-sm text-copy-muted">No styles match this filter.</p>
-              <button
-                type="button"
-                onClick={() => setSelectedColor("all")}
-                className="gold-focus mt-4 text-xs font-semibold uppercase text-copy underline underline-offset-4"
-              >
-                Clear Filter
-              </button>
-            </div>
-          )}
-        </div>
-      </section>
+          );
 
-      {filtersOpen ? (
-        <div className="fixed inset-0 z-[90]">
-          <button
-            type="button"
-            className="absolute inset-0 bg-black/45"
-            aria-label="Close filters"
-            onClick={() => setFiltersOpen(false)}
-          />
-          <aside
-            className="absolute inset-y-0 right-0 w-full max-w-sm bg-page p-6 text-copy shadow-2xl"
-            aria-label="Collection filters"
-          >
-            <div className="flex items-center justify-between border-b border-line pb-5">
-              <h2 className="text-sm font-semibold uppercase">Filter</h2>
-              <button
-                type="button"
-                onClick={() => setFiltersOpen(false)}
-                className="gold-focus flex h-10 w-10 items-center justify-center rounded-full hover:bg-surface-subtle"
-                aria-label="Close filters"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <fieldset className="mt-7">
-              <legend className="text-xs font-semibold uppercase">Colour</legend>
-              <div className="mt-4 grid gap-1">
-                <button
-                  type="button"
-                  onClick={() => setSelectedColor("all")}
-                  className={`gold-focus flex min-h-12 items-center justify-between border-b border-line text-left text-sm ${
-                    selectedColor === "all" ? "font-semibold" : ""
-                  }`}
-                >
-                  All Colours
-                  {selectedColor === "all" ? <span className="text-gold">Selected</span> : null}
-                </button>
-                {colors.map(([name, value]) => (
-                  <button
-                    key={name}
-                    type="button"
-                    onClick={() => setSelectedColor(name)}
-                    className={`gold-focus flex min-h-12 items-center justify-between border-b border-line text-left text-sm ${
-                      selectedColor === name ? "font-semibold" : ""
-                    }`}
-                  >
-                    <span className="flex items-center gap-3">
-                      <span
-                        className="h-4 w-4 rounded-full border border-copy/15"
-                        style={{ backgroundColor: value }}
-                      />
-                      {name}
-                    </span>
-                    {selectedColor === name ? <span className="text-gold">Selected</span> : null}
-                  </button>
-                ))}
+          if (!product?.href) {
+            return (
+              <div key={asset.src} className="group min-w-0">
+                {image}
               </div>
-            </fieldset>
-            <div className="absolute inset-x-6 bottom-6 grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setSelectedColor("all")}
-                className="gold-focus h-12 border border-line text-xs font-semibold uppercase hover:border-copy"
+            );
+          }
+
+          return (
+            <Link
+              key={asset.src}
+              href={product.href}
+              className="gold-focus group block min-w-0"
+              aria-label={`Explore ${section.title} detail`}
+            >
+              {image}
+            </Link>
+          );
+        })}
+      </div>
+      <p className="mt-3 flex items-center gap-2 text-[9px] uppercase tracking-[0.05em] text-copy-muted/75">
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold" aria-hidden="true" />
+        Available In Different Colours
+      </p>
+    </div>
+  );
+}
+
+export function CollectionBrowser({ sections }: { sections: CollectionSection[] }) {
+  return (
+    <div className="overflow-hidden">
+      {sections.map((section, sectionIndex) => {
+        const layout = collectionLayouts[section.id];
+        if (!layout) return null;
+
+        const heroOrder = layout.heroSide === "right" ? "md:order-2" : "md:order-1";
+        const gridOrder = layout.heroSide === "right" ? "md:order-1" : "md:order-2";
+        const monogramPosition =
+          layout.heroSide === "right"
+            ? "-left-20 md:left-[2%]"
+            : "-right-20 md:right-[2%]";
+
+        return (
+          <section
+            key={section.id}
+            id={section.id}
+            aria-labelledby={`${section.id}-title`}
+            className="relative isolate scroll-mt-[112px] overflow-hidden border-b border-line py-10 md:py-14"
+          >
+            <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+              <div className="absolute left-1/2 top-[62%] h-[74%] w-[min(96%,920px)] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle_at_center,rgba(245,230,200,0.22),rgba(245,230,200,0.08)_38%,transparent_70%)]" />
+              <span
+                className={`absolute top-[58%] -translate-y-1/2 select-none font-semibold leading-none ${monogramPosition}`}
+                style={{
+                  fontSize: "clamp(18rem,34vw,34rem)",
+                  color: "transparent",
+                  WebkitTextStroke: "1px rgba(101, 67, 33, 0.09)"
+                }}
               >
-                Reset
-              </button>
-              <button
-                type="button"
-                onClick={() => setFiltersOpen(false)}
-                className="gold-focus h-12 bg-obsidian text-xs font-semibold uppercase text-ivory hover:bg-gold hover:text-obsidian"
-              >
-                View {visibleProductCount}
-              </button>
+                Ọ
+              </span>
             </div>
-          </aside>
-        </div>
-      ) : null}
-    </>
+
+            <div className="container-luxe relative z-10">
+              <header className="mb-7 max-w-2xl md:mb-8">
+                <p className="text-[10px] font-semibold uppercase text-gold">{section.eyebrow}</p>
+                <h2 id={`${section.id}-title`} className="mt-2 text-3xl font-semibold md:text-4xl">
+                  {section.title}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-copy-muted">{section.description}</p>
+              </header>
+
+              <div className="mx-auto grid max-w-[850px] gap-7 md:grid-cols-[minmax(250px,320px)_minmax(330px,410px)] md:items-start md:justify-center md:gap-7 lg:gap-9">
+                <div className={`mx-auto w-full max-w-[310px] md:max-w-none ${heroOrder}`}>
+                  <HeroProduct section={section} layout={layout} priority={sectionIndex === 0} />
+                </div>
+                <div className={`mx-auto w-full max-w-[380px] md:max-w-none ${gridOrder}`}>
+                  <SupportingGrid
+                    section={section}
+                    assets={layout.grid}
+                    priority={sectionIndex === 0}
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })}
+    </div>
   );
 }

@@ -1,11 +1,9 @@
 import Image from "next/image";
-import { ArrowRight, Globe2, Move3D, Scissors, ShieldCheck } from "lucide-react";
-import Link from "next/link";
-import { craftSteps } from "@/data/catalog";
+import { Globe2, Move3D, Scissors, ShieldCheck } from "lucide-react";
 
 export const metadata = {
   title: "Our Heritage",
-  description: "The story, mission, craft, and stretch-fit philosophy behind ỌNUỌRA."
+  description: "The story, mission, and stretch-fit philosophy behind ỌNUỌRA."
 };
 
 const principles = [
@@ -34,23 +32,23 @@ const principles = [
 export default function AboutPage() {
   return (
     <main className="bg-page pt-[104px] text-copy">
-      <section className="relative min-h-[690px] overflow-hidden bg-obsidian text-white md:min-h-[760px]">
+      <section className="relative min-h-[460px] overflow-hidden bg-obsidian text-white sm:min-h-[500px] md:min-h-[560px]">
         <Image
-          src="/brand/Heritage.jpg"
+          src="/brand/hero.jpg"
           alt="The ỌNUỌRA house wearing contemporary African menswear in Nigeria"
           fill
           priority
           loading="eager"
           quality={94}
           sizes="100vw"
-          className="object-cover object-[50%_25%]"
+          className="object-cover object-[50%_28%]"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/26 to-black/8" />
-        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-white/16 to-transparent" />
-        <div className="container-luxe relative flex min-h-[690px] items-end pb-12 md:min-h-[760px] md:pb-16">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/28 to-black/10" />
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/12 to-transparent" />
+        <div className="container-luxe relative flex min-h-[460px] items-end pb-10 sm:min-h-[500px] md:min-h-[560px] md:pb-12">
           <div className="max-w-2xl">
             <p className="text-[10px] font-semibold uppercase text-gold-soft">Our Heritage</p>
-            <h1 className="mt-3 text-4xl font-semibold leading-tight sm:text-5xl">
+            <h1 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl">
               The Voice Of The People, Cut For Now.
             </h1>
             <p className="mt-4 max-w-lg text-sm leading-6 text-white/72">
@@ -111,7 +109,7 @@ export default function AboutPage() {
         <div className="container-luxe grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-stretch">
           <div className="relative min-h-[500px] overflow-hidden bg-surface-subtle">
             <Image
-              src="/brand/founder.png"
+              src="/brand/Founder-img.png"
               alt="The Founder Of ỌNUỌRA Menswear"
               fill
               quality={94}
@@ -144,53 +142,6 @@ export default function AboutPage() {
             African authorship, supports skilled making at home, and belongs naturally in wardrobes
             from Lagos to London, New York, Paris, and beyond.
           </p>
-        </div>
-      </section>
-
-      <section className="bg-obsidian py-14 text-ivory md:py-20">
-        <div className="container-luxe">
-          <header className="mb-8 max-w-2xl">
-            <p className="text-[10px] font-semibold uppercase text-gold-soft">Craftsmanship</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
-              Craft Is The Quiet Proof.
-            </h2>
-          </header>
-          <div className="grid gap-px bg-white/12 md:grid-cols-3">
-            {craftSteps.slice(0, 3).map((step, index) => (
-              <article key={step.label} className="min-h-64 bg-obsidian p-7">
-                <p className="text-[10px] font-semibold text-gold">0{index + 1}</p>
-                <h3 className="mt-16 text-xl font-semibold">{step.label}</h3>
-                <p className="mt-3 text-sm leading-6 text-white/55">{step.text}</p>
-              </article>
-            ))}
-          </div>
-          <div className="mt-px grid gap-px bg-white/12 md:grid-cols-2">
-            {craftSteps.slice(3).map((step, index) => (
-              <article key={step.label} className="min-h-56 bg-obsidian p-7">
-                <p className="text-[10px] font-semibold text-gold">0{index + 4}</p>
-                <h3 className="mt-14 text-xl font-semibold">{step.label}</h3>
-                <p className="mt-3 max-w-lg text-sm leading-6 text-white/55">{step.text}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-14 md:py-20">
-        <div className="container-luxe flex flex-col items-start justify-between gap-6 border-b border-line pb-10 sm:flex-row sm:items-end">
-          <div className="max-w-2xl">
-            <p className="text-[10px] font-semibold uppercase text-gold">The next chapter</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight">
-              Choose The Silhouette That Speaks For You.
-            </h2>
-          </div>
-          <Link
-            href="/collection"
-            className="gold-focus inline-flex min-h-11 items-center gap-3 bg-obsidian px-5 text-[10px] font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian"
-          >
-            Explore the Collection
-            <ArrowRight className="h-4 w-4" />
-          </Link>
         </div>
       </section>
     </main>

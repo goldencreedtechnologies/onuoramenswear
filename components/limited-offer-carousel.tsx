@@ -6,37 +6,48 @@ import { ArrowRight, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { newArrivalsPromotion } from "@/data/phase-one-collections";
 
+const OFFER_AUTO_OPENED_KEY = "onuora-current-offer-auto-opened";
+const AUTO_OPEN_DELAY_MS = 8000;
+const HOVER_OPEN_DELAY_MS = 650;
+
 const campaignImages = [
   {
-    src: "/brand/products/buttonless/nd1/nd1-studio-registered.webp",
+    src: "/brand/products/buttonless/nd1/nd1-studio-registered-source.png",
     alt: "Kharn wearing the cobalt Resort Collection set",
     className:
-      "col-span-7 col-start-1 row-span-6 row-start-1 sm:col-span-5 sm:col-start-1"
+      "col-span-4 col-start-1 row-span-5 row-start-1 sm:col-span-5 sm:col-start-1 sm:row-span-8 sm:row-start-1"
   },
   {
-    src: "/brand/products/button/ndb2/ndb2-studio-registered.webp",
-    alt: "Edson wearing the earth Cowrie Collection set",
+    src: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png",
+    alt: "ỌNUỌRA Resort Collection studio portrait",
     className:
-      "col-span-5 col-start-8 row-span-3 row-start-1 sm:col-span-3 sm:col-start-6"
+      "col-span-2 col-start-5 row-span-3 row-start-1 sm:col-span-3 sm:col-start-6 sm:row-span-4 sm:row-start-1"
   },
   {
-    src: "/brand/products/buttonless/nd3/nd3-studio-registered.webp",
-    alt: "Charlie wearing the burgundy Resort Collection set",
+    src: "/brand/products/buttonless/nd3/nd3-angle.webp",
+    alt: "Burgundy Resort Collection outfit shown at an angle",
     className:
-      "col-span-5 col-start-8 row-span-3 row-start-4 sm:col-span-4 sm:col-start-9 sm:row-start-1"
+      "col-span-2 col-start-5 row-span-2 row-start-4 sm:col-span-4 sm:col-start-9 sm:row-span-4 sm:row-start-1"
   },
   {
-    src: "/brand/products/button/ndb5/ndb5-studio-registered.webp",
-    alt: "Idris wearing the royal purple Cowrie Collection set",
+    src: "/brand/products/button/ndb4/ndb4-mid.webp",
+    alt: "Cowrie Collection outfit shown from mid length",
     className:
-      "hidden sm:col-span-7 sm:col-start-6 sm:row-span-3 sm:row-start-4 sm:block"
+      "col-span-3 col-start-1 row-span-4 row-start-6 sm:col-span-4 sm:col-start-6 sm:row-span-4 sm:row-start-5"
+  },
+  {
+    src: "/brand/products/button/ndb3/ndb3-angle.webp",
+    alt: "Burgundy Cowrie Collection outfit shown at an angle",
+    className:
+      "col-span-3 col-start-4 row-span-4 row-start-6 sm:col-span-3 sm:col-start-10 sm:row-span-4 sm:row-start-5"
   }
 ];
 
 export function LimitedOfferCarousel() {
   const [modalOpen, setModalOpen] = useState(false);
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const dismissedDuringHover = useRef(false);
+  const autoTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoOpened = useRef(false);
 
   function clearHoverTimer() {
     if (hoverTimer.current) {
@@ -45,26 +56,68 @@ export function LimitedOfferCarousel() {
     }
   }
 
+  function clearAutoTimer() {
+    if (autoTimer.current) {
+      clearTimeout(autoTimer.current);
+      autoTimer.current = null;
+    }
+  }
+
+  function markAutoOpened() {
+    autoOpened.current = true;
+    clearAutoTimer();
+    if (typeof window !== "undefined") {
+      window.sessionStorage.setItem(OFFER_AUTO_OPENED_KEY, "true");
+    }
+  }
+
+  function openAutomatically() {
+    if (autoOpened.current) {
+      return;
+    }
+
+    markAutoOpened();
+    setModalOpen(true);
+  }
+
+  function openManually() {
+    markAutoOpened();
+    clearHoverTimer();
+    setModalOpen(true);
+  }
+
   function scheduleModal() {
-    if (dismissedDuringHover.current || window.matchMedia("(hover: none)").matches) {
+    if (autoOpened.current || window.matchMedia("(hover: none)").matches) {
       return;
     }
 
     clearHoverTimer();
-    hoverTimer.current = setTimeout(() => setModalOpen(true), 650);
+    hoverTimer.current = setTimeout(openAutomatically, HOVER_OPEN_DELAY_MS);
   }
 
   function leaveCampaign() {
     clearHoverTimer();
-    dismissedDuringHover.current = false;
   }
 
   function closeModal() {
-    dismissedDuringHover.current = true;
     setModalOpen(false);
   }
 
+  function handleCampaignClick(event: React.MouseEvent<HTMLElement>) {
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button")) {
+      return;
+    }
+    openManually();
+  }
+
   useEffect(() => {
+    autoOpened.current = window.sessionStorage.getItem(OFFER_AUTO_OPENED_KEY) === "true";
+
+    if (!autoOpened.current) {
+      autoTimer.current = setTimeout(openAutomatically, AUTO_OPEN_DELAY_MS);
+    }
+
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         closeModal();
@@ -74,6 +127,7 @@ export function LimitedOfferCarousel() {
     window.addEventListener("keydown", onKeyDown);
     return () => {
       clearHoverTimer();
+      clearAutoTimer();
       window.removeEventListener("keydown", onKeyDown);
     };
   }, []);
@@ -85,8 +139,9 @@ export function LimitedOfferCarousel() {
         aria-labelledby="new-arrivals-heading"
         onMouseEnter={scheduleModal}
         onMouseLeave={leaveCampaign}
+        onClick={handleCampaignClick}
       >
-        <div className="grid h-[66svh] min-h-[500px] max-h-[760px] grid-cols-12 grid-rows-6 gap-1 p-1 sm:min-h-[560px]">
+        <div className="grid h-[76svh] min-h-[660px] max-h-[860px] grid-cols-6 grid-rows-9 gap-1 p-1 sm:h-[74svh] sm:min-h-[620px] sm:grid-cols-12 sm:grid-rows-8">
           {campaignImages.map((image) => (
             <div
               key={image.src}
@@ -97,14 +152,14 @@ export function LimitedOfferCarousel() {
                 alt={image.alt}
                 fill
                 quality={92}
-                sizes="(min-width: 640px) 42vw, 60vw"
-                className="object-cover object-top transition duration-700 ease-out group-hover:scale-[1.018]"
+                sizes="(min-width: 640px) 42vw, 67vw"
+                className="object-cover object-top transition duration-700 ease-out group-hover:brightness-[1.03]"
               />
             </div>
           ))}
         </div>
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/5" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/66 via-transparent to-black/5" />
         <div className="absolute inset-x-0 bottom-0">
           <div className="container-luxe flex items-end pb-8 sm:pb-10">
             <div className="text-white">
@@ -116,7 +171,7 @@ export function LimitedOfferCarousel() {
               </h2>
               <button
                 type="button"
-                onClick={() => setModalOpen(true)}
+                onClick={openManually}
                 className="gold-focus pointer-events-auto mt-3 inline-flex items-center gap-2 border-b border-white/70 pb-1 text-[10px] font-semibold uppercase transition hover:border-gold hover:text-gold"
               >
                 Shop the Offer

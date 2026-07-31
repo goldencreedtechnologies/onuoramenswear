@@ -28,17 +28,21 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const [currency, setCurrencyState] = useState<CurrencyCode>("USD");
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(CURRENCY_PREFERENCE_KEY);
-    if (isCurrencyCode(saved)) {
-      setCurrencyState(saved);
-      return;
-    }
+    const timer = window.setTimeout(() => {
+      const saved = window.localStorage.getItem(CURRENCY_PREFERENCE_KEY);
+      if (isCurrencyCode(saved)) {
+        setCurrencyState(saved);
+        return;
+      }
 
-    const suggested = detectSuggestedCurrency(
-      navigator.languages?.length ? navigator.languages : [navigator.language],
-      Intl.DateTimeFormat().resolvedOptions().timeZone
-    );
-    setCurrencyState(suggested);
+      const suggested = detectSuggestedCurrency(
+        navigator.languages?.length ? navigator.languages : [navigator.language],
+        Intl.DateTimeFormat().resolvedOptions().timeZone
+      );
+      setCurrencyState(suggested);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   function setCurrency(nextCurrency: CurrencyCode) {
@@ -72,7 +76,7 @@ export function CurrencySelector({ className }: { className?: string }) {
         <ChevronDown className={cn("h-3.5 w-3.5 transition", open && "rotate-180")} />
       </button>
       {open ? (
-        <div className="absolute right-0 top-full z-[130] mt-2 min-w-40 bg-page p-1.5 text-copy shadow-xl ring-1 ring-line">
+        <div className="absolute right-0 top-full z-[130] mt-2 w-20 bg-page p-1 text-copy shadow-xl ring-1 ring-line">
           {SUPPORTED_CURRENCIES.map((code) => (
             <button
               key={code}
@@ -82,12 +86,12 @@ export function CurrencySelector({ className }: { className?: string }) {
                 setOpen(false);
               }}
               className={cn(
-                "gold-focus flex min-h-9 w-full items-center justify-between gap-4 px-3 text-left text-xs hover:bg-surface-subtle",
+                "gold-focus flex min-h-9 w-full items-center justify-center px-2 text-center text-xs hover:bg-surface-subtle",
                 code === currency && "font-semibold"
               )}
+              aria-pressed={code === currency}
             >
-              <span>{code}</span>
-              <span className="text-copy-muted">{fixedProductPriceLabel(code)}</span>
+              {code}
             </button>
           ))}
         </div>

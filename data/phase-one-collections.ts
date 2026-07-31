@@ -35,16 +35,16 @@ export type PhaseOneCollection = {
 
 export const phaseOneImagePairs = {
   withoutButton: {
-    front: "/brand/products/buttonless/nd3/nd3-studio-registered.webp",
-    hover: "/brand/products/buttonless/nd3/nd3-angle.webp"
+    front: "/brand/products/buttonless/nd3/nd3-front.webp",
+    hover: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png"
   },
   withButton: {
-    front: "/brand/products/button/ndb2/ndb2-angle.webp",
-    hover: "/brand/products/button/ndb4/ndb4-studio-registered.webp"
+    front: "/brand/products/button/ndb2/ndb2-front.webp",
+    hover: "/brand/products/button/ndb1/ndb1-studio-registered-source.png"
   },
   original: {
-    front: "/brand/products/original/ndu/ndu-studio-idris.webp",
-    hover: "/brand/products/original/ndu/ndu-angle.webp"
+    front: "/brand/products/original/aja/aja-front.webp",
+    hover: "/brand/products/original/ndu/ndu-studio-idris-source.png"
   }
 } satisfies Record<string, CollectionImagePair>;
 
@@ -83,22 +83,22 @@ const resort = COLLECTIONS[2];
 export const phaseOneCollections: PhaseOneCollection[] = [
   {
     id: "original",
-    eyebrow: heritage.englishName,
-    title: heritage.igboName,
+    eyebrow: heritage.igboName,
+    title: heritage.englishName,
     description: heritage.description,
     products: collectionProducts("original", regionalPriceSets.original, heritage.englishName)
   },
   {
     id: "with-button",
-    eyebrow: cowrie.englishName,
-    title: cowrie.igboName,
+    eyebrow: cowrie.igboName,
+    title: cowrie.englishName,
     description: cowrie.description,
     products: collectionProducts("button", regionalPriceSets.withButton, cowrie.englishName)
   },
   {
     id: "without-button",
-    eyebrow: resort.englishName,
-    title: resort.igboName,
+    eyebrow: resort.igboName,
+    title: resort.englishName,
     description: resort.description,
     products: collectionProducts("buttonless", regionalPriceSets.withoutButton, resort.englishName)
   }
@@ -107,24 +107,24 @@ export const phaseOneCollections: PhaseOneCollection[] = [
 export const homepageCollectionCards = [
   {
     id: "without-button",
-    eyebrow: resort.englishName,
-    title: resort.igboName,
+    eyebrow: resort.igboName,
+    title: resort.englishName,
     description: resort.description,
     href: "/collection#without-button",
     images: phaseOneImagePairs.withoutButton
   },
   {
     id: "with-button",
-    eyebrow: cowrie.englishName,
-    title: cowrie.igboName,
+    eyebrow: cowrie.igboName,
+    title: cowrie.englishName,
     description: cowrie.description,
     href: "/collection#with-button",
     images: phaseOneImagePairs.withButton
   },
   {
     id: "original",
-    eyebrow: heritage.englishName,
-    title: heritage.igboName,
+    eyebrow: heritage.igboName,
+    title: heritage.englishName,
     description: heritage.description,
     href: "/collection#original",
     images: phaseOneImagePairs.original
