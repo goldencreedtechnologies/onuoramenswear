@@ -10,7 +10,7 @@ export const metadata = {
 
 const journalImages = [
   "/brand/new-product-nb.png",
-  "/brand/new-product-btn/new-design-b-black.png",
+  "/brand/new-product-b(back).png",
   "/brand/new-product-b.png"
 ];
 
