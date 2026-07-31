@@ -5,7 +5,11 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { ProductPrice } from "@/components/currency-provider";
 import type { Product } from "@/data/catalog";
-import { PRODUCT_TYPE_LABEL } from "@/data/site-config";
+import {
+  PRODUCT_INCLUSION_LABEL,
+  PRODUCT_TYPE_LABEL,
+  getCollectionByFamily
+} from "@/data/site-config";
 
 type ProductCardVisualVariant = "current" | "july29";
 
@@ -13,23 +17,32 @@ export function ProductCard({
   product,
   priority = false,
   badge,
-  visualVariant = "current"
+  visualVariant = "current",
+  collectionOnly = false
 }: {
   product: Product;
   priority?: boolean;
   badge?: string;
   visualVariant?: ProductCardVisualVariant;
+  collectionOnly?: boolean;
 }) {
   const secondaryImage =
     product.images.find((image) => image && image !== product.image) ?? product.image;
   const useJuly29Visuals = visualVariant === "july29";
+  const collection = getCollectionByFamily(product.family);
+  const cardLabel = collectionOnly
+    ? `Explore ${collection.englishName}`
+    : `Shop ${product.name}, ${product.edition}`;
+  const imageAlt = collectionOnly
+    ? `${collection.englishName} outfit`
+    : `${product.name} ${product.edition}`;
 
   return (
     <article className="group min-w-0">
       <Link
         href={`/products/${product.slug}`}
         className="gold-focus block"
-        aria-label={`Shop ${product.name}, ${product.edition}`}
+        aria-label={cardLabel}
       >
         <div
           className={`product-card-media relative aspect-[3/4] overflow-hidden ${
@@ -38,7 +51,7 @@ export function ProductCard({
         >
           <Image
             src={product.image}
-            alt={`${product.name} ${product.edition}`}
+            alt={imageAlt}
             fill
             sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
             priority={priority}
@@ -75,11 +88,25 @@ export function ProductCard({
         </div>
         <div className="flex items-start justify-between gap-3 pt-3">
           <div className="min-w-0">
-            <p className="truncate text-[10px] font-medium uppercase text-copy-muted">
-              {product.edition}
-            </p>
-            <h3 className="mt-1 text-sm font-semibold text-copy">{product.name}</h3>
-            <p className="mt-1 text-xs text-copy-muted">{PRODUCT_TYPE_LABEL}</p>
+            {collectionOnly ? (
+              <>
+                <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-gold">
+                  {collection.igboName}
+                </p>
+                <h3 className="mt-1 text-sm font-semibold text-copy">
+                  {collection.englishName}
+                </h3>
+                <p className="mt-1 text-xs text-copy-muted">{PRODUCT_INCLUSION_LABEL}</p>
+              </>
+            ) : (
+              <>
+                <p className="truncate text-[10px] font-medium uppercase text-copy-muted">
+                  {product.edition}
+                </p>
+                <h3 className="mt-1 text-sm font-semibold text-copy">{product.name}</h3>
+                <p className="mt-1 text-xs text-copy-muted">{PRODUCT_TYPE_LABEL}</p>
+              </>
+            )}
           </div>
           <ProductPrice className="shrink-0 text-sm font-medium text-copy" />
         </div>
