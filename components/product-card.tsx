@@ -58,7 +58,7 @@ export function ProductCard({
             <span
               className={
                 useJuly29Visuals
-                  ? "absolute left-3 top-3 bg-page/92 px-2.5 py-1 text-[9px] font-semibold uppercase text-copy backdrop-blur-sm"
+                  ? "absolute left-2 top-2 max-w-[70%] bg-page/92 px-1.5 py-0.5 text-[7px] font-semibold uppercase leading-3 text-copy backdrop-blur-sm"
                   : "absolute bottom-2 right-2 max-w-[calc(100%-3.5rem)] bg-page/88 px-2 py-0.5 text-right text-[8px] font-semibold uppercase leading-4 text-copy backdrop-blur-sm"
               }
             >
