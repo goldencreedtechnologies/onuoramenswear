@@ -103,6 +103,7 @@ export default async function HomePage() {
                   alt={`${collection.eyebrow}: ${collection.title}`}
                   sizes="(min-width: 640px) 33vw, 100vw"
                   priority={index === 0}
+                  className="object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/76 via-transparent to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
@@ -120,7 +121,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="pb-14 md:pb-20">
+      <LimitedOfferCarousel />
+
+      <section className="py-14 md:py-20">
         <div className="container-luxe">
           <SectionHeading
             eyebrow="House Originals"
@@ -141,8 +144,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      <LimitedOfferCarousel />
 
       <section className="py-14 md:py-20">
         <div className="container-luxe grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
