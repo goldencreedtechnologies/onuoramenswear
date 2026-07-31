@@ -7,17 +7,22 @@ import { ProductPrice } from "@/components/currency-provider";
 import type { Product } from "@/data/catalog";
 import { PRODUCT_TYPE_LABEL } from "@/data/site-config";
 
+type ProductCardVisualVariant = "current" | "july29";
+
 export function ProductCard({
   product,
   priority = false,
-  badge
+  badge,
+  visualVariant = "current"
 }: {
   product: Product;
   priority?: boolean;
   badge?: string;
+  visualVariant?: ProductCardVisualVariant;
 }) {
   const secondaryImage =
     product.images.find((image) => image && image !== product.image) ?? product.image;
+  const useJuly29Visuals = visualVariant === "july29";
 
   return (
     <article className="group min-w-0">
@@ -26,7 +31,11 @@ export function ProductCard({
         className="gold-focus block"
         aria-label={`Shop ${product.name}, ${product.edition}`}
       >
-        <div className="product-card-media relative aspect-[3/4] overflow-hidden bg-page">
+        <div
+          className={`product-card-media relative aspect-[3/4] overflow-hidden ${
+            useJuly29Visuals ? "bg-[#f1f0ec]" : "bg-page"
+          }`}
+        >
           <Image
             src={product.image}
             alt={`${product.name} ${product.edition}`}
@@ -46,11 +55,21 @@ export function ProductCard({
             />
           ) : null}
           {badge ? (
-            <span className="absolute bottom-2 right-2 max-w-[calc(100%-3.5rem)] bg-page/88 px-2 py-0.5 text-right text-[8px] font-semibold uppercase leading-4 text-copy backdrop-blur-sm">
+            <span
+              className={
+                useJuly29Visuals
+                  ? "absolute left-3 top-3 bg-page/92 px-2.5 py-1 text-[9px] font-semibold uppercase text-copy backdrop-blur-sm"
+                  : "absolute bottom-2 right-2 max-w-[calc(100%-3.5rem)] bg-page/88 px-2 py-0.5 text-right text-[8px] font-semibold uppercase leading-4 text-copy backdrop-blur-sm"
+              }
+            >
               {badge}
             </span>
           ) : null}
-          <span className="absolute bottom-2 left-2 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          <span
+            className={`absolute flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 ${
+              useJuly29Visuals ? "bottom-3 right-3" : "bottom-2 left-2"
+            }`}
+          >
             <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
           </span>
         </div>
