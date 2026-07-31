@@ -34,13 +34,6 @@ const permanentCollectionLinks = [
   { href: "/collection#without-button", igbo: "Uzọ", english: "Resort Collection" }
 ];
 
-const houseOriginalLinks = [
-  { href: "/products/ebube", label: "EBUBE / Black" },
-  { href: "/products/ndu", label: "NDỤ / Burgundy" },
-  { href: "/products/ijeoma", label: "IJEỌMA / Blue" },
-  { href: "/collection#original", label: "Explore Heritage Collection" }
-];
-
 const clientServiceLinks = [
   { href: "/services#sizing", label: "Sizing" },
   { href: "/services#care", label: "Care" },
@@ -318,7 +311,7 @@ export function Navigation() {
           onMouseLeave={() => setMegaMenu(null)}
         >
           {megaMenu === "collections" ? (
-            <div className="container-luxe grid grid-cols-[1fr_0.9fr_1.35fr] gap-8 py-9">
+            <div className="container-luxe grid grid-cols-[0.9fr_1.35fr] gap-8 py-9">
               <div>
                 <p className="mb-5 text-[10px] font-bold uppercase text-copy-muted">
                   Permanent Collections
@@ -338,23 +331,6 @@ export function Navigation() {
                   >
                     View All Collections
                   </Link>
-                </div>
-              </div>
-              <div>
-                <p className="mb-5 text-[10px] font-bold uppercase text-copy-muted">
-                  House Originals
-                </p>
-                <div className="flex flex-col gap-3.5 text-sm">
-                  {houseOriginalLinks.map((link) => (
-                    <Link
-                      key={`${link.href}-${link.label}`}
-                      href={link.href}
-                      onClick={closeMenus}
-                      className="w-fit border-b border-transparent pb-0.5 transition hover:border-gold hover:text-gold"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
                 </div>
               </div>
               <PromotionCard closeMenus={closeMenus} />
