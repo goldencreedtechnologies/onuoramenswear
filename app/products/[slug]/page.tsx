@@ -1,18 +1,28 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight, Globe2, PackageCheck, ShieldCheck } from "lucide-react";
-import { CurrencyConverter } from "@/components/currency-converter";
+import { CurrencySelector, ProductPrice } from "@/components/currency-provider";
 import { ProductGallery } from "@/components/product-gallery";
 import { ProductOptions } from "@/components/product-options";
 import { ProductCard } from "@/components/product-card";
 import { getStoreProductBySlug, getStoreProducts } from "@/lib/backend/catalog";
 import { getCollectionByFamily } from "@/data/site-config";
-import { priceToUsd } from "@/lib/cart";
 import styles from "./product-page.module.css";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
 };
+
+function galleryRank(image: string) {
+  const normalized = image.toLowerCase();
+  if (normalized.includes("-front.")) return 0;
+  if (normalized.includes("-mid.")) return 1;
+  if (normalized.includes("-angle.")) return 2;
+  if (normalized.includes("studio")) return 3;
+  if (normalized.includes("original")) return 4;
+  if (normalized.includes("-back.")) return 5;
+  return 6;
+}
 
 export async function generateStaticParams() {
   const items = await getStoreProducts();
@@ -22,21 +32,18 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = await getStoreProductBySlug(slug);
-
   if (!product) return {};
 
   const collection = getCollectionByFamily(product.family);
-
   return {
-    title: collection.englishName,
-    description: collection.description
+    title: `${product.name} | ${collection.englishName}`,
+    description: `${product.name} in ${product.colorName}, from the ${collection.englishName}.`
   };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
   const product = await getStoreProductBySlug(slug);
-
   if (!product) notFound();
 
   const allProducts = await getStoreProducts();
@@ -54,49 +61,59 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .slice(0, 4);
   const collection = getCollectionByFamily(product.family);
   const collectionLabel = collection.englishName;
-  const collectionHash = collection.legacyHash;
+  const galleryImages = Array.from(new Set([product.image, ...product.images])).sort(
+    (a, b) => galleryRank(a) - galleryRank(b)
+  );
 
   return (
     <main className="bg-page pt-[104px] text-copy">
-      <section className="container-luxe grid gap-8 pb-14 pt-6 md:pt-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] lg:gap-12 lg:pb-20">
-        <ProductGallery
-          images={Array.from(new Set([product.image, ...product.images]))}
-          productName={collectionLabel}
-        />
+      <section className="container-luxe grid gap-6 pb-12 pt-4 md:gap-8 md:pt-8 lg:grid-cols-[minmax(0,1.38fr)_minmax(340px,0.62fr)] lg:gap-12 lg:pb-20">
+        <ProductGallery images={galleryImages} productName={`${product.name} ${product.colorName}`} />
+
         <aside className="lg:sticky lg:top-[124px] lg:self-start">
-          <nav
-            className="mb-7 flex flex-wrap items-center gap-1.5 text-[10px] uppercase text-copy-muted"
-            aria-label="Breadcrumb"
-          >
-            <Link href="/" className="gold-focus hover:text-copy">
-              Home
-            </Link>
+          <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-[9px] uppercase text-copy-muted" aria-label="Breadcrumb">
+            <Link href="/" className="gold-focus hover:text-copy">Home</Link>
             <ChevronRight className="h-3 w-3" />
-            <Link href="/collection" className="gold-focus hover:text-copy">
-              Shop
-            </Link>
+            <Link href="/collection" className="gold-focus hover:text-copy">Shop</Link>
             <ChevronRight className="h-3 w-3" />
-            <Link
-              href={`/collection#${collectionHash}`}
-              className="gold-focus text-copy hover:text-gold"
-            >
-              {collectionLabel}
-            </Link>
+            <span className="text-copy">{collectionLabel}</span>
           </nav>
 
+          <div className="mb-5 flex items-center justify-between border-y border-line py-2.5">
+            <span className="text-[10px] font-semibold uppercase text-copy-muted">Currency</span>
+            <CurrencySelector />
+          </div>
+
           <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-gold">
-            {collection.igboName}
+            {collection.igboName} · {collectionLabel}
           </p>
           <h1 className="product-title mt-2 text-3xl font-semibold leading-none sm:text-4xl">
-            {collectionLabel}
+            {product.name}
           </h1>
-          <p className="mt-5 text-xl font-medium">{product.price}</p>
-          <CurrencyConverter priceUsd={priceToUsd(product.price)} />
+          <p className="mt-3 text-sm text-copy-muted">
+            Colour <span className="font-semibold text-copy">{product.colorName}</span>
+          </p>
+          <ProductPrice className="mt-4 block text-2xl font-semibold text-copy" />
+
           <div className={styles.options}>
             <ProductOptions product={product} colorOptions={colorOptions} />
           </div>
 
-          <div className="mt-6 grid grid-cols-3 border-y border-line py-5">
+          <details className="group mt-5 border-y border-line py-4">
+            <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase">
+              Read More
+              <span className="text-lg font-light group-open:rotate-45">+</span>
+            </summary>
+            <div className="grid gap-4 pt-4 text-sm leading-7 text-copy-muted">
+              <p>{collection.description}</p>
+              <p>
+                A complete two-piece outfit with a coordinated top and tapered trousers, functional pockets and signature ỌNUỌRA detailing. Designed and made in Nigeria.
+              </p>
+              <p>{product.delivery}</p>
+            </div>
+          </details>
+
+          <div className="mt-5 grid grid-cols-3 border-b border-line pb-5">
             {[
               { icon: PackageCheck, label: "Inventory checked" },
               { icon: Globe2, label: "Tracked delivery" },
@@ -106,77 +123,25 @@ export default async function ProductPage({ params }: ProductPageProps) {
               return (
                 <div key={item.label} className="px-2 text-center">
                   <Icon className="mx-auto h-4 w-4 text-gold" />
-                  <p className="mt-2 text-[9px] font-semibold uppercase text-copy-muted">
-                    {item.label}
-                  </p>
+                  <p className="mt-2 text-[9px] font-semibold uppercase text-copy-muted">{item.label}</p>
                 </div>
               );
             })}
           </div>
-
-          <div className="divide-y divide-line border-b border-line text-sm">
-            {[
-              [
-                "Details",
-                "A complete two-piece outfit with a coordinated top and tapered trousers, functional pockets, signature ỌNUỌRA detailing, and stretch construction."
-              ],
-              ["Fit", product.fit],
-              [
-                "Fabric & care",
-                "Four-way stretch suiting. Wash gently in cold water with mild detergent, reshape while damp, dry flat in shade, and cool iron inside out. Do not bleach or tumble dry."
-              ],
-              ["Delivery", product.delivery]
-            ].map(([title, text]) => (
-              <details key={title} className="group py-4">
-                <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold uppercase">
-                  {title}
-                  <span className="text-lg font-light group-open:rotate-45">+</span>
-                </summary>
-                <p className="pr-6 pt-3 text-sm leading-6 text-copy-muted">{text}</p>
-              </details>
-            ))}
-          </div>
         </aside>
       </section>
 
-      <section
-        className="py-14 md:py-20"
-        style={{ backgroundColor: product.palette, color: product.pageText }}
-      >
-        <div className="container-luxe grid gap-6 md:grid-cols-[0.8fr_1.2fr] md:items-start">
-          <div>
-            <p className="text-[10px] font-semibold uppercase text-gold-soft">
-              {collection.igboName}
-            </p>
-            <h2 className="mt-3 max-w-lg text-3xl font-semibold leading-tight md:text-4xl">
-              {collectionLabel}
-            </h2>
-          </div>
-          <div>
-            <p className="max-w-2xl text-base leading-8" style={{ color: product.pageMuted }}>
-              {collection.description}
-            </p>
-            <p className="mt-6 text-[10px] font-semibold uppercase" style={{ color: product.pageMuted }}>
-              Designed And Made In Nigeria For Work, Travel, And Celebration.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="container-luxe py-14 md:py-20">
+      <section className="container-luxe py-12 md:py-20">
         <div className="mb-7 flex items-end justify-between gap-5">
           <div>
             <p className="text-[10px] font-semibold uppercase text-gold">Complete The Wardrobe</p>
             <h2 className="mt-2 text-2xl font-semibold md:text-3xl">You May Also Like</h2>
           </div>
-          <Link
-            href={`/collection#${collectionHash}`}
-            className="gold-focus hidden border-b border-copy/35 pb-1 text-[10px] font-semibold uppercase sm:block"
-          >
+          <Link href={`/collection#${collection.legacyHash}`} className="gold-focus hidden border-b border-copy/35 pb-1 text-[10px] font-semibold uppercase sm:block">
             Shop All
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-2.5 gap-y-7 sm:gap-x-5 sm:gap-y-9 lg:grid-cols-4">
           {related.map((item) => (
             <ProductCard key={item.slug} product={item} collectionOnly />
           ))}
