@@ -180,24 +180,25 @@ function HeroProduct({
           fill
           priority={priority}
           quality={92}
-          sizes="(min-width: 1024px) 50vw, 100vw"
+          sizes="(min-width: 768px) 320px, 86vw"
           className={`transition duration-700 ease-out group-hover:opacity-0 ${layout.hero.front.className ?? "object-cover object-top"}`}
         />
         <Image
           src={layout.hero.hover.src}
-          alt={layout.hero.hover.alt}
+          alt=""
+          aria-hidden="true"
           fill
           quality={92}
-          sizes="(min-width: 1024px) 50vw, 100vw"
+          sizes="(min-width: 768px) 320px, 86vw"
           className={`opacity-0 transition duration-700 ease-out group-hover:opacity-100 ${layout.hero.hover.className ?? "object-cover object-top"}`}
         />
-        <span className="absolute bottom-4 right-4 grid h-10 w-10 translate-y-2 place-items-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+        <span className="absolute bottom-3 right-3 grid h-9 w-9 translate-y-2 place-items-center rounded-full bg-obsidian text-ivory opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
         </span>
       </div>
       <div className="pt-4">
-        <ProductPrice className="text-base font-semibold text-copy" />
-        <p className="mt-1.5 text-[10px] font-medium uppercase tracking-[0.04em] text-copy-muted">
+        <ProductPrice className="text-lg font-semibold leading-none text-copy md:text-xl" />
+        <p className="mt-2 text-[10px] font-medium uppercase tracking-[0.04em] text-copy-muted">
           {PRODUCT_INCLUSION_LABEL}
         </p>
       </div>
@@ -230,7 +231,7 @@ function SupportingGrid({
 }) {
   return (
     <div>
-      <div className="grid grid-cols-2 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
         {assets.map((asset, index) => {
           const product = collectionProduct(section, asset.productId);
           const image = (
@@ -241,7 +242,7 @@ function SupportingGrid({
                 fill
                 priority={priority && index < 2}
                 quality={90}
-                sizes="(min-width: 1024px) 25vw, 50vw"
+                sizes="(min-width: 768px) 195px, 44vw"
                 className={`transition duration-700 ease-out group-hover:scale-[1.015] ${asset.className ?? "object-cover object-top"}`}
               />
             </div>
@@ -267,7 +268,7 @@ function SupportingGrid({
           );
         })}
       </div>
-      <p className="mt-4 flex items-center gap-2 text-[9px] uppercase tracking-[0.05em] text-copy-muted/75">
+      <p className="mt-3 flex items-center gap-2 text-[9px] uppercase tracking-[0.05em] text-copy-muted/75">
         <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold" aria-hidden="true" />
         Available In Different Colours
       </p>
@@ -282,18 +283,18 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
         const layout = collectionLayouts[section.id];
         if (!layout) return null;
 
-        const heroOrder = layout.heroSide === "right" ? "lg:order-2" : "lg:order-1";
-        const gridOrder = layout.heroSide === "right" ? "lg:order-1" : "lg:order-2";
+        const heroOrder = layout.heroSide === "right" ? "md:order-2" : "md:order-1";
+        const gridOrder = layout.heroSide === "right" ? "md:order-1" : "md:order-2";
 
         return (
           <section
             key={section.id}
             id={section.id}
             aria-labelledby={`${section.id}-title`}
-            className="scroll-mt-[112px] border-b border-line py-12 md:py-16"
+            className="scroll-mt-[112px] border-b border-line py-10 md:py-14"
           >
             <div className="container-luxe">
-              <header className="mb-7 max-w-2xl md:mb-9">
+              <header className="mb-7 max-w-2xl md:mb-8">
                 <p className="text-[10px] font-semibold uppercase text-gold">{section.eyebrow}</p>
                 <h2 id={`${section.id}-title`} className="mt-2 text-3xl font-semibold md:text-4xl">
                   {section.title}
@@ -301,11 +302,11 @@ export function CollectionBrowser({ sections }: { sections: CollectionSection[] 
                 <p className="mt-3 text-sm leading-6 text-copy-muted">{section.description}</p>
               </header>
 
-              <div className="grid gap-7 lg:grid-cols-2 lg:items-start lg:gap-6 xl:gap-8">
-                <div className={heroOrder}>
+              <div className="mx-auto grid max-w-[850px] gap-7 md:grid-cols-[minmax(250px,320px)_minmax(330px,410px)] md:items-start md:justify-center md:gap-7 lg:gap-9">
+                <div className={`mx-auto w-full max-w-[310px] md:max-w-none ${heroOrder}`}>
                   <HeroProduct section={section} layout={layout} priority={sectionIndex === 0} />
                 </div>
-                <div className={gridOrder}>
+                <div className={`mx-auto w-full max-w-[380px] md:max-w-none ${gridOrder}`}>
                   <SupportingGrid
                     section={section}
                     assets={layout.grid}
