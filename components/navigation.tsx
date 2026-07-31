@@ -28,49 +28,24 @@ const desktopLinks = [
   { href: "/journal", label: "JOURNAL" }
 ];
 
-const collectionGroups = [
-  {
-    title: "Permanent Collections",
-    links: [
-      { href: "/collection#original", label: "Heritage — Nkwọ" },
-      { href: "/collection#with-button", label: "Cowrie — Ọzọ" },
-      { href: "/collection#without-button", label: "Resort — Uzọ" },
-      { href: "/collection", label: "View All Collections" }
-    ]
-  },
-  {
-    title: "House Originals",
-    links: [
-      { href: "/products/ebube", label: "EBUBE / Black" },
-      { href: "/products/ndu", label: "NDỤ / Burgundy" },
-      { href: "/products/ijeoma", label: "IJEỌMA / Blue" },
-      { href: "/collection#original", label: "Explore Nkwọ" }
-    ]
-  }
+const permanentCollectionLinks = [
+  { href: "/collection#original", igbo: "Nkwọ", english: "Heritage Collection" },
+  { href: "/collection#with-button", igbo: "Ọzọ", english: "Cowrie Collection" },
+  { href: "/collection#without-button", igbo: "Uzọ", english: "Resort Collection" }
 ];
 
-const contactGroups = [
-  {
-    title: "Client Services",
-    links: [
-      { href: "/shipping", label: "Delivery" },
-      { href: "/returns", label: "Returns" },
-      { href: "/services#sizing", label: "Sizing" },
-      { href: "/services#care", label: "Care" },
-      { href: "/contact", label: "Contact" },
-      { href: "/services#faq", label: "Frequently Asked Questions" }
-    ]
-  },
-  {
-    title: "Policies",
-    links: [
-      { href: "/shipping", label: "Delivery" },
-      { href: "/returns", label: "Returns & Exchanges" },
-      { href: "/privacy", label: "Privacy" },
-      { href: "/terms", label: "Terms" },
-      { href: "/accessibility", label: "Accessibility" }
-    ]
-  }
+const houseOriginalLinks = [
+  { href: "/products/ebube", label: "EBUBE / Black" },
+  { href: "/products/ndu", label: "NDỤ / Burgundy" },
+  { href: "/products/ijeoma", label: "IJEỌMA / Blue" },
+  { href: "/collection#original", label: "Explore Heritage Collection" }
+];
+
+const clientServiceLinks = [
+  { href: "/services#sizing", label: "Sizing" },
+  { href: "/services#care", label: "Care" },
+  { href: "/contact", label: "Contact" },
+  { href: "/services#faq", label: "FAQ" }
 ];
 
 function BrandLogo() {
@@ -99,7 +74,7 @@ function PromotionCard({ closeMenus }: { closeMenus: () => void }) {
           alt="ỌNUỌRA Burgundy Cowrie Collection Outfit"
           fill
           sizes="120px"
-          className="object-cover transition duration-700 group-hover:scale-[1.025]"
+          className="object-cover object-top transition duration-700 group-hover:scale-[1.025]"
         />
       </div>
       <div>
@@ -110,6 +85,40 @@ function PromotionCard({ closeMenus }: { closeMenus: () => void }) {
           <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-1" />
         </span>
       </div>
+    </Link>
+  );
+}
+
+function PermanentCollectionLink({
+  href,
+  igbo,
+  english,
+  closeMenus,
+  compact = false
+}: {
+  href: string;
+  igbo: string;
+  english: string;
+  closeMenus: () => void;
+  compact?: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={closeMenus}
+      className="gold-focus group block w-fit border-b border-transparent pb-1 transition hover:border-gold"
+    >
+      <span className="block text-[9px] font-semibold uppercase tracking-[0.08em] text-gold">
+        {igbo}
+      </span>
+      <span
+        className={cn(
+          "mt-0.5 block font-semibold text-copy transition group-hover:text-gold",
+          compact ? "text-sm" : "text-[15px]"
+        )}
+      >
+        {english}
+      </span>
     </Link>
   );
 }
@@ -308,21 +317,56 @@ export function Navigation() {
           className="mx-7 mt-2 hidden overflow-hidden rounded-[14px] border border-line bg-page text-copy shadow-2xl shadow-black/10 lg:block"
           onMouseLeave={() => setMegaMenu(null)}
         >
-          <div
-            className={cn(
-              "container-luxe grid gap-8 py-9",
-              megaMenu === "collections"
-                ? "grid-cols-[repeat(2,1fr)_1.35fr]"
-                : "grid-cols-[repeat(2,0.75fr)_1.35fr]"
-            )}
-          >
-            {(megaMenu === "collections" ? collectionGroups : contactGroups).map((group) => (
-              <div key={group.title}>
+          {megaMenu === "collections" ? (
+            <div className="container-luxe grid grid-cols-[1fr_0.9fr_1.35fr] gap-8 py-9">
+              <div>
                 <p className="mb-5 text-[10px] font-bold uppercase text-copy-muted">
-                  {group.title}
+                  Permanent Collections
+                </p>
+                <div className="flex flex-col gap-4">
+                  {permanentCollectionLinks.map((link) => (
+                    <PermanentCollectionLink
+                      key={link.href}
+                      {...link}
+                      closeMenus={closeMenus}
+                    />
+                  ))}
+                  <Link
+                    href="/collection"
+                    onClick={closeMenus}
+                    className="gold-focus mt-1 w-fit border-b border-copy/30 pb-1 text-[10px] font-semibold uppercase transition hover:border-gold hover:text-gold"
+                  >
+                    View All Collections
+                  </Link>
+                </div>
+              </div>
+              <div>
+                <p className="mb-5 text-[10px] font-bold uppercase text-copy-muted">
+                  House Originals
                 </p>
                 <div className="flex flex-col gap-3.5 text-sm">
-                  {group.links.map((link) => (
+                  {houseOriginalLinks.map((link) => (
+                    <Link
+                      key={`${link.href}-${link.label}`}
+                      href={link.href}
+                      onClick={closeMenus}
+                      className="w-fit border-b border-transparent pb-0.5 transition hover:border-gold hover:text-gold"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <PromotionCard closeMenus={closeMenus} />
+            </div>
+          ) : (
+            <div className="container-luxe grid grid-cols-[0.75fr_1.35fr] gap-8 py-9">
+              <div>
+                <p className="mb-5 text-[10px] font-bold uppercase text-copy-muted">
+                  Client Services
+                </p>
+                <div className="flex flex-col gap-3.5 text-sm">
+                  {clientServiceLinks.map((link) => (
                     <Link
                       key={link.href}
                       href={link.href}
@@ -334,9 +378,9 @@ export function Navigation() {
                   ))}
                 </div>
               </div>
-            ))}
-            <PromotionCard closeMenus={closeMenus} />
-          </div>
+              <PromotionCard closeMenus={closeMenus} />
+            </div>
+          )}
         </div>
       ) : null}
 
@@ -397,30 +441,78 @@ export function Navigation() {
       {mobileOpen ? (
         <div className="fixed inset-x-0 bottom-0 top-[100px] overflow-y-auto bg-page text-copy lg:hidden">
           <nav className="container-luxe flex min-h-full flex-col py-7" aria-label="Mobile navigation">
-            <div className="flex flex-col border-t border-copy/12">
-              <div className="mb-5 flex items-center justify-between border-b border-copy/12 pb-5">
-                <span className="text-xs font-semibold uppercase">Currency</span>
-                <CurrencySelector />
-              </div>
-              {[
-                { href: "/collection", label: "SHOP" },
-                { href: "/collection", label: "COLLECTIONS" },
-                { href: "/about", label: "ABOUT" },
-                { href: "/journal", label: "JOURNAL" },
-                { href: "/services", label: "CLIENT SERVICES" },
-                { href: "/account", label: "ACCOUNT" }
-              ].map((link) => (
-                <Link
-                  key={`${link.href}-${link.label}`}
-                  href={link.href}
-                  onClick={closeMenus}
-                  className="flex min-h-14 items-center justify-between border-b border-copy/12 text-sm font-semibold uppercase tracking-[0.06em]"
-                >
-                  {link.label}
-                  <ArrowRight className="h-4 w-4 text-copy-muted" />
-                </Link>
-              ))}
+            <div className="mb-5 flex items-center justify-between border-b border-copy/12 pb-5">
+              <span className="text-xs font-semibold uppercase">Currency</span>
+              <CurrencySelector />
             </div>
+
+            <Link
+              href="/collection"
+              onClick={closeMenus}
+              className="flex min-h-14 items-center justify-between border-b border-copy/12 text-sm font-semibold uppercase tracking-[0.06em]"
+            >
+              SHOP
+              <ArrowRight className="h-4 w-4 text-copy-muted" />
+            </Link>
+
+            <section className="border-b border-copy/12 py-5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-copy-muted">
+                Collections
+              </p>
+              <div className="mt-4 grid gap-4">
+                {permanentCollectionLinks.map((link) => (
+                  <PermanentCollectionLink
+                    key={link.href}
+                    {...link}
+                    closeMenus={closeMenus}
+                    compact
+                  />
+                ))}
+              </div>
+            </section>
+
+            {[
+              { href: "/about", label: "ABOUT" },
+              { href: "/journal", label: "JOURNAL" }
+            ].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={closeMenus}
+                className="flex min-h-14 items-center justify-between border-b border-copy/12 text-sm font-semibold uppercase tracking-[0.06em]"
+              >
+                {link.label}
+                <ArrowRight className="h-4 w-4 text-copy-muted" />
+              </Link>
+            ))}
+
+            <section className="border-b border-copy/12 py-5">
+              <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-copy-muted">
+                Client Services
+              </p>
+              <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1">
+                {clientServiceLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={closeMenus}
+                    className="gold-focus flex min-h-11 items-center border-b border-copy/8 text-sm font-medium"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </section>
+
+            <Link
+              href="/account"
+              onClick={closeMenus}
+              className="flex min-h-14 items-center justify-between border-b border-copy/12 text-sm font-semibold uppercase tracking-[0.06em]"
+            >
+              ACCOUNT
+              <ArrowRight className="h-4 w-4 text-copy-muted" />
+            </Link>
+
             <Link
               href={newArrivalsPromotion.href}
               onClick={closeMenus}
