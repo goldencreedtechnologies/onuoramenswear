@@ -1,0 +1,5 @@
+button:not(.rounded-full):not([aria-label*="WhatsApp"]),
+a.inline-flex[class*="min-h-"]:not(.rounded-full):not([aria-label*="WhatsApp"]),
+span.inline-flex[class*="min-h-"]:not(.rounded-full) {
+  border-radius: 7px;
+}
