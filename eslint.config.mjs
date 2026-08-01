@@ -7,6 +7,8 @@ const eslintConfig = [
   {
     ignores: [
       ".next*/**",
+      "_stage1_backup_*/**",
+      "tools/**",
       "node_modules/**",
       "next-env.d.ts",
       "dev-server.log",

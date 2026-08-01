@@ -25,12 +25,22 @@ export type PhaseOneCollectionProduct = {
   href?: string;
 };
 
+export type CollectionVariant = {
+  slug: string;
+  name: string;
+  color: string;
+  colorValue: string;
+};
+
 export type PhaseOneCollection = {
-  id: "original" | "with-button" | "without-button";
+  id: "heritage" | "cowrie" | "resort";
+  legacyId: "original" | "with-button" | "without-button";
   eyebrow: string;
   title: string;
   description: string;
-  products: PhaseOneCollectionProduct[];
+  images: CollectionImagePair;
+  href: string;
+  variants: CollectionVariant[];
 };
 
 export const phaseOneImagePairs = {
@@ -54,25 +64,14 @@ export const regionalPriceSets = {
   withoutButton: PRODUCT_PRICES
 } satisfies Record<string, RegionalPrices>;
 
-function collectionProducts(
-  family: ProductFamily,
-  prices: RegionalPrices,
-  collectionLabel: string
-): PhaseOneCollectionProduct[] {
+function collectionVariants(family: ProductFamily): CollectionVariant[] {
   return products
     .filter((product) => product.family === family)
     .map((product) => ({
-      id: product.slug,
+      slug: product.slug,
       name: product.name,
       color: product.colorName,
-      colorValue: product.colorValue,
-      description: collectionLabel,
-      images: {
-        front: product.image,
-        hover: product.images.find((image) => image.includes("-angle.")) ?? product.images[1]
-      },
-      prices,
-      href: `/products/${product.slug}`
+      colorValue: product.colorValue
     }));
 }
 
@@ -82,52 +81,61 @@ const resort = COLLECTIONS[2];
 
 export const phaseOneCollections: PhaseOneCollection[] = [
   {
-    id: "original",
-    eyebrow: heritage.englishName,
-    title: heritage.igboName,
+    id: "heritage",
+    legacyId: "original",
+    eyebrow: heritage.igboName,
+    title: heritage.englishName,
     description: heritage.description,
-    products: collectionProducts("original", regionalPriceSets.original, heritage.englishName)
+    images: phaseOneImagePairs.original,
+    href: "/products/ebube",
+    variants: collectionVariants("original")
   },
   {
-    id: "with-button",
-    eyebrow: cowrie.englishName,
-    title: cowrie.igboName,
+    id: "cowrie",
+    legacyId: "with-button",
+    eyebrow: cowrie.igboName,
+    title: cowrie.englishName,
     description: cowrie.description,
-    products: collectionProducts("button", regionalPriceSets.withButton, cowrie.englishName)
+    images: phaseOneImagePairs.withButton,
+    href: "/products/ndb1",
+    variants: collectionVariants("button")
   },
   {
-    id: "without-button",
-    eyebrow: resort.englishName,
-    title: resort.igboName,
+    id: "resort",
+    legacyId: "without-button",
+    eyebrow: resort.igboName,
+    title: resort.englishName,
     description: resort.description,
-    products: collectionProducts("buttonless", regionalPriceSets.withoutButton, resort.englishName)
+    images: phaseOneImagePairs.withoutButton,
+    href: "/products/nd1",
+    variants: collectionVariants("buttonless")
   }
 ];
 
 export const homepageCollectionCards = [
   {
-    id: "without-button",
-    eyebrow: resort.englishName,
-    title: resort.igboName,
-    description: resort.description,
-    href: "/collection#without-button",
-    images: phaseOneImagePairs.withoutButton
+    id: "heritage",
+    eyebrow: heritage.igboName,
+    title: heritage.englishName,
+    description: heritage.description,
+    href: "/collection#heritage",
+    images: phaseOneImagePairs.original
   },
   {
-    id: "with-button",
-    eyebrow: cowrie.englishName,
-    title: cowrie.igboName,
+    id: "cowrie",
+    eyebrow: cowrie.igboName,
+    title: cowrie.englishName,
     description: cowrie.description,
-    href: "/collection#with-button",
+    href: "/collection#cowrie",
     images: phaseOneImagePairs.withButton
   },
   {
-    id: "original",
-    eyebrow: heritage.englishName,
-    title: heritage.igboName,
-    description: heritage.description,
-    href: "/collection#original",
-    images: phaseOneImagePairs.original
+    id: "resort",
+    eyebrow: resort.igboName,
+    title: resort.englishName,
+    description: resort.description,
+    href: "/collection#resort",
+    images: phaseOneImagePairs.withoutButton
   }
 ];
 

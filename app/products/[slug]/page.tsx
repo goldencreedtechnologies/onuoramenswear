@@ -37,8 +37,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!product) notFound();
 
   const allProducts = await getStoreProducts();
-  const colorOptions = allProducts
-    .filter((item) => item.family === product.family)
+  const familyProducts = allProducts.filter((item) => item.family === product.family);
+  const colorOptions = familyProducts
     .map((item) => ({
       slug: item.slug,
       name: item.name,
@@ -46,12 +46,29 @@ export default async function ProductPage({ params }: ProductPageProps) {
       colorValue: item.colorValue
     }));
   const related = allProducts
-    .filter((item) => item.slug !== product.slug)
-    .sort((a, b) => Number(b.family === product.family) - Number(a.family === product.family))
-    .slice(0, 4);
+    .filter(
+      (item, index, items) =>
+        item.family !== product.family &&
+        items.findIndex((candidate) => candidate.family === item.family) === index
+    )
+    .slice(0, 2);
   const collection = getCollectionByFamily(product.family);
   const collectionLabel = collection.englishName;
-  const collectionHash = collection.legacyHash;
+  const collectionHash = collection.id;
+  const alternativeColour = familyProducts.find((item) => item.slug !== product.slug);
+  const productImage = (fragment: string) =>
+    product.images.find((image) => image.includes(fragment));
+  const galleryImages = Array.from(
+    new Set(
+      [
+        product.image,
+        productImage("-front."),
+        productImage("-mid."),
+        productImage("-angle."),
+        alternativeColour?.image
+      ].filter((image): image is string => Boolean(image))
+    )
+  );
 
   return (
     <main className="bg-page pt-[104px] text-copy">
@@ -71,18 +88,19 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <section className="container-luxe grid gap-8 pb-14 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)] lg:gap-12 lg:pb-20">
         <ProductGallery
-          images={Array.from(new Set([product.image, ...product.images]))}
-          productName={product.name}
+          images={galleryImages}
+          productName={`${collectionLabel}, ${product.colorName}`}
         />
         <aside className="lg:sticky lg:top-[124px] lg:self-start">
-          <p className="text-[10px] font-semibold uppercase text-gold">{product.edition}</p>
+          <p className="text-[10px] font-semibold uppercase text-gold">{collection.igboName}</p>
           <h1 className="product-title mt-2 text-3xl font-semibold leading-none sm:text-4xl">
-            {product.name}
+            {collectionLabel}
           </h1>
-          <p className="mt-2 text-sm text-copy-muted">{product.meaning}</p>
-          <p className="mt-5 text-xl font-medium">{product.price}</p>
+          <p className="mt-2 text-sm text-copy-muted">
+            {product.name} · {product.colorName} · {product.meaning}
+          </p>
           <CurrencyConverter priceUsd={priceToUsd(product.price)} />
-          <ProductOptions product={product} colorOptions={colorOptions} />
+          <ProductOptions key={product.slug} product={product} colorOptions={colorOptions} />
 
           <div className="mt-6 grid grid-cols-3 border-y border-line py-5">
             {[
@@ -156,7 +174,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             Shop All
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5">
           {related.map((item) => (
             <ProductCard key={item.slug} product={item} />
           ))}

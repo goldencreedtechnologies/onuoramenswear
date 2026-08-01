@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { MiniCartDrawer } from "@/components/mini-cart-drawer";
 import { Navigation } from "@/components/navigation";
 import { CurrencyProvider } from "@/components/currency-provider";
+import { NewsletterModal } from "@/components/newsletter-signup";
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -20,6 +21,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       {children}
       <Footer />
       <MiniCartDrawer />
+      <NewsletterModal />
     </CurrencyProvider>
   );
 }

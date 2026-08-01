@@ -223,25 +223,6 @@ img {
   opacity: 0;
 }
 
-.home-collection-card .collection-image-primary,
-.home-collection-card .collection-image-hover {
-  object-position: center 58%;
-  transform: scale(1.16);
-}
-
-.home-collection-card[data-collection="original"] .collection-image-primary,
-.home-collection-card[data-collection="original"] .collection-image-hover {
-  object-position: center top;
-  transform: scale(1);
-}
-
-.home-collection-card[data-collection="with-button"] .collection-image-primary,
-.home-collection-card[data-collection="with-button"] .collection-image-hover {
-  object-fit: cover;
-  object-position: center 38%;
-  transform: scale(1.02);
-}
-
 .product-card-secondary {
   transform: scale(1.015);
 }
@@ -258,33 +239,6 @@ img {
     transform: scale(1);
   }
 
-  .collection-image-pair.home-collection-card:hover .collection-image-primary {
-    transform: scale(1.18);
-  }
-
-  .collection-image-pair.home-collection-card:hover .collection-image-hover {
-    transform: scale(1.16);
-  }
-
-  .collection-image-pair.home-collection-card[data-collection="original"]:hover
-    .collection-image-primary {
-    transform: scale(1.02);
-  }
-
-  .collection-image-pair.home-collection-card[data-collection="original"]:hover
-    .collection-image-hover {
-    transform: scale(1);
-  }
-
-  .collection-image-pair.home-collection-card[data-collection="with-button"]:hover
-    .collection-image-primary {
-    transform: scale(1.04);
-  }
-
-  .collection-image-pair.home-collection-card[data-collection="with-button"]:hover
-    .collection-image-hover {
-    transform: scale(1.02);
-  }
 
   .group:hover .product-card-secondary {
     opacity: 1;

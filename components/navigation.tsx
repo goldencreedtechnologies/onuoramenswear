@@ -32,19 +32,10 @@ const collectionGroups = [
   {
     title: "Permanent Collections",
     links: [
-      { href: "/collection#original", label: "Heritage — Nkwọ" },
-      { href: "/collection#with-button", label: "Cowrie — Ọzọ" },
-      { href: "/collection#without-button", label: "Resort — Uzọ" },
+      { href: "/collection#heritage", label: "Heritage Collection" },
+      { href: "/collection#cowrie", label: "Cowrie Collection" },
+      { href: "/collection#resort", label: "Resort Collection" },
       { href: "/collection", label: "View All Collections" }
-    ]
-  },
-  {
-    title: "House Originals",
-    links: [
-      { href: "/products/ebube", label: "EBUBE / Black" },
-      { href: "/products/ndu", label: "NDỤ / Burgundy" },
-      { href: "/products/ijeoma", label: "IJEỌMA / Blue" },
-      { href: "/collection#original", label: "Explore Nkwọ" }
     ]
   }
 ];
@@ -375,11 +366,13 @@ export function Navigation() {
                       alt=""
                       fill
                       sizes="48px"
-                      className="object-cover"
+                      className="object-contain"
                     />
                   </span>
                   <span>
-                    <span className="block text-sm font-semibold">{product.name}</span>
+                    <span className="block text-sm font-semibold">
+                      {getCollectionByFamily(product.family).englishName}
+                    </span>
                     <span className="mt-1 block text-[10px] uppercase text-copy-muted">
                       {product.colorName} · {fixedProductPriceLabel(currency)}
                     </span>

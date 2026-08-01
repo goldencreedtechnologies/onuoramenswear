@@ -57,7 +57,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
                 alt=""
                 fill
                 sizes="72px"
-                className="object-cover"
+                className="object-contain"
               />
             </button>
           ))}
@@ -81,7 +81,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
           loading="eager"
           quality={94}
           sizes="(min-width: 1024px) 56vw, 100vw"
-          className="object-cover transition-transform duration-500 ease-out md:group-hover/zoom:scale-[1.02]"
+          className="object-contain transition-transform duration-500 ease-out md:group-hover/zoom:scale-[1.02]"
           style={{ transformOrigin: zoomOrigin }}
         />
         <span className="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-page/92 text-copy shadow-sm backdrop-blur">

@@ -87,8 +87,7 @@ export function isWithinLagos({
 export function resolveShippingRule({
   shippingCountry,
   shippingCity,
-  shippingState,
-  itemCount: _itemCount
+  shippingState
 }: {
   shippingCountry: string;
   shippingCity: string;

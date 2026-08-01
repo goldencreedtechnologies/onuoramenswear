@@ -4,7 +4,7 @@ import Link from "next/link";
 import { craftSteps } from "@/data/catalog";
 
 export const metadata = {
-  title: "Our Heritage",
+  title: "Our Story",
   description: "The story, mission, craft, and stretch-fit philosophy behind ỌNUỌRA."
 };
 
@@ -49,7 +49,7 @@ export default function AboutPage() {
         <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-white/16 to-transparent" />
         <div className="container-luxe relative flex min-h-[690px] items-end pb-12 md:min-h-[760px] md:pb-16">
           <div className="max-w-2xl">
-            <p className="text-[10px] font-semibold uppercase text-gold-soft">Our Heritage</p>
+            <p className="text-[10px] font-semibold uppercase text-gold-soft">Our Story</p>
             <h1 className="mt-3 text-4xl font-semibold leading-tight sm:text-5xl">
               The Voice Of The People, Cut For Now.
             </h1>
@@ -181,7 +181,7 @@ export default function AboutPage() {
           <div className="max-w-2xl">
             <p className="text-[10px] font-semibold uppercase text-gold">The next chapter</p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight">
-              Choose The Silhouette That Speaks For You.
+              Choose The Collection That Speaks For You.
             </h2>
           </div>
           <Link

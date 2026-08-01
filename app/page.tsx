@@ -4,6 +4,7 @@ import { ArrowRight, BadgeCheck, Ruler, Scissors } from "lucide-react";
 import { CollectionImageSwap } from "@/components/collection-image-swap";
 import { Cta } from "@/components/cta";
 import { LimitedOfferCarousel } from "@/components/limited-offer-carousel";
+import { NewsletterForm } from "@/components/newsletter-signup";
 import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
 import { homepageCollectionCards } from "@/data/phase-one-collections";
@@ -35,7 +36,9 @@ const craftsmanshipSignals = [
 
 export default async function HomePage() {
   const products = await getStoreProducts();
-  const originals = products.filter((product) => product.family === "original");
+  const selectedProducts = ["original", "button", "buttonless"].flatMap((family) =>
+    products.filter((product) => product.family === family).slice(0, 2)
+  );
 
   return (
     <main className="bg-page text-copy">
@@ -87,6 +90,7 @@ export default async function HomePage() {
           <SectionHeading
             eyebrow="Collections"
             title="The Permanent Collections."
+            copy="ỌNUỌRA consists of three permanent collections designed for different occasions, all united by one philosophy: culturally rooted menswear with modern ease."
             href="/collection"
             linkLabel="Explore All"
           />
@@ -103,6 +107,7 @@ export default async function HomePage() {
                   alt={`${collection.eyebrow}: ${collection.title}`}
                   sizes="(min-width: 640px) 33vw, 100vw"
                   priority={index === 0}
+                  className="object-contain object-center"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/76 via-transparent to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
@@ -126,17 +131,17 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="pb-14 md:pb-20">
+      <section className="py-14 md:py-20">
         <div className="container-luxe">
           <SectionHeading
-            eyebrow="House Originals"
-            title="Three Silhouettes. Eight Colours. One Philosophy."
-            copy="Designed to move effortlessly between work, travel and celebration."
-            href="/collection#original"
+            eyebrow="Selected Pieces"
+            title="A Considered Edit From The House."
+            copy="Explore selected colour expressions from each permanent collection."
+            href="/collection"
           />
-          <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 lg:grid-cols-4">
-            {originals.slice(0, 4).map((product, index) => (
-              <ProductCard key={product.slug} product={product} priority={index < 2} badge="Heritage Collection" />
+          <div className="grid grid-cols-2 gap-x-3 gap-y-9 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-6">
+            {selectedProducts.map((product, index) => (
+              <ProductCard key={product.slug} product={product} priority={index < 3} />
             ))}
           </div>
         </div>
@@ -144,39 +149,7 @@ export default async function HomePage() {
 
       <LimitedOfferCarousel />
 
-      <section className="py-14 md:py-20">
-        <div className="container-luxe grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-          <div className="relative aspect-[16/11] overflow-hidden bg-surface-subtle">
-            <Image
-              src="/brand/Heritage.jpg"
-              alt="The ỌNUỌRA house wearing contemporary menswear in Lagos"
-              fill
-              quality={94}
-              sizes="(min-width: 1024px) 58vw, 100vw"
-              className="object-cover object-[50%_18%]"
-            />
-          </div>
-          <div className="max-w-lg lg:pl-8">
-            <p className="text-[10px] font-semibold uppercase text-gold">The House</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-              Designed And Made In Nigeria
-            </h2>
-            <p className="mt-5 text-sm leading-7 text-copy-muted">
-              ỌNUỌRA creates contemporary menswear rooted in African identity, combining thoughtful
-              design, quality craftsmanship and effortless wearability.
-            </p>
-            <Link
-              href="/about"
-              className="gold-focus mt-7 inline-flex items-center gap-2 border-b border-copy/40 pb-1 text-[10px] font-semibold uppercase"
-            >
-              Learn Our Story
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="border-y border-line">
+      <section className="border-y border-line py-5 md:py-8">
         <div className="container-luxe grid sm:grid-cols-2 lg:grid-cols-4">
           {craftsmanshipSignals.map((signal) => {
             const Icon = signal.icon;
@@ -201,20 +174,16 @@ export default async function HomePage() {
       </section>
 
       <section className="bg-obsidian py-14 text-ivory md:py-20">
-        <div className="container-luxe grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+        <div className="container-luxe grid gap-8 md:grid-cols-[0.9fr_1.1fr] md:items-end md:gap-16">
           <div className="max-w-2xl">
             <BadgeCheck className="h-6 w-6 text-gold" />
             <p className="mt-5 text-[10px] font-semibold uppercase text-gold-soft">ỌNUỌRA Circle</p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
-              Enter Before The Next Chapter Arrives.
-            </h2>
+            <h2 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">Join The ỌNUỌRA Circle.</h2>
             <p className="mt-4 max-w-xl text-sm leading-6 text-white/58">
               Private previews, fit notes and first access to limited releases.
             </p>
           </div>
-          <Cta href="/contact" variant="light">
-            Join The Circle
-          </Cta>
+          <NewsletterForm variant="dark" />
         </div>
       </section>
     </main>

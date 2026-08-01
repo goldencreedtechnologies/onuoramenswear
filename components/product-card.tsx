@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { ProductPrice } from "@/components/currency-provider";
 import type { Product } from "@/data/catalog";
-import { PRODUCT_TYPE_LABEL } from "@/data/site-config";
+import { PRODUCT_TYPE_LABEL, getCollectionByFamily } from "@/data/site-config";
 
 export function ProductCard({
   product,
@@ -16,6 +16,7 @@ export function ProductCard({
   priority?: boolean;
   badge?: string;
 }) {
+  const collection = getCollectionByFamily(product.family);
   const secondaryImage =
     product.images.find((image) => image && image !== product.image) ?? product.image;
 
@@ -24,7 +25,7 @@ export function ProductCard({
       <Link
         href={`/products/${product.slug}`}
         className="gold-focus block"
-        aria-label={`Shop ${product.name}, ${product.edition}`}
+        aria-label={`Shop ${collection.englishName} in ${product.colorName}`}
       >
         <div className="product-card-media relative aspect-[3/4] overflow-hidden bg-page">
           <Image
@@ -56,11 +57,13 @@ export function ProductCard({
         </div>
         <div className="flex items-start justify-between gap-3 pt-3">
           <div className="min-w-0">
-            <p className="truncate text-[10px] font-medium uppercase text-copy-muted">
-              {product.edition}
+            <p className="truncate text-[10px] font-medium uppercase text-gold">
+              {collection.igboName}
             </p>
-            <h3 className="mt-1 text-sm font-semibold text-copy">{product.name}</h3>
-            <p className="mt-1 text-xs text-copy-muted">{PRODUCT_TYPE_LABEL}</p>
+            <h3 className="mt-1 text-sm font-semibold text-copy">{collection.englishName}</h3>
+            <p className="mt-1 text-xs text-copy-muted">
+              {product.colorName} · {PRODUCT_TYPE_LABEL}
+            </p>
           </div>
           <ProductPrice className="shrink-0 text-sm font-medium text-copy" />
         </div>

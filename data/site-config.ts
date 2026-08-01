@@ -13,7 +13,7 @@ export const COLLECTIONS = [
     legacyHash: "original",
     englishName: "Heritage Collection",
     igboName: "Nkwọ",
-    navigationLabel: "Heritage — Nkwọ",
+    navigationLabel: "Heritage Collection",
     description:
       "A contemporary interpretation of the original ỌNUỌRA silhouette, defined by its signature three-quarter sleeve."
   },
@@ -23,7 +23,7 @@ export const COLLECTIONS = [
     legacyHash: "with-button",
     englishName: "Cowrie Collection",
     igboName: "Ọzọ",
-    navigationLabel: "Cowrie — Ọzọ",
+    navigationLabel: "Cowrie Collection",
     description:
       "A refined contemporary silhouette distinguished by signature cowrie detailing."
   },
@@ -33,7 +33,7 @@ export const COLLECTIONS = [
     legacyHash: "without-button",
     englishName: "Resort Collection",
     igboName: "Uzọ",
-    navigationLabel: "Resort — Uzọ",
+    navigationLabel: "Resort Collection",
     description:
       "A clean collarless silhouette designed for relaxed, effortless dressing."
   }
@@ -149,22 +149,6 @@ export function detectSuggestedCurrency(languages: readonly string[], timeZone?:
 
 export const PRODUCT_TYPE_LABEL = "Complete Two-Piece Outfit";
 export const PRODUCT_INCLUSION_LABEL = "Top And Trousers Included";
-
-export const ADDITIONAL_PRODUCT_COLOURS = [
-  { id: "burnt-orange", name: "Burnt Orange", value: "#D9582E" },
-  { id: "pale-beige", name: "Pale Beige", value: "#DBAC76" },
-  { id: "royal-blue", name: "Royal Blue", value: "#06058C" }
-] as const;
-
-export type AdditionalProductColour = (typeof ADDITIONAL_PRODUCT_COLOURS)[number];
-
-export function isAdditionalProductColour(name: string, value?: string) {
-  return ADDITIONAL_PRODUCT_COLOURS.some(
-    (colour) =>
-      colour.name.toLowerCase() === name.trim().toLowerCase() &&
-      (!value || colour.value.toLowerCase() === value.trim().toLowerCase())
-  );
-}
 
 export const DELIVERY_COPY =
   "Worldwide delivery is available. International delivery is charged at a $50 flat rate, Lagos delivery is complimentary for valid addresses, and delivery outside Lagos is charged at a single ₦15,000 flat rate.";

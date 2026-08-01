@@ -1,4 +1,4 @@
-import { PRODUCT_PRICES } from "@/data/site-config";
+import { PRODUCT_PRICES, getCollectionByFamily } from "@/data/site-config";
 import type { StoreProduct } from "@/lib/backend/types";
 
 export const cartStorageKey = "onuora-cart";
@@ -19,7 +19,8 @@ export type CartSnapshot = {
   items: CartItem[];
 };
 
-export function priceToUsd(_price?: string) {
+export function priceToUsd(price?: string) {
+  void price;
   return PRODUCT_PRICES.USD;
 }
 
@@ -35,10 +36,11 @@ export function productToCartItem(
     colorValue: product.colorValue
   }
 ): CartItem {
+  const collection = getCollectionByFamily(product.family);
   return {
     productSlug: product.slug,
-    name: product.name,
-    edition: product.edition,
+    name: collection.englishName,
+    edition: collection.igboName,
     image: product.image,
     colorName: colour.colorName,
     colorValue: colour.colorValue,

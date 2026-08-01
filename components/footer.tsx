@@ -6,9 +6,9 @@ const footerGroups = [
   {
     title: "Shop",
     links: [
-      { href: "/collection#original", label: "Heritage — Nkwọ" },
-      { href: "/collection#with-button", label: "Cowrie — Ọzọ" },
-      { href: "/collection#without-button", label: "Resort — Uzọ" },
+      { href: "/collection#heritage", label: "Heritage Collection" },
+      { href: "/collection#cowrie", label: "Cowrie Collection" },
+      { href: "/collection#resort", label: "Resort Collection" },
       { href: "/cart", label: "Shopping Bag" }
     ]
   },

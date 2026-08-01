@@ -1043,9 +1043,9 @@ export function AdminClient() {
                   className="gold-focus min-h-11 rounded-2xl border border-gold/15 bg-page px-3 text-sm text-copy"
                   aria-label="Product family"
                 >
-                  <option value="original">Heritage Collection — Nkwọ</option>
-                  <option value="button">Cowrie Collection — Ọzọ</option>
-                  <option value="buttonless">Resort Collection — Uzọ</option>
+                  <option value="original">Heritage Collection</option>
+                  <option value="button">Cowrie Collection</option>
+                  <option value="buttonless">Resort Collection</option>
                 </select>
                 {["colorName", "colorValue", "modelName"].map((field) => <TextInput key={field} field={field} form={productForm} setForm={setProductForm} />)}
               </div>

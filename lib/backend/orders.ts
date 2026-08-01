@@ -5,7 +5,7 @@ import { markOrderInventorySold, releaseOrderInventory, reserveOrderInventory } 
 import { queueOrderNotification, recordOrderEvent } from "@/lib/backend/order-lifecycle";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 import { priceToUsd } from "@/lib/cart";
-import { isAdditionalProductColour, isCurrencyCode, operationalUsdAmountInCurrency } from "@/data/site-config";
+import { isCurrencyCode, operationalUsdAmountInCurrency } from "@/data/site-config";
 
 export const checkoutDraftSchema = z.object({
   email: z.string().email(),
@@ -72,7 +72,7 @@ export async function createOrder(draft: CheckoutDraftInput) {
       colorName.toLowerCase() === product.colorName.toLowerCase() &&
       colorValue.toLowerCase() === product.colorValue.toLowerCase();
 
-    if (!isProductColour && !isAdditionalProductColour(colorName, colorValue)) {
+    if (!isProductColour) {
       return { ok: false as const, reason: `Unknown colour selection: ${colorName}` };
     }
 

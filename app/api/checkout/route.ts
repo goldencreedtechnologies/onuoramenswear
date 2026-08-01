@@ -24,7 +24,6 @@ export async function POST(request: Request) {
   const profile = auth.ok ? await ensureCustomerProfile(auth.user) : null;
   const order = await createOrder({
     ...parsed.data,
-    currency: "USD",
     customerProfileId: profile?.ok ? profile.profile.id : undefined
   });
 
