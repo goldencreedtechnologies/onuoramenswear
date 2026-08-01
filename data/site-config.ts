@@ -145,13 +145,14 @@ export function detectSuggestedCurrency(languages: readonly string[], timeZone?:
 export const PRODUCT_TYPE_LABEL = "Complete Two-Piece Outfit";
 export const PRODUCT_INCLUSION_LABEL = "Top And Trousers Included";
 
-export const ADDITIONAL_PRODUCT_COLOURS = [
-  { id: "burnt-orange", name: "Burnt Orange", value: "#D9582E" },
-  { id: "pale-beige", name: "Pale Beige", value: "#DBAC76" },
-  { id: "royal-blue", name: "Royal Blue", value: "#06058C" }
-] as const;
+export type AdditionalProductColour = {
+  id: string;
+  name: string;
+  value: string;
+};
 
-export type AdditionalProductColour = (typeof ADDITIONAL_PRODUCT_COLOURS)[number];
+// All approved colours now have dedicated product records and photography.
+export const ADDITIONAL_PRODUCT_COLOURS: AdditionalProductColour[] = [];
 
 export function isAdditionalProductColour(name: string, value?: string) {
   return ADDITIONAL_PRODUCT_COLOURS.some(
