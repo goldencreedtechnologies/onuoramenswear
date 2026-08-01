@@ -17,10 +17,14 @@ function galleryRank(image: string) {
   const normalized = image.toLowerCase();
   if (normalized.includes("-front.")) return 0;
   if (normalized.includes("-mid.")) return 1;
-  if (normalized.includes("-angle.")) return 2;
-  if (normalized.includes("studio")) return 3;
-  if (normalized.includes("original")) return 4;
-  if (normalized.includes("-back.")) return 5;
+  if (normalized.includes("-angle.") || normalized.includes("-side.")) return 2;
+  if (normalized.includes("detail")) return 3;
+  if (
+    normalized.includes("lifestyle") ||
+    normalized.includes("studio") ||
+    normalized.includes("grid")
+  ) return 4;
+  if (normalized.includes("-back.") || normalized.includes(".back.")) return 5;
   return 6;
 }
 
