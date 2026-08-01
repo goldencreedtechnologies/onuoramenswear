@@ -16,8 +16,8 @@ const campaignImages = [
     className: "col-span-2 row-span-3 sm:col-span-3 sm:row-span-4"
   },
   {
-    src: "/brand/products/button/ndb6/ndb6-front.png",
-    alt: "Cowrie Collection outfit",
+    src: "/brand/products/button/ndb3/ndb3-angle.png",
+    alt: "Cowrie Collection angled outfit portrait",
     className: "col-span-2 row-span-2 sm:col-span-4 sm:row-span-4"
   },
   {
