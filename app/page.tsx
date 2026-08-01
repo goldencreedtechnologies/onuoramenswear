@@ -7,7 +7,6 @@ import { LimitedOfferCarousel } from "@/components/limited-offer-carousel";
 import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
 import { homepageCollectionCards } from "@/data/phase-one-collections";
-import { getCollectionByFamily } from "@/data/site-config";
 import { getStoreProducts } from "@/lib/backend/catalog";
 
 const craftsmanshipSignals = [
@@ -35,6 +34,28 @@ const craftsmanshipSignals = [
 
 const featuredSlugs = ["aja", "ndb2", "nd3", "ijeoma"];
 
+const featuredImageOverrides: Record<
+  string,
+  { primary: string; secondary: string }
+> = {
+  aja: {
+    primary: "/brand/products/original/aja/aja-front.png",
+    secondary: "/brand/products/original/aja/aja-side.png"
+  },
+  ndb2: {
+    primary: "/brand/products/button/ndb2/ndb2-angle.png",
+    secondary: "/brand/products/button/ndb2/ndb2-front.png"
+  },
+  nd3: {
+    primary: "/brand/products/button/ndb3/ndb3-angle.png",
+    secondary: "/brand/products/button/ndb3/ndb3-front.png"
+  },
+  ijeoma: {
+    primary: "/brand/products/original/ijeoma/ijeoma-front.png",
+    secondary: "/brand/products/original/ijeoma/ijeoma-mid.png"
+  }
+};
+
 export default async function HomePage() {
   const products = await getStoreProducts();
   const featured = featuredSlugs
@@ -46,17 +67,17 @@ export default async function HomePage() {
     <main className="bg-page text-copy">
       <section className="relative min-h-[min(560px,calc(100svh-100px))] overflow-hidden bg-[#f4eee6] text-[#171717] sm:min-h-[min(680px,calc(100svh-72px))] md:min-h-[min(820px,calc(100svh-72px))]">
         <Image
-          src="/brand/main-hero.png"
+          src="/brand/hero-img.png"
           alt="ỌNUỌRA models wearing contemporary African menswear"
           fill
           priority
           quality={95}
           sizes="100vw"
-          className="object-cover object-center"
+          className="object-cover object-[50%_18%] sm:object-[50%_16%]"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,243,232,0)_0%,rgba(247,243,232,.18)_28%,rgba(247,243,232,.94)_55%,rgba(247,243,232,1)_100%)] sm:bg-[linear-gradient(90deg,rgba(247,243,232,.94)_0%,rgba(247,243,232,.58)_38%,rgba(247,243,232,0)_68%)]" />
-        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-white/70 to-transparent" />
-        <div className="container-luxe relative flex min-h-[min(560px,calc(100svh-100px))] items-end pb-8 pt-28 sm:min-h-[min(680px,calc(100svh-72px))] sm:pb-12 md:min-h-[min(820px,calc(100svh-72px))] md:pb-16">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,243,232,0)_0%,rgba(247,243,232,.05)_42%,rgba(247,243,232,.58)_78%,rgba(247,243,232,.82)_100%)] sm:bg-[linear-gradient(90deg,rgba(247,243,232,.62)_0%,rgba(247,243,232,.24)_36%,rgba(247,243,232,0)_64%)]" />
+        <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/28 to-transparent" />
+        <div className="container-luxe relative flex min-h-[min(560px,calc(100svh-100px))] items-end pb-8 pt-32 sm:min-h-[min(680px,calc(100svh-72px))] sm:pb-12 md:min-h-[min(820px,calc(100svh-72px))] md:pb-16">
           <div className="max-w-xl">
             <p className="text-[10px] font-semibold uppercase text-[#9f751d]">Designed And Made In Nigeria</p>
             <h1 className="mt-3 text-4xl font-semibold leading-[1.04] text-balance sm:text-5xl md:text-6xl">
@@ -130,15 +151,20 @@ export default async function HomePage() {
             linkLabel="Explore All"
           />
           <div className="grid grid-cols-2 gap-x-2.5 gap-y-7 sm:gap-x-5 sm:gap-y-9 lg:grid-cols-4">
-            {selectedProducts.map((product, index) => (
-              <ProductCard
-                key={product.slug}
-                product={product}
-                priority={index < 2}
-                badge={getCollectionByFamily(product.family).englishName}
-                visualVariant="july29"
-              />
-            ))}
+            {selectedProducts.map((product, index) => {
+              const imageOverride = featuredImageOverrides[product.slug];
+              return (
+                <ProductCard
+                  key={product.slug}
+                  product={product}
+                  priority={index < 2}
+                  visualVariant="july29"
+                  collectionOnly
+                  imageOverride={imageOverride?.primary}
+                  secondaryImageOverride={imageOverride?.secondary}
+                />
+              );
+            })}
           </div>
         </div>
       </section>
