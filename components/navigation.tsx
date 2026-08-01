@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { CurrencySelector, useCurrency } from "@/components/currency-provider";
 import { products } from "@/data/catalog";
@@ -45,6 +45,8 @@ export function Navigation() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [cartCount, setCartCount] = useState(0);
+  const collectionsButtonRef = useRef<HTMLButtonElement>(null);
+  const collectionsPanelRef = useRef<HTMLDivElement>(null);
   const isHome = pathname === "/";
 
   function closeMenus() {
@@ -59,6 +61,29 @@ export function Navigation() {
       document.body.style.overflow = "";
     };
   }, [mobileOpen]);
+
+  useEffect(() => {
+    if (!collectionsOpen) return;
+
+    const closeOnScroll = () => setCollectionsOpen(false);
+    const closeOnPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+      if (
+        collectionsButtonRef.current?.contains(target) ||
+        collectionsPanelRef.current?.contains(target)
+      ) {
+        return;
+      }
+      setCollectionsOpen(false);
+    };
+
+    window.addEventListener("scroll", closeOnScroll, { passive: true });
+    document.addEventListener("pointerdown", closeOnPointerDown);
+    return () => {
+      window.removeEventListener("scroll", closeOnScroll);
+      document.removeEventListener("pointerdown", closeOnPointerDown);
+    };
+  }, [collectionsOpen]);
 
   useEffect(() => {
     const syncCart = () => {
@@ -112,19 +137,20 @@ export function Navigation() {
           </Link>
 
           <nav className="hidden h-full items-center gap-7 text-[10px] font-semibold uppercase tracking-[0.08em] lg:flex" aria-label="Main navigation">
-            <Link href="/collection" className="primary-nav-link gold-focus">Shop</Link>
+            <Link href="/collection" className="primary-nav-link gold-focus">SHOP</Link>
             <button
+              ref={collectionsButtonRef}
               type="button"
               onClick={() => setCollectionsOpen((value) => !value)}
               className="primary-nav-link gold-focus inline-flex h-full items-center gap-1.5"
               aria-expanded={collectionsOpen}
             >
-              Collections
+              COLLECTIONS
               <ChevronDown className={cn("h-3.5 w-3.5 transition", collectionsOpen && "rotate-180")} />
             </button>
-            <Link href="/journal" className="primary-nav-link gold-focus">Journal</Link>
-            <Link href="/about" className="primary-nav-link gold-focus">Our Story</Link>
-            <Link href="/contact" className="primary-nav-link gold-focus">Client Services</Link>
+            <Link href="/journal" className="primary-nav-link gold-focus">JOURNAL</Link>
+            <Link href="/about" className="primary-nav-link gold-focus">OUR STORY</Link>
+            <Link href="/contact" className="primary-nav-link gold-focus">CLIENT SERVICES</Link>
           </nav>
 
           <div className="flex items-center gap-1.5">
@@ -175,7 +201,11 @@ export function Navigation() {
       </div>
 
       {collectionsOpen ? (
-        <div className="mx-7 mt-2 hidden overflow-hidden rounded-[14px] border border-line bg-page text-copy shadow-2xl shadow-black/10 lg:block">
+        <div
+          ref={collectionsPanelRef}
+          onMouseLeave={() => setCollectionsOpen(false)}
+          className="mx-7 mt-2 hidden overflow-hidden rounded-[14px] border border-line bg-page text-copy shadow-2xl shadow-black/10 lg:block"
+        >
           <div className="container-luxe grid grid-cols-3 gap-8 py-8">
             {permanentCollectionLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={closeMenus} className="gold-focus border-b border-line pb-4 transition hover:border-gold">
