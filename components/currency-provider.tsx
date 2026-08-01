@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import {
   CURRENCY_PREFERENCE_KEY,
@@ -62,9 +62,28 @@ export function useCurrency() {
 export function CurrencySelector({ className }: { className?: string }) {
   const { currency, setCurrency } = useCurrency();
   const [open, setOpen] = useState(false);
+  const selectorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const closeOnScroll = () => setOpen(false);
+    const closeOnPointerDown = (event: PointerEvent) => {
+      if (!selectorRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("scroll", closeOnScroll, { passive: true });
+    document.addEventListener("pointerdown", closeOnPointerDown);
+    return () => {
+      window.removeEventListener("scroll", closeOnScroll);
+      document.removeEventListener("pointerdown", closeOnPointerDown);
+    };
+  }, [open]);
 
   return (
-    <div className={cn("relative", className)}>
+    <div ref={selectorRef} className={cn("relative", className)}>
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -76,7 +95,10 @@ export function CurrencySelector({ className }: { className?: string }) {
         <ChevronDown className={cn("h-3.5 w-3.5 transition", open && "rotate-180")} />
       </button>
       {open ? (
-        <div className="absolute right-0 top-full z-[130] mt-2 w-20 bg-page p-1 text-copy shadow-xl ring-1 ring-line">
+        <div
+          onMouseLeave={() => setOpen(false)}
+          className="absolute right-0 top-full z-[130] mt-2 w-20 bg-page p-1 text-copy shadow-xl ring-1 ring-line"
+        >
           {SUPPORTED_CURRENCIES.map((code) => (
             <button
               key={code}
