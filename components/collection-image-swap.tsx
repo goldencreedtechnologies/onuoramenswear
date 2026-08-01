@@ -17,9 +17,7 @@ export function CollectionImageSwap({
   priority = false,
   className = "object-cover object-center"
 }: CollectionImageSwapProps) {
-  const preserveHomepageHeadroom =
-    images.front === "/brand/products/buttonless/nd3/nd3-front.webp" &&
-    alt === "Uzọ: Resort Collection";
+  const preserveHomepageHeadroom = alt === "Uzọ: Resort Collection";
 
   const imageStyle: CSSProperties | undefined = preserveHomepageHeadroom
     ? {
