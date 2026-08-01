@@ -77,10 +77,10 @@ export default async function HomePage() {
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,243,232,0)_0%,rgba(247,243,232,.05)_42%,rgba(247,243,232,.58)_78%,rgba(247,243,232,.82)_100%)] sm:bg-[linear-gradient(90deg,rgba(247,243,232,.62)_0%,rgba(247,243,232,.24)_36%,rgba(247,243,232,0)_64%)]" />
         <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/28 to-transparent" />
-        <div className="container-luxe relative flex min-h-[min(560px,calc(100svh-100px))] items-end pb-8 pt-32 sm:min-h-[min(680px,calc(100svh-72px))] sm:pb-12 md:min-h-[min(820px,calc(100svh-72px))] md:pb-16">
+        <div className="container-luxe relative flex min-h-[min(560px,calc(100svh-100px))] items-end pb-6 pt-32 sm:min-h-[min(680px,calc(100svh-72px))] sm:pb-10 md:min-h-[min(820px,calc(100svh-72px))] md:pb-14">
           <div className="max-w-xl">
             <p className="text-[10px] font-semibold uppercase text-[#9f751d]">Designed And Made In Nigeria</p>
-            <h1 className="mt-3 text-4xl font-semibold leading-[1.04] text-balance sm:text-5xl md:text-6xl">
+            <h1 className="mt-1.5 text-4xl font-semibold leading-[1.04] text-balance sm:text-5xl md:text-6xl">
               Contemporary African Menswear
             </h1>
             <p className="mt-3 max-w-md text-sm leading-6 text-black/68 sm:mt-4">
