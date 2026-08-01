@@ -17,29 +17,48 @@ const countries = [
   "Other"
 ];
 
-function SignupFields({ compact = false }: { compact?: boolean }) {
-  const [submitted, setSubmitted] = useState(false);
+type SubmissionState = "idle" | "submitting" | "submitted" | "error";
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+function SignupFields({ compact = false }: { compact?: boolean }) {
+  const [state, setState] = useState<SubmissionState>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
     const email = String(data.get("email") ?? "").trim();
     const country = String(data.get("country") ?? "").trim();
-    if (!email || !country) return;
+    if (!email || !country || state === "submitting") return;
 
-    window.localStorage.setItem(
-      "onuora-circle-interest",
-      JSON.stringify({ email, country, submittedAt: new Date().toISOString() })
-    );
-    setSubmitted(true);
-    form.reset();
+    setState("submitting");
+    setErrorMessage("");
+
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, country })
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(result.error || "We could not save your signup. Please try again.");
+      }
+
+      window.sessionStorage.setItem("onuora-newsletter-seen", "true");
+      setState("submitted");
+      form.reset();
+    } catch (error) {
+      setState("error");
+      setErrorMessage(error instanceof Error ? error.message : "We could not save your signup. Please try again.");
+    }
   }
 
-  if (submitted) {
+  if (state === "submitted") {
     return (
-      <p className={cn("text-sm leading-6", compact ? "text-copy-muted" : "text-white/72")}>
-        Thank you. You are now on the ỌNUỌRA Circle preview list.
+      <p className={cn("text-sm leading-6", compact ? "text-copy-muted" : "text-white/72")} role="status">
+        Thank you. You are now part of the ỌNUỌRA Circle.
       </p>
     );
   }
@@ -79,16 +98,22 @@ function SignupFields({ compact = false }: { compact?: boolean }) {
           ))}
         </select>
       </label>
+      {state === "error" ? (
+        <p className={cn("text-xs leading-5", compact ? "text-wine" : "text-gold-soft")} role="alert">
+          {errorMessage}
+        </p>
+      ) : null}
       <button
         type="submit"
+        disabled={state === "submitting"}
         className={cn(
-          "gold-focus min-h-12 w-full px-5 text-[10px] font-semibold uppercase transition",
+          "gold-focus min-h-12 w-full px-5 text-[10px] font-semibold uppercase transition disabled:cursor-wait disabled:opacity-60",
           compact
             ? "bg-obsidian text-white hover:bg-gold hover:text-obsidian"
             : "bg-gold text-obsidian hover:bg-white"
         )}
       >
-        Join The Circle
+        {state === "submitting" ? "Joining…" : "Join The Circle"}
       </button>
     </form>
   );
