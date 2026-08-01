@@ -35,16 +35,16 @@ export type PhaseOneCollection = {
 
 export const phaseOneImagePairs = {
   original: {
-    front: "/brand/products/original/aja/aja-front.webp",
-    hover: "/brand/products/original/ndu/ndu-studio-idris-source.png"
+    front: "/brand/products/original/aja/aja-front.png",
+    hover: "/brand/products/original/aja/aja-side.png"
   },
   withButton: {
-    front: "/brand/products/button/ndb2/ndb2-front.webp",
-    hover: "/brand/products/button/ndb1/ndb1-studio-registered-source.png"
+    front: "/brand/products/button/ndb5/ndb5-front.png",
+    hover: "/brand/products/button/ndb6/ndb6-front.png"
   },
   withoutButton: {
-    front: "/brand/products/buttonless/nd3/nd3-front.webp",
-    hover: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png"
+    front: "/brand/products/button/ndb4/ndb4-front.png",
+    hover: "/brand/products/button/ndb3/ndb3-angle.png"
   }
 } satisfies Record<string, CollectionImagePair>;
 
