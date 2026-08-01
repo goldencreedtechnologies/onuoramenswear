@@ -14,19 +14,27 @@ export function ProductCard({
   priority = false,
   badge,
   visualVariant = "current",
-  collectionOnly = false
+  collectionOnly = false,
+  imageOverride,
+  secondaryImageOverride
 }: {
   product: Product;
   priority?: boolean;
   badge?: string;
   visualVariant?: ProductCardVisualVariant;
   collectionOnly?: boolean;
+  imageOverride?: string;
+  secondaryImageOverride?: string;
 }) {
-  const secondaryImage = product.images.find((image) => image && image !== product.image) ?? product.image;
+  const primaryImage = imageOverride ?? product.image;
+  const secondaryImage =
+    secondaryImageOverride ??
+    product.images.find((image) => image && image !== product.image) ??
+    primaryImage;
   const useJuly29Visuals = visualVariant === "july29";
   const collection = getCollectionByFamily(product.family);
   const cardLabel = collectionOnly
-    ? `Explore ${collection.englishName}`
+    ? `Explore ${collection.englishName}, ${product.colorName}`
     : `Shop ${product.name}, ${product.colorName}`;
 
   return (
@@ -34,14 +42,14 @@ export function ProductCard({
       <Link href={`/products/${product.slug}`} className="gold-focus block" aria-label={cardLabel}>
         <div className={`product-card-media relative aspect-[4/5] overflow-hidden ${useJuly29Visuals ? "bg-[#f1f0ec]" : "bg-page"}`}>
           <Image
-            src={product.image}
-            alt={`${product.name} ${product.colorName}`}
+            src={primaryImage}
+            alt={collectionOnly ? `${collection.englishName} in ${product.colorName}` : `${product.name} ${product.colorName}`}
             fill
             sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
             priority={priority}
             className="product-card-image object-cover object-top transition duration-700 ease-out group-hover:scale-[1.018]"
           />
-          {secondaryImage !== product.image ? (
+          {secondaryImage !== primaryImage ? (
             <Image
               src={secondaryImage}
               alt=""
@@ -63,14 +71,12 @@ export function ProductCard({
         <div className="flex items-start justify-between gap-2 pt-2">
           <div className="min-w-0">
             <p className="text-[9px] font-semibold uppercase tracking-[0.06em] text-gold">
-              {collection.igboName} · {collection.englishName}
+              {collection.igboName}
             </p>
             <h3 className="mt-1 truncate text-sm font-semibold text-copy">
               {collectionOnly ? collection.englishName : product.name}
             </h3>
-            {!collectionOnly ? (
-              <p className="mt-0.5 truncate text-[11px] text-copy-muted">{product.colorName}</p>
-            ) : null}
+            <p className="mt-0.5 truncate text-[11px] text-copy-muted">{product.colorName}</p>
           </div>
           <ProductPrice className="shrink-0 text-sm font-medium text-copy" />
         </div>
