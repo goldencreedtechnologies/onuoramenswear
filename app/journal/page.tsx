@@ -11,7 +11,7 @@ export const metadata = {
 const journalImages = [
   "/brand/new-product-nb.png",
   "/brand/new-product-b(back).png",
-  "/brand/new-product-b.png"
+  "/brand/products/original/aja/ajah-grid.png"
 ];
 
 const categories = ["Behind the Collections", "African Craftsmanship", "Campaigns"];
