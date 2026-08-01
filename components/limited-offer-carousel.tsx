@@ -6,8 +6,8 @@ import { ArrowRight } from "lucide-react";
 
 const campaignImages = [
   {
-    src: "/brand/products/buttonless/nd1/nd1-studio-registered-source.png",
-    alt: "Resort Collection studio portrait",
+    src: "/brand/products/buttonless/nd1/nd1-mid.png",
+    alt: "Resort Collection upper-body portrait",
     className: "col-span-4 row-span-5 sm:col-span-5 sm:row-span-8"
   },
   {
@@ -16,18 +16,18 @@ const campaignImages = [
     className: "col-span-2 row-span-3 sm:col-span-3 sm:row-span-4"
   },
   {
-    src: "/brand/products/buttonless/nd3/nd3-angle.webp",
-    alt: "Resort Collection outfit",
+    src: "/brand/products/button/ndb6/ndb6-front.png",
+    alt: "Cowrie Collection outfit",
     className: "col-span-2 row-span-2 sm:col-span-4 sm:row-span-4"
   },
   {
-    src: "/brand/products/button/ndb4/ndb4-mid.webp",
-    alt: "Cowrie Collection outfit",
+    src: "/brand/products/original/aja/aja-mid.png",
+    alt: "Heritage Collection upper-body portrait",
     className: "col-span-3 row-span-4 sm:col-span-4 sm:row-span-4"
   },
   {
-    src: "/brand/products/button/ndb3/ndb3-angle.webp",
-    alt: "Cowrie Collection outfit",
+    src: "/brand/products/original/ndu/ndu-angle.png",
+    alt: "Heritage Collection angled outfit portrait",
     className: "col-span-3 row-span-4 sm:col-span-3 sm:row-span-4"
   }
 ];
@@ -54,7 +54,9 @@ export function LimitedOfferCarousel() {
       <div className="absolute inset-x-0 bottom-0">
         <div className="container-luxe pb-8 sm:pb-12">
           <div className="max-w-xl">
-            <p className="text-[10px] font-semibold uppercase text-gold-soft">Designed in Nigeria</p>
+            <p className="text-[10px] font-semibold uppercase text-gold-soft [text-shadow:0_2px_10px_rgba(0,0,0,0.95)]">
+              Designed in Nigeria
+            </p>
             <h2 id="offer-heading" className="mt-2 text-3xl font-semibold leading-tight sm:text-4xl">
               Delivered Worldwide
             </h2>
