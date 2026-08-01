@@ -32,7 +32,7 @@ const craftsmanshipSignals = [
   }
 ];
 
-const featuredSlugs = ["aja", "ndb2", "nd3", "ijeoma"];
+const featuredSlugs = ["aja", "ndb2", "ndb3", "ijeoma"];
 
 const featuredImageOverrides: Record<
   string,
@@ -46,7 +46,7 @@ const featuredImageOverrides: Record<
     primary: "/brand/products/button/ndb2/ndb2-angle.png",
     secondary: "/brand/products/button/ndb2/ndb2-front.png"
   },
-  nd3: {
+  ndb3: {
     primary: "/brand/products/button/ndb3/ndb3-angle.png",
     secondary: "/brand/products/button/ndb3/ndb3-front.png"
   },
