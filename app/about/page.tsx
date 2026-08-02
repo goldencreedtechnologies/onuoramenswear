@@ -70,7 +70,7 @@ export default function AboutPage() {
           </div>
           <div className="relative aspect-[4/3] overflow-hidden bg-surface-subtle">
             <Image
-              src="/brand/ND-out.png"
+              src="/brand/nd-out.png"
               alt="ỌNUỌRA contemporary menswear"
               fill
               quality={94}
@@ -81,8 +81,16 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-obsidian py-12 text-ivory md:py-20" aria-labelledby="nigerian-craftsmanship">
-        <div className="container-luxe">
+      <section className="relative overflow-hidden bg-obsidian py-12 text-ivory md:py-20" aria-labelledby="nigerian-craftsmanship">
+        <Image
+          src="/brand/Untitled-design-34.png"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover object-center opacity-20"
+        />
+        <div className="absolute inset-0 bg-black/72" />
+        <div className="container-luxe relative">
           <header className="max-w-2xl">
             <p className="text-[10px] font-semibold uppercase text-gold-soft">Nigerian Craftsmanship</p>
             <h2 id="nigerian-craftsmanship" className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
