@@ -21,8 +21,8 @@ const permanentCollectionLinks = [
 const mobileLinks = [
   { href: "/collection", label: "Shop" },
   { href: "/collection#collections", label: "Collections" },
-  { href: "/journal", label: "Journal" },
-  { href: "/about", label: "Our Story" }
+  { href: "/about", label: "Our Story" },
+  { href: "/journal", label: "Journal" }
 ];
 
 function BrandLogo() {
@@ -137,7 +137,7 @@ export function Navigation() {
             <BrandLogo />
           </Link>
 
-          <nav className="hidden h-full items-center gap-7 text-[10px] font-semibold uppercase tracking-[0.08em] lg:flex" aria-label="Main navigation">
+          <nav className="hidden h-full items-center gap-10 text-[11px] font-semibold uppercase tracking-[0.09em] lg:flex xl:gap-12" aria-label="Main navigation">
             <Link href="/collection" className="primary-nav-link gold-focus">SHOP</Link>
             <button
               ref={collectionsButtonRef}
@@ -149,8 +149,8 @@ export function Navigation() {
               COLLECTIONS
               <ChevronDown className={cn("h-3.5 w-3.5 transition", collectionsOpen && "rotate-180")} />
             </button>
-            <Link href="/journal" className="primary-nav-link gold-focus">JOURNAL</Link>
             <Link href="/about" className="primary-nav-link gold-focus">OUR STORY</Link>
+            <Link href="/journal" className="primary-nav-link gold-focus">JOURNAL</Link>
           </nav>
 
           <div className="flex items-center gap-1.5">
