@@ -12,9 +12,10 @@ import { readCart } from "@/lib/cart";
 import { cn } from "@/lib/cn";
 
 const permanentCollectionLinks = [
-  { href: "/collection#original", igbo: "Nkwọ", english: "Heritage Collection" },
-  { href: "/collection#with-button", igbo: "Ọzọ", english: "Cowrie Collection" },
-  { href: "/collection#without-button", igbo: "Uzọ", english: "Resort Collection" }
+  { href: "/collection", igbo: "Browse", english: "All Collections" },
+  { href: "/collection/heritage", igbo: "Nkwọ", english: "Heritage Collection" },
+  { href: "/collection/cowrie", igbo: "Ọzọ", english: "Cowrie Collection" },
+  { href: "/collection/resort", igbo: "Uzọ", english: "Resort Collection" }
 ];
 
 const mobileLinks = [
@@ -206,7 +207,7 @@ export function Navigation() {
           onMouseLeave={() => setCollectionsOpen(false)}
           className="mx-7 mt-2 hidden overflow-hidden rounded-[14px] border border-line bg-page text-copy shadow-2xl shadow-black/10 lg:block"
         >
-          <div className="container-luxe grid grid-cols-3 gap-8 py-8">
+          <div className="container-luxe grid grid-cols-4 gap-6 py-8">
             {permanentCollectionLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={closeMenus} className="gold-focus border-b border-line pb-4 transition hover:border-gold">
                 <span className="block text-[9px] font-semibold uppercase text-gold">{link.igbo}</span>
