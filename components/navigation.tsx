@@ -151,7 +151,6 @@ export function Navigation() {
             </button>
             <Link href="/journal" className="primary-nav-link gold-focus">JOURNAL</Link>
             <Link href="/about" className="primary-nav-link gold-focus">OUR STORY</Link>
-            <Link href="/contact" className="primary-nav-link gold-focus">CLIENT SERVICES</Link>
           </nav>
 
           <div className="flex items-center gap-1.5">
