@@ -32,10 +32,10 @@
   }
 
   /* A feathered cream fade sits only behind the lower-left hero copy.
-     Its transparent edges avoid a rectangular panel and keep the models' faces untouched. */
+     It is lifted slightly to cover the eyebrow line while staying below the models' faces. */
   main > section:first-child > div.absolute.inset-0 {
     background: radial-gradient(
-      ellipse 58% 48% at 7% 84%,
+      ellipse 60% 56% at 7% 78%,
       rgb(247 243 232 / 96%) 0%,
       rgb(247 243 232 / 84%) 32%,
       rgb(247 243 232 / 48%) 55%,
@@ -69,7 +69,7 @@
     text-shadow: none;
   }
 
-  /* Remove the previous rectangular eyebrow treatment; the radial fade now supports all copy. */
+  /* The radial fade now supports the full text group. */
   main > section:first-child .container-luxe > div.max-w-xl > p:first-child {
     display: block;
     margin-left: 0;
