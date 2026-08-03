@@ -1,4 +1,4 @@
-import { PRODUCT_PRICES } from "@/data/site-config";
+import { PRODUCT_PRICES, getCollectionByFamily } from "@/data/site-config";
 import type { StoreProduct } from "@/lib/backend/types";
 
 export const cartStorageKey = "onuora-cart";
@@ -27,6 +27,12 @@ export function cartItemKey(item: Pick<CartItem, "productSlug" | "size" | "color
   return `${item.productSlug}::${item.size}::${item.colorName.toLowerCase()}`;
 }
 
+function collectionNameForSlug(slug: string) {
+  if (slug.startsWith("ndb")) return "Cowrie Collection";
+  if (/^nd\d+$/i.test(slug)) return "Resort Collection";
+  return "Heritage Collection";
+}
+
 export function productToCartItem(
   product: StoreProduct,
   size: string,
@@ -37,8 +43,8 @@ export function productToCartItem(
 ): CartItem {
   return {
     productSlug: product.slug,
-    name: product.name,
-    edition: product.edition,
+    name: getCollectionByFamily(product.family).englishName,
+    edition: colour.colorName,
     image: product.image,
     colorName: colour.colorName,
     colorValue: colour.colorValue,
@@ -65,13 +71,14 @@ function normalizeCartItem(value: unknown): CartItem | null {
   }
 
   const fallbackColour = item.edition.replace(/\s+Edition$/i, "").trim() || "Selected Colour";
+  const colorName = typeof item.colorName === "string" ? item.colorName : fallbackColour;
 
   return {
     productSlug: item.productSlug,
-    name: item.name,
-    edition: item.edition,
+    name: collectionNameForSlug(item.productSlug),
+    edition: colorName,
     image: item.image,
-    colorName: typeof item.colorName === "string" ? item.colorName : fallbackColour,
+    colorName,
     colorValue: typeof item.colorValue === "string" ? item.colorValue : "#1F1F1F",
     size: item.size,
     quantity: item.quantity,
