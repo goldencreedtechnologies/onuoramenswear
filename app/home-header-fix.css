@@ -5,7 +5,7 @@
     color: #171717 !important;
   }
 
-  /* Restore the original floating, rounded navigation and place it over the hero. */
+  /* Keep the original floating, rounded navigation over the hero. */
   header.absolute > div:nth-child(2) {
     position: absolute !important;
     top: 40px !important;
@@ -31,14 +31,26 @@
     object-position: 50% 0% !important;
   }
 
-  /* Do not tint or fade the hero artwork. */
-  main > section:first-child > div.absolute.inset-0,
+  /* A feathered cream fade sits only behind the lower-left hero copy.
+     Its transparent edges avoid a rectangular panel and keep the models' faces untouched. */
+  main > section:first-child > div.absolute.inset-0 {
+    background: radial-gradient(
+      ellipse 58% 48% at 7% 84%,
+      rgb(247 243 232 / 96%) 0%,
+      rgb(247 243 232 / 84%) 32%,
+      rgb(247 243 232 / 48%) 55%,
+      rgb(247 243 232 / 16%) 70%,
+      rgb(247 243 232 / 0%) 84%
+    ) !important;
+    opacity: 1 !important;
+  }
+
   main > section:first-child > div.absolute.inset-x-0.top-0 {
     background: none !important;
     opacity: 1 !important;
   }
 
-  /* Keep the original dark hero copy without adding a panel over the photograph. */
+  /* Keep the original dark hero copy without adding a hard panel. */
   main > section:first-child .container-luxe > div.max-w-xl {
     position: static;
     margin-left: 0;
@@ -49,26 +61,21 @@
 
   main > section:first-child .container-luxe > div.max-w-xl h1 {
     color: #171717 !important;
-    text-shadow: 0 1px 12px rgb(247 243 232 / 48%);
+    text-shadow: none;
   }
 
   main > section:first-child .container-luxe > div.max-w-xl p {
     color: rgb(23 23 23 / 76%) !important;
-    text-shadow: 0 1px 10px rgb(247 243 232 / 52%);
+    text-shadow: none;
   }
 
-  /* Localise the light treatment to the small eyebrow line only. */
+  /* Remove the previous rectangular eyebrow treatment; the radial fade now supports all copy. */
   main > section:first-child .container-luxe > div.max-w-xl > p:first-child {
-    display: inline-block;
-    margin-left: -10px;
-    padding: 5px 34px 5px 10px;
+    display: block;
+    margin-left: 0;
+    padding: 0;
     color: #9f751d !important;
-    background: linear-gradient(
-      90deg,
-      rgb(247 243 232 / 88%) 0%,
-      rgb(247 243 232 / 54%) 62%,
-      rgb(247 243 232 / 0%) 100%
-    );
+    background: none;
     text-shadow: none;
   }
 }
