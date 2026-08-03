@@ -34,10 +34,11 @@ export function ProductCard({
   const useJuly29Visuals = visualVariant === "july29";
   const collection = getCollectionByFamily(product.family);
   const displayName = `${collection.englishName}, ${product.colorName}`;
+  const cardLabel = collectionOnly ? `Explore ${displayName}` : `Shop ${displayName}`;
 
   return (
     <article className="group min-w-0">
-      <Link href={`/products/${product.slug}`} className="gold-focus block" aria-label={`Explore ${displayName}`}>
+      <Link href={`/products/${product.slug}`} className="gold-focus block" aria-label={cardLabel}>
         <div className={`product-card-media relative aspect-[4/5] overflow-hidden ${useJuly29Visuals ? "bg-[#f1f0ec]" : "bg-page"}`}>
           <Image
             src={primaryImage}
