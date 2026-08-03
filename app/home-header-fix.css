@@ -1,0 +1,129 @@
+@media (min-width: 1024px) {
+  header.absolute > div:first-child {
+    background: #f4eee6 !important;
+    color: #171717 !important;
+  }
+
+  header.absolute > div:nth-child(2) {
+    position: absolute !important;
+    top: 40px !important;
+    right: 28px !important;
+    left: 28px !important;
+    margin-inline: 0 !important;
+    border: 1px solid rgb(255 255 255 / 55%) !important;
+    border-radius: 14px !important;
+    background: rgb(247 243 232 / 94%) !important;
+    box-shadow: 0 12px 36px rgb(0 0 0 / 10%) !important;
+    backdrop-filter: blur(20px) !important;
+  }
+
+  /* The homepage navbar is removed from normal flow, so anchor its open
+     collections/search panel directly beneath it instead of behind it. */
+  header.absolute > div:nth-child(3) {
+    position: absolute !important;
+    top: 116px !important;
+    right: 28px !important;
+    left: 28px !important;
+    z-index: 60 !important;
+    margin: 0 !important;
+  }
+
+  header nav[aria-label="Main navigation"] {
+    column-gap: 3.5rem !important;
+  }
+
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) {
+    margin-top: 0 !important;
+  }
+
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > img {
+    top: 72px !important;
+    height: calc(100% - 72px) !important;
+    object-position: 50% 0% !important;
+  }
+
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > div.absolute.inset-0 {
+    background: radial-gradient(
+      ellipse 60% 56% at 7% 78%,
+      rgb(247 243 232 / 96%) 0%,
+      rgb(247 243 232 / 84%) 32%,
+      rgb(247 243 232 / 48%) 55%,
+      rgb(247 243 232 / 16%) 70%,
+      rgb(247 243 232 / 0%) 84%
+    ) !important;
+    opacity: 1 !important;
+  }
+
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > div.absolute.inset-x-0.top-0 {
+    background: none !important;
+    opacity: 1 !important;
+  }
+
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl {
+    position: static;
+    margin-left: 0;
+    padding: 0;
+    color: #171717;
+    background: none;
+  }
+
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl h1 {
+    color: #171717 !important;
+    text-shadow: none;
+  }
+
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl p {
+    color: rgb(23 23 23 / 76%) !important;
+    text-shadow: none;
+  }
+
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl > p:first-child {
+    display: block;
+    margin-left: 0;
+    padding: 0;
+    color: #9f751d !important;
+    background: none;
+    text-shadow: none;
+  }
+}
+
+/* Replace internal catalog names in the visible search UI with collection labels. */
+header a[href^="/products/"] > span:last-child > span:first-child {
+  font-size: 0 !important;
+}
+
+header a[href^="/products/"] > span:last-child > span:first-child::after {
+  content: "Heritage Collection";
+  font-size: 0.875rem;
+}
+
+header a[href^="/products/nd"] > span:last-child > span:first-child::after {
+  content: "Resort Collection";
+}
+
+header a[href^="/products/ndb"] > span:last-child > span:first-child::after {
+  content: "Cowrie Collection";
+}
+
+@media (max-width: 767px) {
+  main img[alt="The ỌNUỌRA house wearing contemporary African menswear in Nigeria"] {
+    object-position: 50% 12% !important;
+  }
+
+  main img[alt="ỌNUỌRA contemporary menswear"],
+  main img[alt*="founder of ỌNUỌRA Menswear"] {
+    object-fit: contain !important;
+    object-position: center top !important;
+  }
+
+  main article img[alt=""] {
+    object-fit: contain !important;
+    object-position: center top !important;
+  }
+}
+
+@media (max-width: 639px) {
+  main:has(> section > img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > section:last-child {
+    display: none !important;
+  }
+}

@@ -67,7 +67,7 @@ export default async function HomePage() {
     <main className="bg-page text-copy">
       <section className="relative min-h-[min(560px,calc(100svh-100px))] overflow-hidden bg-[#f4eee6] text-[#171717] sm:min-h-[min(680px,calc(100svh-72px))] md:min-h-[min(820px,calc(100svh-72px))]">
         <Image
-          src="/brand/hero-img.png"
+          src="/brand/final-hero.png"
           alt="ỌNUỌRA models wearing contemporary African menswear"
           fill
           priority

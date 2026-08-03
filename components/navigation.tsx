@@ -12,16 +12,17 @@ import { readCart } from "@/lib/cart";
 import { cn } from "@/lib/cn";
 
 const permanentCollectionLinks = [
-  { href: "/collection#original", igbo: "Nkwọ", english: "Heritage Collection" },
-  { href: "/collection#with-button", igbo: "Ọzọ", english: "Cowrie Collection" },
-  { href: "/collection#without-button", igbo: "Uzọ", english: "Resort Collection" }
+  { href: "/collection", igbo: "Browse", english: "All Collections" },
+  { href: "/collection/heritage", igbo: "Nkwọ", english: "Heritage Collection" },
+  { href: "/collection/cowrie", igbo: "Ọzọ", english: "Cowrie Collection" },
+  { href: "/collection/resort", igbo: "Uzọ", english: "Resort Collection" }
 ];
 
 const mobileLinks = [
   { href: "/collection", label: "Shop" },
   { href: "/collection#collections", label: "Collections" },
-  { href: "/journal", label: "Journal" },
-  { href: "/about", label: "Our Story" }
+  { href: "/about", label: "Our Story" },
+  { href: "/journal", label: "Journal" }
 ];
 
 function BrandLogo() {
@@ -136,7 +137,7 @@ export function Navigation() {
             <BrandLogo />
           </Link>
 
-          <nav className="hidden h-full items-center gap-7 text-[10px] font-semibold uppercase tracking-[0.08em] lg:flex" aria-label="Main navigation">
+          <nav className="hidden h-full items-center gap-10 text-[11px] font-semibold uppercase tracking-[0.09em] lg:flex xl:gap-12" aria-label="Main navigation">
             <Link href="/collection" className="primary-nav-link gold-focus">SHOP</Link>
             <button
               ref={collectionsButtonRef}
@@ -148,9 +149,8 @@ export function Navigation() {
               COLLECTIONS
               <ChevronDown className={cn("h-3.5 w-3.5 transition", collectionsOpen && "rotate-180")} />
             </button>
-            <Link href="/journal" className="primary-nav-link gold-focus">JOURNAL</Link>
             <Link href="/about" className="primary-nav-link gold-focus">OUR STORY</Link>
-            <Link href="/contact" className="primary-nav-link gold-focus">CLIENT SERVICES</Link>
+            <Link href="/journal" className="primary-nav-link gold-focus">JOURNAL</Link>
           </nav>
 
           <div className="flex items-center gap-1.5">
@@ -206,7 +206,7 @@ export function Navigation() {
           onMouseLeave={() => setCollectionsOpen(false)}
           className="mx-7 mt-2 hidden overflow-hidden rounded-[14px] border border-line bg-page text-copy shadow-2xl shadow-black/10 lg:block"
         >
-          <div className="container-luxe grid grid-cols-3 gap-8 py-8">
+          <div className="container-luxe grid grid-cols-4 gap-6 py-8">
             {permanentCollectionLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={closeMenus} className="gold-focus border-b border-line pb-4 transition hover:border-gold">
                 <span className="block text-[9px] font-semibold uppercase text-gold">{link.igbo}</span>

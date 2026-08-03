@@ -43,8 +43,8 @@ export const phaseOneImagePairs = {
     hover: "/brand/products/button/ndb6/ndb6-front.png"
   },
   withoutButton: {
-    front: "/brand/products/button/ndb4/ndb4-front.png",
-    hover: "/brand/products/button/ndb3/ndb3-angle.png"
+    front: "/brand/products/buttonless/nd4/nd4-front.png",
+    hover: "/brand/products/buttonless/nd3/nd3-angle.png"
   }
 } satisfies Record<string, CollectionImagePair>;
 
@@ -110,7 +110,7 @@ export const homepageCollectionCards = [
     eyebrow: heritage.igboName,
     title: heritage.englishName,
     description: heritage.description,
-    href: "/collection#original",
+    href: "/collection/heritage",
     images: phaseOneImagePairs.original
   },
   {
@@ -118,7 +118,7 @@ export const homepageCollectionCards = [
     eyebrow: cowrie.igboName,
     title: cowrie.englishName,
     description: cowrie.description,
-    href: "/collection#with-button",
+    href: "/collection/cowrie",
     images: phaseOneImagePairs.withButton
   },
   {
@@ -126,7 +126,7 @@ export const homepageCollectionCards = [
     eyebrow: resort.igboName,
     title: resort.englishName,
     description: resort.description,
-    href: "/collection#without-button",
+    href: "/collection/resort",
     images: phaseOneImagePairs.withoutButton
   }
 ];
