@@ -377,6 +377,25 @@ img {
   min-height: 48px;
 }
 
+@media (min-width: 768px) {
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) {
+    margin-top: 132px;
+  }
+
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > div:nth-of-type(1) {
+    background: linear-gradient(
+      90deg,
+      rgba(247, 243, 232, 0.38) 0%,
+      rgba(247, 243, 232, 0.12) 34%,
+      rgba(247, 243, 232, 0) 58%
+    ) !important;
+  }
+
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > div:nth-of-type(2) {
+    opacity: 0.35;
+  }
+}
+
 @keyframes reveal {
   to {
     opacity: 1;
