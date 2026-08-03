@@ -1,0 +1,16 @@
+@media (min-width: 1024px) {
+  /* Keep the announcement strip visually connected to the warm homepage palette. */
+  header.absolute > div:first-child {
+    background: #f4eee6 !important;
+    color: #171717 !important;
+  }
+
+  /* Preserve the hero artwork's original colour and tone on desktop. */
+  main > section:first-child > div.absolute.inset-0 {
+    background: none !important;
+  }
+
+  main > section:first-child > div.absolute.inset-x-0.top-0 {
+    background: none !important;
+  }
+}
