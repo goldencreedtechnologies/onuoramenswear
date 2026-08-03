@@ -1,36 +1,32 @@
 @media (min-width: 1024px) {
-  /* Keep only the announcement strip as a warm cream band. */
+  /* Keep the announcement as the only separate top strip. */
   header.absolute > div:first-child {
     background: #f4eee6 !important;
     color: #171717 !important;
   }
 
-  /* Let the navigation float over the hero instead of creating a page-colour break. */
+  /* The nav itself is cream, but there is no outer white band, gap or floating card edge. */
   header.absolute > div:nth-child(2) {
-    background: rgb(247 243 232 / 92%) !important;
-    border-color: rgb(255 255 255 / 55%) !important;
+    margin-inline: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #f7f3e8 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
   }
 
-  /* Keep the hero lifted into the header headroom with no visible start line. */
+  /* Keep the hero flowing behind the header while preserving the models' headroom. */
   main > section:first-child img {
     object-position: 50% 0% !important;
   }
 
-  /* Restore the earlier soft white gradient behind the copy. */
-  main > section:first-child > div.absolute.inset-0 {
-    background: linear-gradient(
-      90deg,
-      rgb(247 243 232 / 62%) 0%,
-      rgb(247 243 232 / 24%) 36%,
-      rgb(247 243 232 / 0%) 64%
-    ) !important;
-  }
-
+  /* Do not tint or fade the hero artwork. */
+  main > section:first-child > div.absolute.inset-0,
   main > section:first-child > div.absolute.inset-x-0.top-0 {
-    background: linear-gradient(to bottom, rgb(255 255 255 / 28%), transparent) !important;
+    background: none !important;
   }
 
-  /* Return the original dark hero typography and remove the temporary dark panel. */
+  /* Keep the original dark hero copy without adding a panel over the photograph. */
   main > section:first-child .container-luxe > div.max-w-xl {
     position: static;
     margin-left: 0;
@@ -41,15 +37,26 @@
 
   main > section:first-child .container-luxe > div.max-w-xl h1 {
     color: #171717 !important;
-    text-shadow: none;
+    text-shadow: 0 1px 12px rgb(247 243 232 / 48%);
   }
 
   main > section:first-child .container-luxe > div.max-w-xl p {
-    color: rgb(23 23 23 / 68%) !important;
-    text-shadow: none;
+    color: rgb(23 23 23 / 76%) !important;
+    text-shadow: 0 1px 10px rgb(247 243 232 / 52%);
   }
 
+  /* Localise the light treatment to the small eyebrow line only. */
   main > section:first-child .container-luxe > div.max-w-xl > p:first-child {
+    display: inline-block;
+    margin-left: -10px;
+    padding: 5px 34px 5px 10px;
     color: #9f751d !important;
+    background: linear-gradient(
+      90deg,
+      rgb(247 243 232 / 88%) 0%,
+      rgb(247 243 232 / 54%) 62%,
+      rgb(247 243 232 / 0%) 100%
+    );
+    text-shadow: none;
   }
 }
