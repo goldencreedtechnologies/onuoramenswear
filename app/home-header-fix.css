@@ -1,31 +1,33 @@
 @media (min-width: 1024px) {
-  /* Keep the announcement as the only separate top strip. */
+  /* The announcement remains the only full-width cream strip. */
   header.absolute > div:first-child {
     background: #f4eee6 !important;
     color: #171717 !important;
   }
 
-  /* Make the nav a true overlay on the hero, not a block above it. */
+  /* Restore the original floating, rounded navigation and place it over the hero. */
   header.absolute > div:nth-child(2) {
     position: absolute !important;
-    top: 32px !important;
-    right: 0 !important;
-    left: 0 !important;
+    top: 40px !important;
+    right: 28px !important;
+    left: 28px !important;
     margin-inline: 0 !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    background: #f7f3e8 !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
+    border: 1px solid rgb(255 255 255 / 55%) !important;
+    border-radius: 14px !important;
+    background: rgb(247 243 232 / 94%) !important;
+    box-shadow: 0 12px 36px rgb(0 0 0 / 10%) !important;
+    backdrop-filter: blur(20px) !important;
   }
 
-  /* Override the older desktop rule that reserved 132px above the hero. */
+  /* Remove the older desktop spacer above the hero. */
   main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) {
     margin-top: 0 !important;
   }
 
-  /* Preserve headroom while the nav overlays the image. */
+  /* Start the photograph beneath the floating nav, with the seam hidden behind it. */
   main > section:first-child img {
+    top: 72px !important;
+    height: calc(100% - 72px) !important;
     object-position: 50% 0% !important;
   }
 
