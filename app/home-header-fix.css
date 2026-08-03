@@ -5,43 +5,52 @@
     color: #171717 !important;
   }
 
-  /* Let the hero sit directly behind the navigation without a pale band. */
+  /* Keep the navigation floating over the hero without an extra page-colour band. */
   header.absolute > div:nth-child(2) {
-    background: rgb(244 238 230 / 78%) !important;
-    border-color: rgb(244 238 230 / 58%) !important;
+    background: rgb(247 243 232 / 90%) !important;
+    border-color: rgb(247 243 232 / 62%) !important;
   }
 
+  /* Lift the artwork into the header area so the image flows continuously behind the nav. */
   main > section:first-child img {
-    object-position: 50% 6% !important;
+    object-position: 50% 4% !important;
   }
 
-  /* Preserve the source image colour across the models. */
-  main > section:first-child > div.absolute.inset-0,
+  /* Restore the soft light gradient used for readable copy, with no black treatment. */
+  main > section:first-child > div.absolute.inset-0 {
+    background: linear-gradient(
+      90deg,
+      rgb(247 243 232 / 72%) 0%,
+      rgb(247 243 232 / 48%) 28%,
+      rgb(247 243 232 / 15%) 48%,
+      rgb(247 243 232 / 0%) 62%
+    ) !important;
+  }
+
   main > section:first-child > div.absolute.inset-x-0.top-0 {
     background: none !important;
   }
 
-  /* Add contrast only behind the copy, not across the models. */
+  /* Remove the temporary dark copy panel and return the original dark typography. */
   main > section:first-child .container-luxe > div.max-w-xl {
-    position: relative;
-    margin-left: -24px;
-    padding: 28px 40px 30px 24px;
-    color: #ffffff;
-    background: linear-gradient(
-      90deg,
-      rgb(15 12 9 / 76%) 0%,
-      rgb(15 12 9 / 58%) 58%,
-      rgb(15 12 9 / 0%) 100%
-    );
+    position: static;
+    margin-left: 0;
+    padding: 0;
+    color: #171717;
+    background: none;
   }
 
-  main > section:first-child .container-luxe > div.max-w-xl h1,
+  main > section:first-child .container-luxe > div.max-w-xl h1 {
+    color: #171717 !important;
+    text-shadow: none;
+  }
+
   main > section:first-child .container-luxe > div.max-w-xl p {
-    color: #ffffff !important;
-    text-shadow: 0 1px 18px rgb(0 0 0 / 24%);
+    color: rgb(23 23 23 / 72%) !important;
+    text-shadow: none;
   }
 
   main > section:first-child .container-luxe > div.max-w-xl > p:first-child {
-    color: #e5bd72 !important;
+    color: #9f751d !important;
   }
 }
