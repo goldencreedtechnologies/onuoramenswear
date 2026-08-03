@@ -1,16 +1,47 @@
 @media (min-width: 1024px) {
-  /* Keep the announcement strip visually connected to the warm homepage palette. */
+  /* Keep the announcement strip connected to the warm homepage palette. */
   header.absolute > div:first-child {
     background: #f4eee6 !important;
     color: #171717 !important;
   }
 
-  /* Preserve the hero artwork's original colour and tone on desktop. */
-  main > section:first-child > div.absolute.inset-0 {
+  /* Let the hero sit directly behind the navigation without a pale band. */
+  header.absolute > div:nth-child(2) {
+    background: rgb(244 238 230 / 78%) !important;
+    border-color: rgb(244 238 230 / 58%) !important;
+  }
+
+  main > section:first-child img {
+    object-position: 50% 6% !important;
+  }
+
+  /* Preserve the source image colour across the models. */
+  main > section:first-child > div.absolute.inset-0,
+  main > section:first-child > div.absolute.inset-x-0.top-0 {
     background: none !important;
   }
 
-  main > section:first-child > div.absolute.inset-x-0.top-0 {
-    background: none !important;
+  /* Add contrast only behind the copy, not across the models. */
+  main > section:first-child .container-luxe > div.max-w-xl {
+    position: relative;
+    margin-left: -24px;
+    padding: 28px 40px 30px 24px;
+    color: #ffffff;
+    background: linear-gradient(
+      90deg,
+      rgb(15 12 9 / 76%) 0%,
+      rgb(15 12 9 / 58%) 58%,
+      rgb(15 12 9 / 0%) 100%
+    );
+  }
+
+  main > section:first-child .container-luxe > div.max-w-xl h1,
+  main > section:first-child .container-luxe > div.max-w-xl p {
+    color: #ffffff !important;
+    text-shadow: 0 1px 18px rgb(0 0 0 / 24%);
+  }
+
+  main > section:first-child .container-luxe > div.max-w-xl > p:first-child {
+    color: #e5bd72 !important;
   }
 }
