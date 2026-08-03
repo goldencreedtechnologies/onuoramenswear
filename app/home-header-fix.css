@@ -17,6 +17,17 @@
     backdrop-filter: blur(20px) !important;
   }
 
+  /* The homepage navbar is removed from normal flow, so anchor its open
+     collections/search panel directly beneath it instead of behind it. */
+  header.absolute > div:nth-child(3) {
+    position: absolute !important;
+    top: 116px !important;
+    right: 28px !important;
+    left: 28px !important;
+    z-index: 60 !important;
+    margin: 0 !important;
+  }
+
   header nav[aria-label="Main navigation"] {
     column-gap: 3.5rem !important;
   }
