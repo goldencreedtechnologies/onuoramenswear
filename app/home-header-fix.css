@@ -17,6 +17,10 @@
     backdrop-filter: blur(20px) !important;
   }
 
+  header nav[aria-label="Main navigation"] {
+    column-gap: 3.5rem !important;
+  }
+
   main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) {
     margin-top: 0 !important;
   }
@@ -69,5 +73,28 @@
     color: #9f751d !important;
     background: none;
     text-shadow: none;
+  }
+}
+
+@media (max-width: 767px) {
+  main img[alt="The ỌNUỌRA house wearing contemporary African menswear in Nigeria"] {
+    object-position: 50% 12% !important;
+  }
+
+  main img[alt="ỌNUỌRA contemporary menswear"],
+  main img[alt*="founder of ỌNUỌRA Menswear"] {
+    object-fit: contain !important;
+    object-position: center top !important;
+  }
+
+  main article img[alt=""] {
+    object-fit: contain !important;
+    object-position: center top !important;
+  }
+}
+
+@media (max-width: 639px) {
+  main:has(> section > img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > section:last-child {
+    display: none !important;
   }
 }
