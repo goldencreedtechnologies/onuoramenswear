@@ -33,21 +33,19 @@ export function ProductCard({
     primaryImage;
   const useJuly29Visuals = visualVariant === "july29";
   const collection = getCollectionByFamily(product.family);
-  const cardLabel = collectionOnly
-    ? `Explore ${collection.englishName}, ${product.colorName}`
-    : `Shop ${product.name}, ${product.colorName}`;
+  const displayName = `${collection.englishName}, ${product.colorName}`;
 
   return (
     <article className="group min-w-0">
-      <Link href={`/products/${product.slug}`} className="gold-focus block" aria-label={cardLabel}>
+      <Link href={`/products/${product.slug}`} className="gold-focus block" aria-label={`Explore ${displayName}`}>
         <div className={`product-card-media relative aspect-[4/5] overflow-hidden ${useJuly29Visuals ? "bg-[#f1f0ec]" : "bg-page"}`}>
           <Image
             src={primaryImage}
-            alt={collectionOnly ? `${collection.englishName} in ${product.colorName}` : `${product.name} ${product.colorName}`}
+            alt={displayName}
             fill
             sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
             priority={priority}
-            className="product-card-image object-cover object-top transition duration-700 ease-out group-hover:scale-[1.018]"
+            className="product-card-image object-contain object-top transition duration-700 ease-out sm:object-cover group-hover:scale-[1.018]"
           />
           {secondaryImage !== primaryImage ? (
             <Image
@@ -56,7 +54,7 @@ export function ProductCard({
               aria-hidden="true"
               fill
               sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
-              className="product-card-secondary object-cover object-top"
+              className="product-card-secondary object-contain object-top sm:object-cover"
             />
           ) : null}
           {badge ? (
@@ -74,7 +72,7 @@ export function ProductCard({
               {collection.igboName}
             </p>
             <h3 className="mt-1 truncate text-sm font-semibold text-copy">
-              {collectionOnly ? collection.englishName : product.name}
+              {collection.englishName}
             </h3>
             <p className="mt-0.5 truncate text-[11px] text-copy-muted">{product.colorName}</p>
           </div>
