@@ -15,6 +15,11 @@
     backdrop-filter: none !important;
   }
 
+  /* Pull the hero beneath the nav to remove the visible white demarcation. */
+  main > section:first-child {
+    margin-top: -48px;
+  }
+
   /* Keep the hero flowing behind the header while preserving the models' headroom. */
   main > section:first-child img {
     object-position: 50% 0% !important;
