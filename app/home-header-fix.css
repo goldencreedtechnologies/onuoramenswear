@@ -1,37 +1,36 @@
 @media (min-width: 1024px) {
-  /* Keep the announcement strip connected to the warm homepage palette. */
+  /* Keep only the announcement strip as a warm cream band. */
   header.absolute > div:first-child {
     background: #f4eee6 !important;
     color: #171717 !important;
   }
 
-  /* Keep the navigation floating over the hero without an extra page-colour band. */
+  /* Let the navigation float over the hero instead of creating a page-colour break. */
   header.absolute > div:nth-child(2) {
-    background: rgb(247 243 232 / 90%) !important;
-    border-color: rgb(247 243 232 / 62%) !important;
+    background: rgb(247 243 232 / 92%) !important;
+    border-color: rgb(255 255 255 / 55%) !important;
   }
 
-  /* Lift the artwork into the header area so the image flows continuously behind the nav. */
+  /* Keep the hero lifted into the header headroom with no visible start line. */
   main > section:first-child img {
-    object-position: 50% 4% !important;
+    object-position: 50% 0% !important;
   }
 
-  /* Restore the soft light gradient used for readable copy, with no black treatment. */
+  /* Restore the earlier soft white gradient behind the copy. */
   main > section:first-child > div.absolute.inset-0 {
     background: linear-gradient(
       90deg,
-      rgb(247 243 232 / 72%) 0%,
-      rgb(247 243 232 / 48%) 28%,
-      rgb(247 243 232 / 15%) 48%,
-      rgb(247 243 232 / 0%) 62%
+      rgb(247 243 232 / 62%) 0%,
+      rgb(247 243 232 / 24%) 36%,
+      rgb(247 243 232 / 0%) 64%
     ) !important;
   }
 
   main > section:first-child > div.absolute.inset-x-0.top-0 {
-    background: none !important;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 28%), transparent) !important;
   }
 
-  /* Remove the temporary dark copy panel and return the original dark typography. */
+  /* Return the original dark hero typography and remove the temporary dark panel. */
   main > section:first-child .container-luxe > div.max-w-xl {
     position: static;
     margin-left: 0;
@@ -46,7 +45,7 @@
   }
 
   main > section:first-child .container-luxe > div.max-w-xl p {
-    color: rgb(23 23 23 / 72%) !important;
+    color: rgb(23 23 23 / 68%) !important;
     text-shadow: none;
   }
 
