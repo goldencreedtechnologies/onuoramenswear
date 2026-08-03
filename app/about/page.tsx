@@ -35,13 +35,13 @@ export default function AboutPage() {
     <main className="bg-page pt-[104px] text-copy">
       <section className="relative min-h-[390px] overflow-hidden bg-obsidian text-white sm:min-h-[440px] md:min-h-[520px]">
         <Image
-          src="/brand/hero.jpg"
+          src="/brand/story-header.png"
           alt="The ỌNUỌRA house wearing contemporary African menswear in Nigeria"
           fill
           priority
           quality={94}
           sizes="100vw"
-          className="object-cover object-[50%_28%]"
+          className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/76 via-black/34 to-black/12" />
         <div className="container-luxe relative flex min-h-[390px] items-end pb-8 sm:min-h-[440px] md:min-h-[520px] md:pb-12">
