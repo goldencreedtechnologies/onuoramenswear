@@ -1,11 +1,9 @@
 @media (min-width: 1024px) {
-  /* The announcement remains the only full-width cream strip. */
   header.absolute > div:first-child {
     background: #f4eee6 !important;
     color: #171717 !important;
   }
 
-  /* Keep the original floating, rounded navigation over the hero. */
   header.absolute > div:nth-child(2) {
     position: absolute !important;
     top: 40px !important;
@@ -19,21 +17,17 @@
     backdrop-filter: blur(20px) !important;
   }
 
-  /* Remove the older desktop spacer above the hero. */
   main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) {
     margin-top: 0 !important;
   }
 
-  /* Start the photograph beneath the floating nav, with the seam hidden behind it. */
-  main > section:first-child img {
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > img {
     top: 72px !important;
     height: calc(100% - 72px) !important;
     object-position: 50% 0% !important;
   }
 
-  /* A feathered cream fade sits only behind the lower-left hero copy.
-     It is lifted slightly to cover the eyebrow line while staying below the models' faces. */
-  main > section:first-child > div.absolute.inset-0 {
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > div.absolute.inset-0 {
     background: radial-gradient(
       ellipse 60% 56% at 7% 78%,
       rgb(247 243 232 / 96%) 0%,
@@ -45,13 +39,12 @@
     opacity: 1 !important;
   }
 
-  main > section:first-child > div.absolute.inset-x-0.top-0 {
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > div.absolute.inset-x-0.top-0 {
     background: none !important;
     opacity: 1 !important;
   }
 
-  /* Keep the original dark hero copy without adding a hard panel. */
-  main > section:first-child .container-luxe > div.max-w-xl {
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl {
     position: static;
     margin-left: 0;
     padding: 0;
@@ -59,18 +52,17 @@
     background: none;
   }
 
-  main > section:first-child .container-luxe > div.max-w-xl h1 {
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl h1 {
     color: #171717 !important;
     text-shadow: none;
   }
 
-  main > section:first-child .container-luxe > div.max-w-xl p {
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl p {
     color: rgb(23 23 23 / 76%) !important;
     text-shadow: none;
   }
 
-  /* The radial fade now supports the full text group. */
-  main > section:first-child .container-luxe > div.max-w-xl > p:first-child {
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl > p:first-child {
     display: block;
     margin-left: 0;
     padding: 0;
