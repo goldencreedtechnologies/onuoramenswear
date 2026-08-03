@@ -76,6 +76,24 @@
   }
 }
 
+/* Replace internal catalog names in the visible search UI with collection labels. */
+header a[href^="/products/"] > span:last-child > span:first-child {
+  font-size: 0 !important;
+}
+
+header a[href^="/products/"] > span:last-child > span:first-child::after {
+  content: "Heritage Collection";
+  font-size: 0.875rem;
+}
+
+header a[href^="/products/nd"] > span:last-child > span:first-child::after {
+  content: "Resort Collection";
+}
+
+header a[href^="/products/ndb"] > span:last-child > span:first-child::after {
+  content: "Cowrie Collection";
+}
+
 @media (max-width: 767px) {
   main img[alt="The ỌNUỌRA house wearing contemporary African menswear in Nigeria"] {
     object-position: 50% 12% !important;
