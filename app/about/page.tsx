@@ -144,7 +144,7 @@ export default function AboutPage() {
               fill
               quality={94}
               sizes="(min-width: 1024px) 52vw, 100vw"
-              className="object-cover object-[50%_24%]"
+              className="object-cover object-[50%_14%]"
             />
           </div>
           <div>
