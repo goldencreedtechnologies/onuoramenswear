@@ -19,11 +19,7 @@ function galleryRank(image: string) {
   if (normalized.includes("-mid.")) return 1;
   if (normalized.includes("-angle.") || normalized.includes("-side.")) return 2;
   if (normalized.includes("detail")) return 3;
-  if (
-    normalized.includes("lifestyle") ||
-    normalized.includes("studio") ||
-    normalized.includes("grid")
-  ) return 4;
+  if (normalized.includes("lifestyle") || normalized.includes("studio") || normalized.includes("grid")) return 4;
   if (normalized.includes("-back.") || normalized.includes(".back.")) return 5;
   return 6;
 }
@@ -40,8 +36,8 @@ export async function generateMetadata({ params }: ProductPageProps) {
 
   const collection = getCollectionByFamily(product.family);
   return {
-    title: `${product.name} | ${collection.englishName}`,
-    description: `${product.name} in ${product.colorName}, from the ${collection.englishName}.`
+    title: `${collection.englishName} in ${product.colorName}`,
+    description: `${product.colorName} contemporary menswear from the ${collection.englishName}.`
   };
 }
 
@@ -55,7 +51,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .filter((item) => item.family === product.family)
     .map((item) => ({
       slug: item.slug,
-      name: item.name,
+      name: item.colorName,
       colorName: item.colorName,
       colorValue: item.colorValue
     }));
@@ -72,7 +68,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   return (
     <main className="bg-page pt-[104px] text-copy">
       <section className="container-luxe grid gap-6 pb-12 pt-4 md:gap-8 md:pt-8 lg:grid-cols-[minmax(0,1.38fr)_minmax(340px,0.62fr)] lg:gap-12 lg:pb-20">
-        <ProductGallery images={galleryImages} productName={`${product.name} ${product.colorName}`} />
+        <ProductGallery images={galleryImages} productName={`${collectionLabel} in ${product.colorName}`} />
 
         <aside className="lg:sticky lg:top-[124px] lg:self-start">
           <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-[9px] uppercase text-copy-muted" aria-label="Breadcrumb">
@@ -80,7 +76,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <ChevronRight className="h-3 w-3" />
             <Link href="/collection" className="gold-focus hover:text-copy">Shop</Link>
             <ChevronRight className="h-3 w-3" />
-            <span className="text-copy">{collectionLabel}</span>
+            <span>{collectionLabel}</span>
+            <ChevronRight className="h-3 w-3" />
+            <span>{product.colorName}</span>
+            <ChevronRight className="h-3 w-3" />
+            <span className="text-copy">Product</span>
           </nav>
 
           <div className="mb-5 flex items-center justify-between border-y border-line py-2.5">
@@ -92,11 +92,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
             {collection.igboName} · {collectionLabel}
           </p>
           <h1 className="product-title mt-2 text-3xl font-semibold leading-none sm:text-4xl">
-            {product.name}
+            {product.colorName}
           </h1>
-          <p className="mt-3 text-sm text-copy-muted">
-            Colour <span className="font-semibold text-copy">{product.colorName}</span>
-          </p>
+          <p className="mt-3 text-sm text-copy-muted">Complete two-piece set</p>
           <ProductPrice className="mt-4 block text-2xl font-semibold text-copy" />
 
           <div className={styles.options}>
@@ -110,9 +108,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             </summary>
             <div className="grid gap-4 pt-4 text-sm leading-7 text-copy-muted">
               <p>{collection.description}</p>
-              <p>
-                A complete two-piece outfit with a coordinated top and tapered trousers, functional pockets and signature ỌNUỌRA detailing. Designed and made in Nigeria.
-              </p>
+              <p>A complete two-piece outfit with a coordinated top and tapered trousers, functional pockets and signature ỌNUỌRA detailing. Designed and made in Nigeria.</p>
               <p>{product.delivery}</p>
             </div>
           </details>
