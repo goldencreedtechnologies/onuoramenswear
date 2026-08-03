@@ -5,8 +5,12 @@
     color: #171717 !important;
   }
 
-  /* The nav itself is cream, but there is no outer white band, gap or floating card edge. */
+  /* Make the nav a true overlay on the hero, not a block above it. */
   header.absolute > div:nth-child(2) {
+    position: absolute !important;
+    top: 32px !important;
+    right: 0 !important;
+    left: 0 !important;
     margin-inline: 0 !important;
     border: 0 !important;
     border-radius: 0 !important;
@@ -15,12 +19,12 @@
     backdrop-filter: none !important;
   }
 
-  /* Pull the hero beneath the nav to remove the visible white demarcation. */
-  main > section:first-child {
-    margin-top: -48px;
+  /* Override the older desktop rule that reserved 132px above the hero. */
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) {
+    margin-top: 0 !important;
   }
 
-  /* Keep the hero flowing behind the header while preserving the models' headroom. */
+  /* Preserve headroom while the nav overlays the image. */
   main > section:first-child img {
     object-position: 50% 0% !important;
   }
@@ -29,6 +33,7 @@
   main > section:first-child > div.absolute.inset-0,
   main > section:first-child > div.absolute.inset-x-0.top-0 {
     background: none !important;
+    opacity: 1 !important;
   }
 
   /* Keep the original dark hero copy without adding a panel over the photograph. */
