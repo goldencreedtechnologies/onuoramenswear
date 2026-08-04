@@ -16,7 +16,7 @@ const eslintConfig = [
     }
   },
   {
-    files: ["components/product-options.tsx"],
+    files: ["components/product-options.tsx", "components/checkout-client.tsx"],
     rules: {
       "react-hooks/set-state-in-effect": "off"
     }

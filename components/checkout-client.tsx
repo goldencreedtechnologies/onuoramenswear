@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Loader2, LockKeyhole, MapPin } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCurrency } from "@/components/currency-provider";
@@ -9,8 +10,9 @@ import {
   PRODUCT_PRICES,
   PRODUCT_TYPE_LABEL,
   formatCurrency,
-  operationalUsdAmountInCurrency
+  promotionDiscountForQuantity
 } from "@/data/site-config";
+import { resolveShippingRule } from "@/lib/commerce/shipping-rules";
 import { cartSubtotal, readCart, type CartItem } from "@/lib/cart";
 
 type OrderStatus = { type: "idle" } | { type: "loading" } | { type: "error"; message: string };
@@ -19,7 +21,6 @@ type QuoteStatus = { type: "idle" } | { type: "loading" } | { type: "error"; mes
 type DeliveryQuote = {
   id?: string;
   methodName: string;
-  shippingUsd: number;
   estimatedMinDays: number;
   estimatedMaxDays: number;
   distanceKm: number | null;
@@ -28,6 +29,7 @@ type DeliveryQuote = {
 };
 
 const TEST_VOUCHER_CODE = "ONUORA-TEST-100";
+const SHIPPING_COUNTRY_KEY = "onuora-shipping-country";
 const deliveryFields = new Set(["shippingAddress", "shippingCity", "shippingState", "postalCode", "shippingCountry"]);
 const fieldClass = "gold-focus min-h-12 w-full border border-line bg-page px-4 text-sm font-normal normal-case text-copy outline-none transition placeholder:text-copy-muted/60 hover:border-line-strong focus:border-copy";
 const labelClass = "grid gap-2 text-[10px] font-semibold uppercase text-copy";
@@ -39,19 +41,24 @@ export function CheckoutClient() {
   const [quoteStatus, setQuoteStatus] = useState<QuoteStatus>({ type: "idle" });
   const [deliveryQuote, setDeliveryQuote] = useState<DeliveryQuote | null>(null);
   const [voucherCode, setVoucherCode] = useState("");
+  const [shippingCountry, setShippingCountry] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const subtotalUsd = useMemo(() => cartSubtotal(items), [items]);
   const itemCount = useMemo(() => items.reduce((total, item) => total + item.quantity, 0), [items]);
   const subtotal = PRODUCT_PRICES[currency] * itemCount;
-  const shipping = deliveryQuote ? operationalUsdAmountInCurrency(deliveryQuote.shippingUsd, currency) : 0;
+  const wardrobeDiscount = promotionDiscountForQuantity(itemCount, currency);
+  const shippingRule = shippingCountry ? resolveShippingRule({ shippingCountry, itemCount, currency }) : null;
+  const shipping = shippingRule?.displayCurrency === currency ? shippingRule.displayAmount ?? 0 : 0;
   const voucherApplied = voucherCode.trim().toUpperCase() === TEST_VOUCHER_CODE;
-  const discount = voucherApplied ? subtotal + shipping : 0;
+  const discount = voucherApplied ? subtotal - wardrobeDiscount + shipping : wardrobeDiscount;
   const total = subtotal + shipping - discount;
   const money = (amount: number) => formatCurrency(currency, amount);
 
   useEffect(() => {
     const syncCart = () => setItems(readCart().items);
     syncCart();
+    const savedCountry = window.localStorage.getItem(SHIPPING_COUNTRY_KEY) ?? "";
+    setShippingCountry(savedCountry);
     window.addEventListener("storage", syncCart);
     window.addEventListener("onuora-cart-updated", syncCart);
     return () => {
@@ -62,6 +69,11 @@ export function CheckoutClient() {
 
   function handleFormChange(event: React.FormEvent<HTMLFormElement>) {
     const target = event.target as HTMLInputElement;
+    if (target.name === "shippingCountry") {
+      const country = target.value;
+      setShippingCountry(country);
+      window.localStorage.setItem(SHIPPING_COUNTRY_KEY, country);
+    }
     if (deliveryQuote && deliveryFields.has(target.name)) {
       setDeliveryQuote(null);
       setQuoteStatus({ type: "idle" });
@@ -70,6 +82,10 @@ export function CheckoutClient() {
 
   async function handleDeliveryQuote() {
     if (!formRef.current) return;
+    if (itemCount >= 7) {
+      setQuoteStatus({ type: "error", message: "Please contact Client Care for a delivery quotation on orders of seven outfits or more." });
+      return;
+    }
     const form = new FormData(formRef.current);
     const payload = {
       email: String(form.get("email") ?? "") || undefined,
@@ -83,7 +99,7 @@ export function CheckoutClient() {
     };
 
     if (!payload.shippingAddress || !payload.shippingCity || !payload.shippingCountry) {
-      setQuoteStatus({ type: "error", message: "Add your address, city and country to estimate delivery." });
+      setQuoteStatus({ type: "error", message: "Add your address, city and country to calculate delivery." });
       return;
     }
 
@@ -96,7 +112,7 @@ export function CheckoutClient() {
     const result = await response.json().catch(() => null);
 
     if (!response.ok || !result?.quote) {
-      setQuoteStatus({ type: "error", message: result?.error ?? "Unable to estimate delivery right now." });
+      setQuoteStatus({ type: "error", message: result?.error ?? "Unable to calculate delivery right now." });
       return;
     }
 
@@ -111,8 +127,16 @@ export function CheckoutClient() {
       setStatus({ type: "error", message: "Your cart is empty." });
       return;
     }
-    if (!deliveryQuote) {
-      setStatus({ type: "error", message: "Estimate delivery before continuing to payment." });
+    if (itemCount >= 7 || shippingRule?.requiresManualQuote) {
+      setStatus({ type: "error", message: "Please request a delivery quotation before checking out with seven outfits or more." });
+      return;
+    }
+    if (!deliveryQuote || !shippingRule) {
+      setStatus({ type: "error", message: "Enter your complete delivery address and calculate delivery before continuing." });
+      return;
+    }
+    if (shippingRule.displayCurrency !== currency) {
+      setStatus({ type: "error", message: "Delivery within Nigeria is charged in NGN. Select NGN before continuing." });
       return;
     }
 
@@ -189,7 +213,7 @@ export function CheckoutClient() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className={labelClass}>Postal code<input name="postalCode" autoComplete="postal-code" className={fieldClass} /></label>
-            <label className={labelClass}>Country<input name="shippingCountry" autoComplete="country-name" required className={fieldClass} /></label>
+            <label className={labelClass}>Country<input name="shippingCountry" defaultValue={shippingCountry} autoComplete="country-name" required className={fieldClass} /></label>
           </div>
 
           <div className="mt-2 border border-line p-4 sm:p-5">
@@ -199,17 +223,24 @@ export function CheckoutClient() {
                 <div>
                   <p className="text-xs font-semibold uppercase">Delivery Estimate</p>
                   <p className="mt-1 max-w-md text-sm leading-6 text-copy-muted">
-                    {deliveryQuote ? `${deliveryQuote.methodName}: ${deliveryQuote.estimatedMinDays}-${deliveryQuote.estimatedMaxDays} business days${deliveryQuote.distanceKm ? `, approximately ${deliveryQuote.distanceKm} km` : ""}.` : "Enter your destination to calculate the applicable service and rate."}
+                    {itemCount >= 7
+                      ? "Please contact Client Care for a delivery quotation on orders of seven outfits or more."
+                      : deliveryQuote
+                        ? `${deliveryQuote.estimatedMinDays}-${deliveryQuote.estimatedMaxDays} business days. ${deliveryQuote.note}`
+                        : "Enter your complete delivery address to calculate the applicable service and rate."}
                   </p>
                 </div>
               </div>
-              <button type="button" onClick={handleDeliveryQuote} disabled={quoteStatus.type === "loading" || !items.length} className="gold-focus inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 border border-copy px-4 text-[10px] font-semibold uppercase transition hover:bg-copy hover:text-white disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto">
-                {quoteStatus.type === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                Calculate
-              </button>
+              {itemCount >= 7 ? (
+                <Link href="/contact?enquiry=large-order-delivery-quote" className="gold-focus inline-flex min-h-12 w-full shrink-0 items-center justify-center border border-copy px-4 text-[10px] font-semibold uppercase transition hover:bg-copy hover:text-white sm:w-auto">Request a Delivery Quote</Link>
+              ) : (
+                <button type="button" onClick={handleDeliveryQuote} disabled={quoteStatus.type === "loading" || !items.length} className="gold-focus inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 border border-copy px-4 text-[10px] font-semibold uppercase transition hover:bg-copy hover:text-white disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto">
+                  {quoteStatus.type === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  Calculate
+                </button>
+              )}
             </div>
             {quoteStatus.type === "error" ? <p className="mt-3 text-sm font-medium text-wine">{quoteStatus.message}</p> : null}
-            {deliveryQuote?.requiresManualReview ? <p className="mt-3 text-sm text-copy-muted">{deliveryQuote.note}</p> : null}
           </div>
 
           <label className={`${labelClass} mt-2`}>Voucher code<input name="voucherCode" value={voucherCode} onChange={(event) => setVoucherCode(event.target.value)} autoComplete="off" className={fieldClass} /></label>
@@ -218,7 +249,7 @@ export function CheckoutClient() {
           <p className="text-xs leading-5 text-copy-muted">{DELIVERY_COPY}</p>
           <p className="text-xs leading-5 text-copy-muted">Prices are shown in {currency}. Final payment details are confirmed securely by Stripe.</p>
           {status.type === "error" ? <p className="text-sm font-medium text-wine">{status.message}</p> : null}
-          <button type="submit" disabled={status.type === "loading" || !items.length || !deliveryQuote} className="gold-focus mt-2 inline-flex min-h-14 w-full items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian disabled:cursor-not-allowed disabled:opacity-45">
+          <button type="submit" disabled={status.type === "loading" || !items.length || !deliveryQuote || itemCount >= 7} className="gold-focus mt-2 inline-flex min-h-14 w-full items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian disabled:cursor-not-allowed disabled:opacity-45">
             {status.type === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {voucherApplied ? "Complete Test Order" : "Continue To Secure Payment"}
           </button>
@@ -240,9 +271,13 @@ export function CheckoutClient() {
           </div>
           <div className="mt-5 space-y-3 text-sm">
             <div className="flex justify-between"><span className="text-copy-muted">Subtotal</span><span>{money(subtotal)}</span></div>
-            <div className="flex justify-between"><span className="text-copy-muted">Delivery</span><span>{deliveryQuote ? money(shipping) : "Not Calculated"}</span></div>
-            {voucherApplied ? <div className="flex justify-between"><span className="text-copy-muted">Testing voucher</span><span>-{money(discount)}</span></div> : null}
-            <div className="flex justify-between border-t border-line pt-4 text-base font-semibold"><span>Total</span><span>{money(total)}</span></div>
+            {wardrobeDiscount > 0 ? <div className="flex justify-between"><span className="text-copy-muted">Wardrobe Discount</span><span>-{money(wardrobeDiscount)}</span></div> : null}
+            <div className="flex justify-between">
+              <span className="text-copy-muted">{shippingRule?.label ?? "Shipping"}</span>
+              <span>{!shippingRule ? "Calculated after address" : shippingRule.requiresManualQuote ? "Manual quotation" : formatCurrency(shippingRule.displayCurrency, shippingRule.displayAmount ?? 0)}</span>
+            </div>
+            {voucherApplied ? <div className="flex justify-between"><span className="text-copy-muted">Testing voucher</span><span>-{money(subtotal - wardrobeDiscount + shipping)}</span></div> : null}
+            <div className="flex justify-between border-t border-line pt-4 text-base font-semibold"><span>Total</span><span>{shippingRule?.requiresManualQuote ? "Quotation required" : money(total)}</span></div>
           </div>
         </aside>
       </div>

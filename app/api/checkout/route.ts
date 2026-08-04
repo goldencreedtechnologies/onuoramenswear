@@ -6,10 +6,22 @@ import { getStoreProductBySlug } from "@/lib/backend/catalog";
 import { markOrderInventorySold } from "@/lib/backend/inventory";
 import { recordOrderEvent } from "@/lib/backend/order-lifecycle";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
-import { getCollectionByFamily } from "@/data/site-config";
+import {
+  PRODUCT_PRICES,
+  getCollectionByFamily,
+  promotionDiscountForQuantity,
+  type CurrencyCode
+} from "@/data/site-config";
+import { resolveShippingRule } from "@/lib/commerce/shipping-rules";
 import { createStripeClient } from "@/lib/stripe";
 
 const TEST_VOUCHER_CODE = "ONUORA-TEST-100";
+const stripeCurrencies = {
+  USD: "usd",
+  GBP: "gbp",
+  EUR: "eur",
+  NGN: "ngn"
+} as const;
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -24,11 +36,33 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Supabase is not configured yet." }, { status: 503 });
   }
 
+  const itemCount = parsed.data.items.reduce((total, item) => total + item.quantity, 0);
+  const currency = parsed.data.currency as CurrencyCode;
+  const shippingRule = resolveShippingRule({
+    shippingCountry: parsed.data.shippingCountry,
+    itemCount,
+    currency
+  });
+
+  if (shippingRule.requiresManualQuote || itemCount >= 7) {
+    return NextResponse.json(
+      { error: "Please contact Client Care for a delivery quotation on orders of seven outfits or more." },
+      { status: 409 }
+    );
+  }
+
+  if (shippingRule.displayCurrency !== currency) {
+    return NextResponse.json(
+      { error: "Delivery within Nigeria is charged in NGN. Select NGN before continuing." },
+      { status: 409 }
+    );
+  }
+
   const auth = await getAuthenticatedAccountUser();
   const profile = auth.ok ? await ensureCustomerProfile(auth.user) : null;
   const order = await createOrder({
     ...parsed.data,
-    currency: "USD",
+    currency,
     customerProfileId: profile?.ok ? profile.profile.id : undefined
   });
 
@@ -92,7 +126,15 @@ export async function POST(request: Request) {
   }
 
   const stripe = createStripeClient();
-  const lineItems = await Promise.all(order.items.map(async (item) => {
+  const stripeCurrency = stripeCurrencies[currency];
+  const lineItems: Array<{
+    quantity: number;
+    price_data: {
+      currency: typeof stripeCurrency;
+      unit_amount: number;
+      product_data: { name: string; description: string };
+    };
+  }> = await Promise.all(order.items.map(async (item) => {
     const product = await getStoreProductBySlug(item.productSlug);
     const collection = product ? getCollectionByFamily(product.family) : null;
     const collectionName = collection?.englishName ?? "ỌNUỌRA Collection";
@@ -100,8 +142,8 @@ export async function POST(request: Request) {
     return {
       quantity: item.quantity,
       price_data: {
-        currency: "usd" as const,
-        unit_amount: Math.round(item.unitPriceUsd * 100),
+        currency: stripeCurrency,
+        unit_amount: PRODUCT_PRICES[currency] * 100,
         product_data: {
           name: collectionName,
           description: `Product: Complete Two-Piece Set · Colour: ${item.colorName} · Size: ${item.size}`
@@ -110,18 +152,31 @@ export async function POST(request: Request) {
     };
   }));
 
-  if (order.shippingUsd > 0) {
+  if ((shippingRule.displayAmount ?? 0) > 0) {
     lineItems.push({
       quantity: 1,
       price_data: {
-        currency: "usd",
-        unit_amount: Math.round(order.shippingUsd * 100),
+        currency: stripeCurrency,
+        unit_amount: (shippingRule.displayAmount ?? 0) * 100,
         product_data: {
-          name: order.deliveryQuote.methodName,
-          description: `${order.deliveryQuote.estimatedMinDays}-${order.deliveryQuote.estimatedMaxDays} business days`
+          name: shippingRule.methodName,
+          description: shippingRule.label
         }
       }
     });
+  }
+
+  const wardrobeDiscount = promotionDiscountForQuantity(itemCount, currency);
+  let discountCouponId: string | undefined;
+
+  if (wardrobeDiscount > 0) {
+    const coupon = await stripe.coupons.create({
+      amount_off: wardrobeDiscount * 100,
+      currency: stripeCurrency,
+      duration: "once",
+      name: "ỌNUỌRA Wardrobe Offer"
+    });
+    discountCouponId = coupon.id;
   }
 
   let session;
@@ -134,7 +189,9 @@ export async function POST(request: Request) {
       billing_address_collection: "auto",
       metadata: {
         order_id: order.orderId,
-        source: "onuoramenswear"
+        source: "onuoramenswear",
+        outfit_count: String(itemCount),
+        shipping_band: shippingRule.label
       },
       payment_intent_data: {
         metadata: {
@@ -143,6 +200,7 @@ export async function POST(request: Request) {
         }
       },
       line_items: lineItems,
+      ...(discountCouponId ? { discounts: [{ coupon: discountCouponId }] } : {}),
       expires_at: Math.floor(Date.now() / 1000) + 31 * 60,
       success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/checkout/cancel?order_id=${order.orderId}`
