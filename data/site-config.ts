@@ -91,79 +91,35 @@ export function operationalUsdAmountInCurrency(amountUsd: number, currency: Curr
 }
 
 const euroLanguagePrefixes = new Set([
-  "de",
-  "fr",
-  "it",
-  "es",
-  "pt",
-  "nl",
-  "be",
-  "at",
-  "ie",
-  "fi",
-  "el",
-  "sk",
-  "sl",
-  "et",
-  "lv",
-  "lt",
-  "mt",
-  "cy",
-  "hr",
-  "lu"
+  "de", "fr", "it", "es", "pt", "nl", "be", "at", "ie", "fi", "el", "sk", "sl", "et", "lv", "lt", "mt", "cy", "hr", "lu"
 ]);
 
 export function detectSuggestedCurrency(languages: readonly string[], timeZone?: string) {
   const normalized = languages.map((language) => language.toLowerCase());
-
-  if (normalized.some((language) => language === "en-ng" || language.endsWith("-ng"))) {
-    return "NGN" as const;
-  }
-
-  if (normalized.some((language) => language === "en-gb" || language.endsWith("-gb"))) {
-    return "GBP" as const;
-  }
-
-  if (normalized.some((language) => language === "en-us" || language.endsWith("-us"))) {
-    return "USD" as const;
-  }
-
-  if (
-    normalized.some((language) => euroLanguagePrefixes.has(language.split("-")[0])) ||
-    timeZone?.startsWith("Europe/")
-  ) {
+  if (normalized.some((language) => language === "en-ng" || language.endsWith("-ng"))) return "NGN" as const;
+  if (normalized.some((language) => language === "en-gb" || language.endsWith("-gb"))) return "GBP" as const;
+  if (normalized.some((language) => language === "en-us" || language.endsWith("-us"))) return "USD" as const;
+  if (normalized.some((language) => euroLanguagePrefixes.has(language.split("-")[0])) || timeZone?.startsWith("Europe/")) {
     return timeZone === "Europe/London" ? ("GBP" as const) : ("EUR" as const);
   }
-
-  if (timeZone === "Africa/Lagos") {
-    return "NGN" as const;
-  }
-
+  if (timeZone === "Africa/Lagos") return "NGN" as const;
   return "USD" as const;
 }
 
 export const PRODUCT_TYPE_LABEL = "Complete Two-Piece Outfit";
 export const PRODUCT_INCLUSION_LABEL = "Top And Trousers Included";
 
-export type AdditionalProductColour = {
-  id: string;
-  name: string;
-  value: string;
-};
-
-// All approved colours now have dedicated product records and photography.
+export type AdditionalProductColour = { id: string; name: string; value: string };
 export const ADDITIONAL_PRODUCT_COLOURS: AdditionalProductColour[] = [];
 
 export function isAdditionalProductColour(name: string, value?: string) {
   return ADDITIONAL_PRODUCT_COLOURS.some(
-    (colour) =>
-      colour.name.toLowerCase() === name.trim().toLowerCase() &&
-      (!value || colour.value.toLowerCase() === value.trim().toLowerCase())
+    (colour) => colour.name.toLowerCase() === name.trim().toLowerCase() && (!value || colour.value.toLowerCase() === value.trim().toLowerCase())
   );
 }
 
 export const DELIVERY_COPY =
-  "Prepared for dispatch within three working days. Worldwide delivery is available. International delivery is charged at a $50 flat rate, Lagos delivery is complimentary for valid addresses, and delivery outside Lagos is charged at a single ₦15,000 flat rate.";
+  "Prepared for dispatch within three working days. Tracked delivery across Nigeria and worldwide. Shipping is calculated according to your destination and the number of outfits ordered.";
 
 export function announcementCopy(_currency: CurrencyCode) {
   return "Prepared for Dispatch Within Three Working Days | Worldwide Delivery";
@@ -177,14 +133,16 @@ export const PROMOTIONS = {
       title: "Buy Two Outfits And Receive 50% Off A Third Outfit",
       qualifyingQuantity: 3,
       discountedQuantity: 1,
-      discountPercent: 50
+      discountPercent: 50,
+      supportsMultipleGroups: false
     },
     "buy-five-sixth-free": {
       enabled: false,
       title: "Buy Five Outfits And Receive A Sixth Outfit Free",
       qualifyingQuantity: 6,
       discountedQuantity: 1,
-      discountPercent: 100
+      discountPercent: 100,
+      supportsMultipleGroups: false
     }
   }
 } as const;
@@ -192,12 +150,6 @@ export const PROMOTIONS = {
 export function promotionDiscountForQuantity(quantity: number, currency: CurrencyCode) {
   const campaign = PROMOTIONS.campaigns[PROMOTIONS.activeCampaign];
   if (!campaign.enabled || quantity < campaign.qualifyingQuantity) return 0;
-
-  const qualifyingGroups = Math.floor(quantity / campaign.qualifyingQuantity);
-  return Math.round(
-    qualifyingGroups *
-      campaign.discountedQuantity *
-      PRODUCT_PRICES[currency] *
-      (campaign.discountPercent / 100)
-  );
+  const groups = campaign.supportsMultipleGroups ? Math.floor(quantity / campaign.qualifyingQuantity) : 1;
+  return Math.round(groups * campaign.discountedQuantity * PRODUCT_PRICES[currency] * (campaign.discountPercent / 100));
 }
