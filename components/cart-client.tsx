@@ -24,7 +24,9 @@ function ShippingMoney({ currency, amount }: { currency: CurrencyCode; amount: n
 
 export function CartClient() {
   const [items, setItems] = useState<CartItem[]>([]);
-  const [shippingCountry, setShippingCountry] = useState("");
+  const [shippingCountry] = useState(() =>
+    typeof window === "undefined" ? "" : window.localStorage.getItem(SHIPPING_COUNTRY_KEY) ?? ""
+  );
   const { currency } = useCurrency();
   const itemCount = useMemo(() => items.reduce((total, item) => total + item.quantity, 0), [items]);
   const subtotal = PRODUCT_PRICES[currency] * itemCount;
@@ -39,7 +41,6 @@ export function CartClient() {
   useEffect(() => {
     const syncCart = () => setItems(readCart().items);
     syncCart();
-    setShippingCountry(window.localStorage.getItem(SHIPPING_COUNTRY_KEY) ?? "");
     window.addEventListener("storage", syncCart);
     window.addEventListener("onuora-cart-updated", syncCart);
     return () => {
