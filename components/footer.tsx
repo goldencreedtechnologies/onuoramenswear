@@ -16,8 +16,8 @@ const houseLinks = [
 
 const serviceLinks = [
   { href: "/shipping", label: "Delivery" },
-  { href: "/returns", label: "Returns" },
-  { href: "/returns#exchanges", label: "Exchanges" }
+  { href: "/returns", label: "Returns & Exchanges" },
+  { href: "/privacy", label: "Privacy" }
 ];
 
 function LinkGroup({ title, links }: { title: string; links: { href: string; label: string }[] }) {
