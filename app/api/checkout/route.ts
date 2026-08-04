@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkoutDraftSchema, attachStripeCheckoutSession, createOrder, releasePendingOrderInventory } from "@/lib/backend/orders";
-import { getSiteUrl, hasStripeConfig, hasSupabaseConfig } from "@/lib/backend/env";
+import { getSiteUrl, getStripeSecretKey, hasStripeConfig, hasSupabaseConfig } from "@/lib/backend/env";
 import { ensureCustomerProfile, getAuthenticatedAccountUser } from "@/lib/backend/account";
 import { getStoreProductBySlug } from "@/lib/backend/catalog";
 import { markOrderInventorySold } from "@/lib/backend/inventory";
@@ -16,12 +16,39 @@ import { resolveShippingRule } from "@/lib/commerce/shipping-rules";
 import { createStripeClient } from "@/lib/stripe";
 
 const TEST_VOUCHER_CODE = "ONUORA-TEST-100";
+const STRIPE_PUBLIC_BUSINESS_NAME = "ỌNUỌRA Menswear";
 const stripeCurrencies = {
   USD: "usd",
   GBP: "gbp",
   EUR: "eur",
   NGN: "ngn"
 } as const;
+
+async function ensureStripePublicBusinessName() {
+  const authorization = `Bearer ${getStripeSecretKey()}`;
+  const accountResponse = await fetch("https://api.stripe.com/v1/account", {
+    headers: { Authorization: authorization },
+    cache: "no-store"
+  });
+
+  if (!accountResponse.ok) return false;
+  const account = await accountResponse.json().catch(() => null);
+  if (account?.business_profile?.name === STRIPE_PUBLIC_BUSINESS_NAME) return true;
+
+  const updateResponse = await fetch("https://api.stripe.com/v1/account", {
+    method: "POST",
+    headers: {
+      Authorization: authorization,
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({ "business_profile[name]": STRIPE_PUBLIC_BUSINESS_NAME }),
+    cache: "no-store"
+  });
+
+  if (!updateResponse.ok) return false;
+  const updatedAccount = await updateResponse.json().catch(() => null);
+  return updatedAccount?.business_profile?.name === STRIPE_PUBLIC_BUSINESS_NAME;
+}
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -70,7 +97,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: order.reason }, { status: 500 });
   }
 
-  const siteUrl = getSiteUrl().replace(/\/$/, "");
+  const siteUrl = getSiteUrl(request).replace(/\/$/, "");
 
   if (voucherCode === TEST_VOUCHER_CODE) {
     const inventory = await markOrderInventorySold(order.orderId);
@@ -123,6 +150,15 @@ export async function POST(request: Request) {
   if (!hasStripeConfig()) {
     await releasePendingOrderInventory(order.orderId);
     return NextResponse.json({ error: "Stripe is not configured yet. Add STRIPE_SECRET_KEY." }, { status: 503 });
+  }
+
+  const brandingReady = await ensureStripePublicBusinessName().catch(() => false);
+  if (!brandingReady) {
+    await releasePendingOrderInventory(order.orderId);
+    return NextResponse.json(
+      { error: "Stripe merchant branding could not be verified. Confirm the public business name is ỌNUỌRA Menswear." },
+      { status: 503 }
+    );
   }
 
   const stripe = createStripeClient();

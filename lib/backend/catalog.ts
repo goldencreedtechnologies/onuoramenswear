@@ -16,6 +16,28 @@ const legacyProductColumns =
   "id, slug, name, edition, meaning, price, image, images, palette, page_text, page_muted, page_panel, dark_page, story, story_kicker, story_title, occasion, sort_order, updated_at";
 const extendedProductColumns = `${legacyProductColumns}, family, color_name, color_value, model_name, details, fit, fabric_care, delivery`;
 
+const correctedColourImages: Partial<Record<string, string[]>> = {
+  ndb6: [
+    "/brand/products/button/ndb7/ndb7-front.png",
+    "/brand/products/button/ndb7/ndb7-studio.png",
+    "/brand/products/button/ndb7/ndb7-back.png"
+  ],
+  ndb7: [
+    "/brand/products/button/ndb6/ndb6-front.png",
+    "/brand/products/button/ndb6/ndb6-side.png",
+    "/brand/products/button/ndb6/ndb6-back.png"
+  ],
+  nd6: [
+    "/brand/products/buttonless/nd7/nd7-front.png",
+    "/brand/products/buttonless/nd7/nd7-studio.png",
+    "/brand/products/buttonless/nd7/nd7-back.png"
+  ],
+  nd7: [
+    "/brand/products/buttonless/nd6/nd6-front.png",
+    "/brand/products/buttonless/nd6/nd6-back.png"
+  ]
+};
+
 type ProductRow = {
   id?: string;
   slug: string;
@@ -50,7 +72,6 @@ function isProductFamily(value?: string | null): value is ProductFamily {
   return value === "original" || value === "button" || value === "buttonless";
 }
 
-
 function normalizeDetails(value: string) {
   if (value.includes(PRODUCT_TYPE_LABEL) || value.includes(PRODUCT_INCLUSION_LABEL)) return value;
   return `${PRODUCT_TYPE_LABEL}. ${PRODUCT_INCLUSION_LABEL}. ${value}`;
@@ -60,23 +81,28 @@ function normalizeFabricCare(value: string) {
   return value.replace(/\bpremium\s+/gi, "").replace(/\bluxury\s+/gi, "");
 }
 
+function correctColourImagery<T extends Pick<StoreProduct, "slug" | "image" | "images">>(product: T): T {
+  const images = correctedColourImages[product.slug];
+  return images ? { ...product, image: images[0], images } : product;
+}
+
 function mapRow(row: ProductRow): StoreProduct {
   const local = localProducts.find((product) => product.slug === row.slug);
 
   if (local && !isProductFamily(row.family)) {
-    return {
+    return correctColourImagery({
       ...local,
       price: `$${PRODUCT_PRICES.USD}`,
       id: row.id,
       sort_order: row.sort_order,
       updated_at: row.updated_at
-    };
+    });
   }
 
   const fallback = local ?? localProducts[0];
   const family = isProductFamily(row.family) ? row.family : fallback.family;
 
-  return {
+  return correctColourImagery({
     slug: row.slug,
     name: row.name,
     edition: row.edition,
@@ -104,7 +130,7 @@ function mapRow(row: ProductRow): StoreProduct {
     id: row.id,
     sort_order: row.sort_order,
     updated_at: row.updated_at
-  };
+  });
 }
 
 function mergeWithLocal(rows: ProductRow[]) {
@@ -115,7 +141,7 @@ function mergeWithLocal(rows: ProductRow[]) {
 
     return row
       ? mapRow(row)
-      : ({
+      : correctColourImagery({
           ...product,
           sort_order: index + 1
         } satisfies StoreProduct);
@@ -173,13 +199,13 @@ async function readRows() {
 
 export async function getStoreProducts(): Promise<StoreProduct[]> {
   if (!hasSupabaseConfig()) {
-    return localProducts;
+    return localProducts.map((product) => correctColourImagery(product));
   }
 
   const rows = await readRows();
 
   if (!rows?.length) {
-    return localProducts;
+    return localProducts.map((product) => correctColourImagery(product));
   }
 
   return mergeWithLocal(rows);
@@ -195,13 +221,13 @@ export function mergeProductWithLocal(
 ): Product | null {
   const local = localProducts.find((item) => item.slug === product.slug);
   return local
-    ? {
+    ? correctColourImagery({
         ...local,
         ...product,
         price: `$${PRODUCT_PRICES.USD}`,
         details: normalizeDetails(product.details ?? local.details),
         fabricCare: normalizeFabricCare(product.fabricCare ?? local.fabricCare),
         delivery: DELIVERY_COPY
-      }
+      })
     : null;
 }
