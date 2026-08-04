@@ -13,27 +13,26 @@ export const metadata = {
 export default function CollectionsPage() {
   return (
     <main className="bg-page pt-[104px] text-copy">
-      <section className="relative isolate overflow-hidden bg-obsidian py-12 text-ivory md:py-20">
-        <div className="pointer-events-none absolute inset-0 -z-10 flex items-center justify-center">
-          <Image
-            src="/brand/onuora-logo-gold.png"
-            alt=""
-            aria-hidden="true"
-            width={1100}
-            height={420}
-            priority
-            className="h-auto w-[min(94vw,1050px)] object-contain opacity-[0.075]"
-          />
-        </div>
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(31,31,31,0.18),rgba(31,31,31,0.78)_70%)]" />
-        <div className="container-luxe relative grid gap-5 md:grid-cols-[1fr_0.6fr] md:items-end md:gap-7">
+      <section className="relative isolate min-h-[300px] overflow-hidden bg-obsidian text-ivory md:min-h-[390px]">
+        <Image
+          src="/brand/Untitled-design-34.png"
+          alt="ỌNUỌRA contemporary African menswear campaign"
+          fill
+          priority
+          quality={94}
+          sizes="100vw"
+          className="-z-20 object-cover object-center"
+        />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-black/88 via-black/58 to-black/28" />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-t from-black/46 via-transparent to-black/18" />
+        <div className="container-luxe relative grid min-h-[300px] gap-5 py-12 md:min-h-[390px] md:grid-cols-[1fr_0.6fr] md:items-end md:gap-7 md:py-20">
           <div>
             <p className="text-[10px] font-semibold uppercase text-gold-soft">THE PERMANENT COLLECTIONS</p>
-            <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight sm:text-4xl md:text-5xl">
+            <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight text-white sm:text-4xl md:text-5xl">
               Three Collections. One Philosophy.
             </h1>
           </div>
-          <p className="max-w-lg text-sm leading-6 text-ivory/68">
+          <p className="max-w-lg text-sm leading-6 text-white/78">
             Three distinct expressions of contemporary African menswear designed for different occasions.
           </p>
         </div>
