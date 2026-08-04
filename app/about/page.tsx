@@ -69,6 +69,30 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="bg-[#f5e6c8] py-11 text-[#171717] md:py-20" aria-labelledby="founder">
+        <div className="container-luxe grid min-w-0 gap-7 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-14">
+          <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-surface-subtle">
+            <Image
+              src="/brand/Founder-img.png"
+              alt="Ọnụọra Abuah, founder of ỌNUỌRA Menswear"
+              fill
+              quality={94}
+              sizes="(min-width: 1024px) 52vw, 100vw"
+              className="object-cover object-[50%_14%]"
+            />
+          </div>
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase text-[#9f751d]">The Founder</p>
+            <h2 id="founder" className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
+              The Founder
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-black/66">
+              ỌNUỌRA was founded by Ọnụọra Abuah, a Nigerian filmmaker and creative director whose work has long explored African identity, history and cultural expression. The brand extends that same philosophy into contemporary menswear, creating garments that combine craftsmanship, confidence and cultural meaning.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="relative isolate overflow-hidden py-11 md:py-20" aria-labelledby="brand-philosophy">
         <StoryMonogram side="right" />
         <div className="container-luxe relative z-10 grid min-w-0 gap-7 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-14">
@@ -83,36 +107,14 @@ export default function AboutPage() {
           </div>
           <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-surface-subtle">
             <Image
-              src="/brand/nd-out.png"
-              alt="ỌNUỌRA contemporary menswear"
+              src="/brand/tailor.png"
+              alt="ỌNUỌRA brand philosophy and contemporary Nigerian menswear"
               fill
               quality={94}
               sizes="(min-width: 1024px) 52vw, 100vw"
-              className="object-cover object-top"
+              className="object-cover object-center"
             />
           </div>
-        </div>
-      </section>
-
-      <section className="relative overflow-hidden bg-obsidian py-12 text-ivory md:py-20" aria-labelledby="nigerian-craftsmanship">
-        <Image
-          src="/brand/Untitled-design-34.png"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover object-center opacity-20"
-        />
-        <div className="absolute inset-0 bg-black/72" />
-        <div className="container-luxe relative">
-          <header className="max-w-2xl">
-            <p className="text-[10px] font-semibold uppercase text-gold-soft">Nigerian Craftsmanship</p>
-            <h2 id="nigerian-craftsmanship" className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
-              Craft Is The Quiet Proof
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-white/58">
-              Every ỌNUỌRA garment is designed and produced in Nigeria in collaboration with skilled local artisans. We believe exceptional craftsmanship speaks for itself through precision, quality and attention to detail.
-            </p>
-          </header>
         </div>
       </section>
 
@@ -145,30 +147,6 @@ export default function AboutPage() {
                 </Link>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#f5e6c8] py-11 text-[#171717] md:py-20" aria-labelledby="founder">
-        <div className="container-luxe grid min-w-0 gap-7 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-14">
-          <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-surface-subtle">
-            <Image
-              src="/brand/Founder-img.png"
-              alt="Ọnụọra Abuah, founder of ỌNUỌRA Menswear"
-              fill
-              quality={94}
-              sizes="(min-width: 1024px) 52vw, 100vw"
-              className="object-cover object-[50%_14%]"
-            />
-          </div>
-          <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase text-[#9f751d]">The Founder</p>
-            <h2 id="founder" className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
-              The Founder
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-black/66">
-              ỌNUỌRA was founded by Ọnụọra Abuah, a Nigerian filmmaker and creative director whose work has long explored African identity, history and cultural expression. The brand extends that same philosophy into contemporary menswear, creating garments that combine craftsmanship, confidence and cultural meaning.
-            </p>
           </div>
         </div>
       </section>
