@@ -3,15 +3,16 @@ import { Check } from "lucide-react";
 import { ClearCartOnMount } from "@/components/clear-cart-on-mount";
 
 export const metadata = {
-  title: "Payment Received"
+  title: "Order Confirmed"
 };
 
 type CheckoutSuccessPageProps = {
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ session_id?: string; order_id?: string; voucher?: string }>;
 };
 
 export default async function CheckoutSuccessPage({ searchParams }: CheckoutSuccessPageProps) {
-  const { session_id } = await searchParams;
+  const { session_id, order_id, voucher } = await searchParams;
+  const voucherOrder = voucher === "1";
 
   return (
     <main className="min-h-screen bg-page pt-[104px] text-copy">
@@ -21,17 +22,19 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
           <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-gold text-obsidian">
             <Check className="h-5 w-5" />
           </span>
-          <p className="mt-6 text-[10px] font-semibold uppercase text-gold">Payment received</p>
+          <p className="mt-6 text-[10px] font-semibold uppercase text-gold">
+            {voucherOrder ? "Order confirmed" : "Payment received"}
+          </p>
           <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-5xl">
             Your order is in motion.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-copy-muted">
-            Thank you for choosing ỌNUỌRA. Stripe is confirming the payment and the house will
-            begin fulfilment as soon as that confirmation arrives.
+            {voucherOrder
+              ? "The 100% testing voucher was applied successfully. No payment was required and the test order is ready for fulfilment review."
+              : "Thank you for choosing ỌNUỌRA. Stripe is confirming the payment and the house will begin fulfilment as soon as that confirmation arrives."}
           </p>
-          {session_id ? (
-            <p className="mt-4 break-all text-[10px] text-copy-muted">Session {session_id}</p>
-          ) : null}
+          {session_id ? <p className="mt-4 break-all text-[10px] text-copy-muted">Session {session_id}</p> : null}
+          {order_id ? <p className="mt-4 break-all text-[10px] text-copy-muted">Order {order_id}</p> : null}
           <Link
             href="/collection"
             className="gold-focus mt-7 inline-flex min-h-12 items-center justify-center bg-obsidian px-6 text-xs font-semibold uppercase text-ivory hover:bg-gold hover:text-obsidian"
