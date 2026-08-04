@@ -4,9 +4,9 @@ import { Instagram, Mail, MessageCircle } from "lucide-react";
 import { NewsletterForm } from "@/components/newsletter-signup";
 
 const shopLinks = [
-  { href: "/collection#original", label: "Heritage Collection" },
-  { href: "/collection#with-button", label: "Cowrie Collection" },
-  { href: "/collection#without-button", label: "Resort Collection" }
+  { href: "/collection/heritage", label: "Heritage Collection" },
+  { href: "/collection/cowrie", label: "Cowrie Collection" },
+  { href: "/collection/resort", label: "Resort Collection" }
 ];
 
 const houseLinks = [
@@ -15,9 +15,9 @@ const houseLinks = [
 ];
 
 const serviceLinks = [
-  { href: "/shipping", label: "Delivery" },
+  { href: "/shipping", label: "Shipping & Delivery" },
   { href: "/returns", label: "Returns & Exchanges" },
-  { href: "/contact", label: "Client Care" }
+  { href: "/contact", label: "Client Services" }
 ];
 
 function LinkGroup({ title, links }: { title: string; links: { href: string; label: string }[] }) {
@@ -42,18 +42,10 @@ export function Footer() {
         <div className="min-w-0">
           <Link href="/" className="inline-flex max-w-full" aria-label="ỌNUỌRA Home">
             <span className="relative block h-16 w-[190px] max-w-full overflow-hidden">
-              <Image
-                src="/brand/onuora-logo-gold.png"
-                alt="ỌNUỌRA Menswear"
-                fill
-                sizes="190px"
-                className="object-cover object-center"
-              />
+              <Image src="/brand/onuora-logo-gold.png" alt="ỌNUỌRA Menswear" fill sizes="190px" className="object-cover object-center" />
             </span>
           </Link>
-          <p className="mt-3 max-w-sm text-sm leading-6 text-white/55">
-            Contemporary African Menswear. Designed And Made In Nigeria.
-          </p>
+          <p className="mt-3 max-w-sm text-sm leading-6 text-white/55">Contemporary African Menswear. Designed And Made In Nigeria.</p>
         </div>
 
         <LinkGroup title="SHOP" links={shopLinks} />
@@ -61,20 +53,12 @@ export function Footer() {
         <LinkGroup title="CLIENT SERVICES" links={serviceLinks} />
 
         <div className="min-w-0">
-          <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.1em] text-gold-soft">
-            JOIN THE ỌNUỌRA CIRCLE
-          </p>
+          <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.1em] text-gold-soft">JOIN THE ỌNUỌRA CIRCLE</p>
           <NewsletterForm />
           <div className="mt-5 flex items-center gap-6 text-white/58">
-            <Link href="https://instagram.com/onuoramenswear" target="_blank" rel="noreferrer" aria-label="Instagram" className="transition hover:text-white">
-              <Instagram className="h-5 w-5" />
-            </Link>
-            <Link href="mailto:orders@onuoramenswear.com" aria-label="Email" className="transition hover:text-white">
-              <Mail className="h-5 w-5" />
-            </Link>
-            <Link href="/contact" aria-label="Client Services" className="transition hover:text-white">
-              <MessageCircle className="h-5 w-5" />
-            </Link>
+            <Link href="https://instagram.com/onuoramenswear" target="_blank" rel="noreferrer" aria-label="Instagram" className="transition hover:text-white"><Instagram className="h-5 w-5" /></Link>
+            <Link href="mailto:orders@onuoramenswear.com" aria-label="Email" className="transition hover:text-white"><Mail className="h-5 w-5" /></Link>
+            <Link href="/contact" aria-label="Client Services" className="transition hover:text-white"><MessageCircle className="h-5 w-5" /></Link>
           </div>
         </div>
       </div>
