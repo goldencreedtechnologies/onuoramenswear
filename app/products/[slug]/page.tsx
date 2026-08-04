@@ -27,7 +27,8 @@ function accurateSwatch(name: string, fallback: string, family: string) {
   const normalized = name.trim().toLowerCase();
   if ((normalized === "blue" || normalized === "navy blue") && family === "original") return "#1E2A56";
   if (normalized === "wine" || normalized === "burgundy") return "#790222";
-  if (normalized === "burnt orange") return "#520C62";
+  if ((family === "button" || family === "buttonless") && normalized === "purple") return "#520C62";
+  if ((family === "button" || family === "buttonless") && normalized === "burnt orange") return "#D9582E";
   return fallback;
 }
 
