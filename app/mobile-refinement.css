@@ -1,0 +1,84 @@
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+main,
+section,
+header,
+footer,
+nav,
+form,
+article,
+aside,
+div {
+  min-width: 0;
+}
+
+img,
+video,
+svg,
+canvas,
+iframe,
+table {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea,
+button,
+a {
+  max-width: 100%;
+}
+
+.break-mobile-content {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+@media (max-width: 767px) {
+  .container-luxe {
+    width: min(calc(100% - 32px), 1360px);
+  }
+
+  main {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: clip;
+  }
+
+  h1 {
+    overflow-wrap: anywhere;
+  }
+
+  table {
+    font-size: 0.8125rem;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-width: 0;
+  }
+
+  [class*="grid-cols-"] > *,
+  [class*="flex"] > * {
+    min-width: 0;
+  }
+
+  [class*="aspect-"] img {
+    object-position: center top;
+  }
+
+  footer form,
+  footer input,
+  footer select,
+  footer button {
+    width: 100%;
+    min-width: 0;
+  }
+}
