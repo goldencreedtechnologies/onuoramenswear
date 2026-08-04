@@ -155,7 +155,7 @@ export function NewsletterPopup() {
           <X className="h-6 w-6" />
         </button>
         <p className="pr-12 text-[10px] font-semibold uppercase text-gold">Join The ỌNUỌRA Circle</p>
-        <h2 className="mt-3 pr-12 text-2xl font-semibold leading-tight">Private previews and first access.</h2>
+        <h2 className="mt-3 pr-12 text-2xl font-semibold leading-tight">Private Previews & First Access</h2>
         <p className="mt-3 text-sm leading-6 text-copy-muted">Receive collection notes, campaign releases and considered updates from the house.</p>
         <div className="mt-6">
           <SignupFields compact />
