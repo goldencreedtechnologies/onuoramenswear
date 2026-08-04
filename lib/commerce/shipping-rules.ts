@@ -80,10 +80,9 @@ export function resolveShippingRule({
     };
   }
 
-  const index = shippingBandIndex(outfits);
+  const index = shippingBandIndex(outfits) as 0 | 1 | 2;
   const lower = index === 0 ? 1 : index === 1 ? 3 : 5;
   const upper = index === 0 ? 2 : index === 1 ? 4 : 6;
-  const usdRates = internationalRates.USD;
 
   return {
     zoneCode: "GLOBAL_EXPORT",
@@ -92,7 +91,7 @@ export function resolveShippingRule({
     label: `International Delivery (${lower}–${upper} Outfits)`,
     displayCurrency: currency,
     displayAmount: internationalRates[currency][index],
-    shippingUsd: usdRates[index],
+    shippingUsd: internationalRates.USD[index],
     requiresManualQuote: false,
     note: "International shipping is charged according to the number of outfits ordered."
   };
