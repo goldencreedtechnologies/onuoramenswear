@@ -71,7 +71,7 @@ export default function AboutPage() {
 
       <section className="bg-[#f5e6c8] py-11 text-[#171717] md:py-20" aria-labelledby="founder">
         <div className="container-luxe grid min-w-0 gap-7 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-14">
-          <div className="relative aspect-[4/5] min-w-0 overflow-hidden bg-surface-subtle">
+          <div className="relative aspect-[5/4] min-w-0 overflow-hidden bg-surface-subtle">
             <Image
               src="/brand/onuora.png"
               alt="Ọnụọra Abuah, founder of ỌNUỌRA Menswear"
