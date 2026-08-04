@@ -17,8 +17,6 @@
     backdrop-filter: blur(20px) !important;
   }
 
-  /* The homepage navbar is removed from normal flow, so anchor its open
-     collections/search panel directly beneath it instead of behind it. */
   header.absolute > div:nth-child(3) {
     position: absolute !important;
     top: 116px !important;
@@ -87,7 +85,6 @@
   }
 }
 
-/* Replace internal catalog names in the visible search UI with collection labels. */
 header a[href^="/products/"] > span:last-child > span:first-child {
   font-size: 0 !important;
 }
@@ -105,25 +102,44 @@ header a[href^="/products/ndb"] > span:last-child > span:first-child::after {
   content: "Cowrie Collection";
 }
 
+section[aria-labelledby="founder"] > div > div:last-child > p:first-child {
+  display: none;
+}
+
+@media (max-width: 639px) {
+  header > div:first-child {
+    min-height: 42px !important;
+    font-size: 0 !important;
+    line-height: 1.35 !important;
+  }
+
+  header > div:first-child::before {
+    content: "Prepared for dispatch within three working days\A Worldwide\00a0 Delivery";
+    white-space: pre-line;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  main:has(> section > img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > section:last-child {
+    display: none !important;
+  }
+}
+
 @media (max-width: 767px) {
   main img[alt="The ỌNUỌRA house wearing contemporary African menswear in Nigeria"] {
-    object-position: 50% 12% !important;
+    object-fit: cover !important;
+    object-position: 50% 18% !important;
   }
 
   main img[alt="ỌNUỌRA contemporary menswear"],
   main img[alt*="founder of ỌNUỌRA Menswear"] {
-    object-fit: contain !important;
+    object-fit: cover !important;
     object-position: center top !important;
   }
 
   main article img[alt=""] {
-    object-fit: contain !important;
+    object-fit: cover !important;
     object-position: center top !important;
-  }
-}
-
-@media (max-width: 639px) {
-  main:has(> section > img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > section:last-child {
-    display: none !important;
   }
 }
