@@ -107,7 +107,7 @@ export default function AboutPage() {
           </div>
           <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-surface-subtle">
             <Image
-              src="/brand/Taylor.png"
+              src="/brand/tailor.png"
               alt="ỌNUỌRA brand philosophy and contemporary Nigerian menswear"
               fill
               quality={94}
