@@ -16,6 +16,7 @@ import { resolveShippingRule } from "@/lib/commerce/shipping-rules";
 import { createStripeClient } from "@/lib/stripe";
 
 const TEST_VOUCHER_CODE = "ONUORA-TEST-100";
+const STRIPE_PUBLIC_BUSINESS_NAME = "ỌNUỌRA Menswear";
 const stripeCurrencies = {
   USD: "usd",
   GBP: "gbp",
@@ -70,7 +71,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: order.reason }, { status: 500 });
   }
 
-  const siteUrl = getSiteUrl().replace(/\/$/, "");
+  const siteUrl = getSiteUrl(request).replace(/\/$/, "");
 
   if (voucherCode === TEST_VOUCHER_CODE) {
     const inventory = await markOrderInventorySold(order.orderId);
@@ -126,6 +127,22 @@ export async function POST(request: Request) {
   }
 
   const stripe = createStripeClient();
+
+  try {
+    const account = await stripe.accounts.retrieve();
+    if (account.business_profile?.name !== STRIPE_PUBLIC_BUSINESS_NAME) {
+      await stripe.accounts.update(account.id, {
+        business_profile: { name: STRIPE_PUBLIC_BUSINESS_NAME }
+      });
+    }
+  } catch {
+    await releasePendingOrderInventory(order.orderId);
+    return NextResponse.json(
+      { error: "Stripe merchant branding could not be verified. Confirm the public business name is ỌNUỌRA Menswear." },
+      { status: 503 }
+    );
+  }
+
   const stripeCurrency = stripeCurrencies[currency];
   const lineItems: Array<{
     quantity: number;
