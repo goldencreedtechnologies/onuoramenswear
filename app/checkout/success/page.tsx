@@ -15,10 +15,10 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
   const voucherOrder = voucher === "1";
 
   return (
-    <main className="min-h-screen bg-page pt-[104px] text-copy">
+    <main className="min-h-screen overflow-hidden bg-page pt-[104px] text-copy">
       <ClearCartOnMount />
-      <section className="container-luxe grid min-h-[72vh] place-items-center py-14">
-        <div className="max-w-2xl text-center">
+      <section className="container-luxe grid min-h-[72vh] min-w-0 place-items-center py-14">
+        <div className="w-full max-w-2xl min-w-0 text-center">
           <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-gold text-obsidian">
             <Check className="h-5 w-5" />
           </span>
@@ -26,18 +26,25 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
             {voucherOrder ? "Order confirmed" : "Payment received"}
           </p>
           <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-5xl">
-            Your order is in motion.
+            Your order is confirmed.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-copy-muted">
             {voucherOrder
-              ? "The 100% testing voucher was applied successfully. No payment was required and the test order is ready for fulfilment review."
+              ? "Your order has been created successfully, the 100% testing voucher has been applied, and no payment was required. Your confirmation has been added to the normal order workflow and the order is now preparing for dispatch review."
               : "Thank you for choosing ỌNUỌRA. Stripe is confirming the payment and the house will begin fulfilment as soon as that confirmation arrives."}
           </p>
+          {voucherOrder ? (
+            <div className="mx-auto mt-6 max-w-xl border border-line bg-panel-muted p-5 text-left text-sm leading-7 text-copy-muted">
+              <p><span className="font-semibold text-copy">Dispatch status:</span> Order confirmed and preparing for dispatch</p>
+              <p><span className="font-semibold text-copy">Estimated dispatch:</span> Within three working days</p>
+              <p><span className="font-semibold text-copy">Confirmation:</span> Sent through the existing order-notification workflow</p>
+            </div>
+          ) : null}
           {session_id ? <p className="mt-4 break-all text-[10px] text-copy-muted">Session {session_id}</p> : null}
-          {order_id ? <p className="mt-4 break-all text-[10px] text-copy-muted">Order {order_id}</p> : null}
+          {order_id ? <p className="mt-4 break-all text-[10px] text-copy-muted">Order reference {order_id}</p> : null}
           <Link
             href="/collection"
-            className="gold-focus mt-7 inline-flex min-h-12 items-center justify-center bg-obsidian px-6 text-xs font-semibold uppercase text-ivory hover:bg-gold hover:text-obsidian"
+            className="gold-focus mt-7 inline-flex min-h-12 max-w-full items-center justify-center bg-obsidian px-6 text-center text-xs font-semibold uppercase text-ivory hover:bg-gold hover:text-obsidian"
           >
             Continue shopping
           </Link>
