@@ -56,8 +56,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       colorValue: item.colorValue
     }));
   const related = allProducts
-    .filter((item) => item.slug !== product.slug)
-    .sort((a, b) => Number(b.family === product.family) - Number(a.family === product.family))
+    .filter((item) => item.slug !== product.slug && item.family !== product.family)
     .slice(0, 4);
   const collection = getCollectionByFamily(product.family);
   const collectionLabel = collection.englishName;
@@ -137,7 +136,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <p className="text-[10px] font-semibold uppercase text-gold">Complete The Wardrobe</p>
             <h2 className="mt-2 text-2xl font-semibold md:text-3xl">You May Also Like</h2>
           </div>
-          <Link href={`/collection#${collection.legacyHash}`} className="gold-focus hidden border-b border-copy/35 pb-1 text-[10px] font-semibold uppercase sm:block">
+          <Link href="/collection" className="gold-focus hidden border-b border-copy/35 pb-1 text-[10px] font-semibold uppercase sm:block">
             Shop All
           </Link>
         </div>
