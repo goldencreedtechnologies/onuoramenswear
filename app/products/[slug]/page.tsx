@@ -23,10 +23,11 @@ function galleryRank(image: string) {
   return 6;
 }
 
-function accurateSwatch(name: string, fallback: string) {
+function accurateSwatch(name: string, fallback: string, family: string) {
   const normalized = name.trim().toLowerCase();
-  if (normalized === "wine") return "#7A263A";
-  if (normalized === "navy blue") return "#0A1F44";
+  if ((normalized === "blue" || normalized === "navy blue") && family === "original") return "#1E2A56";
+  if (normalized === "wine" || normalized === "burgundy") return "#790222";
+  if (normalized === "burnt orange") return "#520C62";
   return fallback;
 }
 
@@ -54,7 +55,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const allProducts = await getStoreProducts();
   const colorOptions = allProducts
     .filter((item) => item.family === product.family)
-    .map((item) => ({ slug: item.slug, name: item.colorName, colorName: item.colorName, colorValue: accurateSwatch(item.colorName, item.colorValue) }));
+    .map((item) => ({ slug: item.slug, name: item.colorName, colorName: item.colorName, colorValue: accurateSwatch(item.colorName, item.colorValue, item.family) }));
   const recommendationFamilies = (["original", "button", "buttonless"] as const).filter((family) => family !== product.family);
   const firstFamily = allProducts.filter((item) => item.family === recommendationFamilies[0]).slice(0, 2);
   const secondFamily = allProducts.filter((item) => item.family === recommendationFamilies[1]).slice(0, 2);
