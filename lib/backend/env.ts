@@ -57,8 +57,27 @@ export function getStripeWebhookSecret() {
   return getOptionalEnv("STRIPE_WEBHOOK_SECRET");
 }
 
-export function getSiteUrl() {
-  return getOptionalEnv("NEXT_PUBLIC_SITE_URL") || "http://localhost:3000";
+export function getSiteUrl(request?: Request) {
+  if (request) {
+    return new URL(request.url).origin;
+  }
+
+  const configuredUrl = getOptionalEnv("NEXT_PUBLIC_SITE_URL");
+  if (configuredUrl) {
+    return configuredUrl;
+  }
+
+  const vercelUrl = getOptionalEnv("VERCEL_URL");
+  if (vercelUrl) {
+    return `https://${vercelUrl}`;
+  }
+
+  const productionUrl = getOptionalEnv("VERCEL_PROJECT_PRODUCTION_URL");
+  if (productionUrl) {
+    return `https://${productionUrl}`;
+  }
+
+  return "http://localhost:3000";
 }
 
 export function hasStripeConfig() {
