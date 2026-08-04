@@ -25,6 +25,14 @@ type ProcessNotificationOptions = {
   dryRun?: boolean;
 };
 
+type ConfirmedItem = {
+  name?: string;
+  edition?: string;
+  colour?: string;
+  size?: string;
+  quantity?: number;
+};
+
 function getString(payload: Record<string, unknown>, key: string, fallback = "") {
   const value = payload[key];
   return typeof value === "string" ? value : fallback;
@@ -33,6 +41,11 @@ function getString(payload: Record<string, unknown>, key: string, fallback = "")
 function getNumber(payload: Record<string, unknown>, key: string, fallback = 0) {
   const value = payload[key];
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+}
+
+function getItems(payload: Record<string, unknown>) {
+  const value = payload.purchasedItems;
+  return Array.isArray(value) ? value as ConfirmedItem[] : [];
 }
 
 function money(amount: number, currency: CurrencyCode = "USD") {
@@ -50,7 +63,7 @@ function baseEmail({ title, body, action }: { title: string; body: string; actio
       <div style="max-width:620px;margin:0 auto;background:#fffaf0;border:1px solid #E2D2B1;padding:28px">
         <p style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#C9A23E;font-weight:700;margin:0 0 18px">ỌNUỌRA Menswear</p>
         <h1 style="font-family:Georgia,serif;font-size:32px;line-height:1.05;margin:0 0 18px">${title}</h1>
-        <p style="font-size:15px;line-height:1.8;margin:0;color:#5A3A28">${body}</p>
+        <div style="font-size:15px;line-height:1.8;margin:0;color:#5A3A28">${body}</div>
         ${action ? `<p style="font-size:13px;line-height:1.7;margin:22px 0 0;color:#5A3A28">${action}</p>` : ""}
       </div>
     </div>
@@ -64,6 +77,48 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
   const currencyValue = getString(row.payload, "currency", "USD");
   const currency = isCurrencyCode(currencyValue) ? currencyValue : "USD";
   const total = getNumber(row.payload, "total", getNumber(row.payload, "totalUsd"));
+
+  if (row.template === "order_confirmed") {
+    const subject = row.subject ?? "Your ỌNUỌRA order is confirmed";
+    const orderReference = getString(row.payload, "orderReference", row.order_id ?? "");
+    const deliveryAddress = getString(row.payload, "deliveryAddress");
+    const shippingMethod = getString(row.payload, "shippingMethod", "Tracked delivery");
+    const dispatchStatus = getString(row.payload, "dispatchStatus", "Order confirmed");
+    const estimatedDispatchTiming = getString(row.payload, "estimatedDispatchTiming", "Prepared for dispatch within three working days");
+    const subtotal = getNumber(row.payload, "subtotal");
+    const shipping = getNumber(row.payload, "shipping");
+    const discount = getNumber(row.payload, "discount");
+    const items = getItems(row.payload);
+    const itemText = items.map((item) => `${item.quantity ?? 1} × ${item.name ?? "ỌNUỌRA outfit"}${item.edition ? ` · ${item.edition}` : ""}${item.colour ? ` · ${item.colour}` : ""}${item.size ? ` · Size ${item.size}` : ""}`).join("\n");
+    const itemHtml = items.map((item) => `<li style="margin:0 0 8px">${item.quantity ?? 1} × ${item.name ?? "ỌNUỌRA outfit"}${item.edition ? ` · ${item.edition}` : ""}${item.colour ? ` · ${item.colour}` : ""}${item.size ? ` · Size ${item.size}` : ""}</li>`).join("");
+    const text = [
+      `Dear ${fullName}, your order is confirmed.`,
+      `Order reference: ${orderReference}`,
+      "Purchased items:",
+      itemText,
+      `Delivery address: ${deliveryAddress}`,
+      `Shipping method: ${shippingMethod}`,
+      `Dispatch status: ${dispatchStatus}`,
+      `Estimated dispatch timing: ${estimatedDispatchTiming}`,
+      `Subtotal: ${money(subtotal, currency)}`,
+      `Shipping: ${money(shipping, currency)}`,
+      `Discount: -${money(discount, currency)}`,
+      `Total paid: ${money(total, currency)}`
+    ].join("\n\n");
+    const body = `
+      <p style="margin:0 0 16px">Dear ${fullName}, your order is confirmed.</p>
+      <p style="margin:0 0 16px"><strong>Order reference:</strong> ${orderReference}</p>
+      <p style="margin:0 0 8px"><strong>Purchased items</strong></p>
+      <ul style="margin:0 0 18px;padding-left:20px">${itemHtml}</ul>
+      <p style="margin:0 0 8px"><strong>Delivery address:</strong> ${deliveryAddress}</p>
+      <p style="margin:0 0 8px"><strong>Shipping method:</strong> ${shippingMethod}</p>
+      <p style="margin:0 0 8px"><strong>Dispatch status:</strong> ${dispatchStatus}</p>
+      <p style="margin:0 0 18px"><strong>Estimated dispatch timing:</strong> ${estimatedDispatchTiming}</p>
+      <p style="margin:0"><strong>Order summary</strong><br>Subtotal: ${money(subtotal, currency)}<br>Shipping: ${money(shipping, currency)}<br>Discount: -${money(discount, currency)}<br>Total paid: ${money(total, currency)}</p>
+    `;
+    const email = baseEmail({ title: "Order Confirmed.", body, action: "We will send another note when your order moves into delivery." });
+    return { subject, text, html: email.html };
+  }
 
   if (row.template === "payment_confirmed") {
     const subject = row.subject ?? "Your ỌNUỌRA payment is confirmed";

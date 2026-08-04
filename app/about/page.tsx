@@ -30,9 +30,21 @@ const collections = [
   }
 ];
 
+function StoryMonogram({ side = "right" }: { side?: "left" | "right" }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`pointer-events-none absolute top-1/2 -z-10 -translate-y-1/2 select-none font-semibold leading-none ${side === "right" ? "-right-24 md:right-[2%]" : "-left-24 md:left-[2%]"}`}
+      style={{ fontSize: "clamp(15rem,31vw,31rem)", color: "transparent", WebkitTextStroke: "1px rgba(101,67,33,0.09)" }}
+    >
+      Ọ
+    </span>
+  );
+}
+
 export default function AboutPage() {
   return (
-    <main className="bg-page pt-[104px] text-copy">
+    <main className="overflow-hidden bg-page pt-[104px] text-copy">
       <section className="relative min-h-[390px] overflow-hidden bg-obsidian text-white sm:min-h-[440px] md:min-h-[520px]">
         <Image
           src="/brand/story-header.png"
@@ -57,9 +69,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-11 md:py-20" aria-labelledby="brand-philosophy">
-        <div className="container-luxe grid gap-7 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-14">
-          <div>
+      <section className="relative isolate overflow-hidden py-11 md:py-20" aria-labelledby="brand-philosophy">
+        <StoryMonogram side="right" />
+        <div className="container-luxe relative z-10 grid min-w-0 gap-7 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-14">
+          <div className="min-w-0">
             <p className="text-[10px] font-semibold uppercase text-gold">Brand Philosophy</p>
             <h2 id="brand-philosophy" className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
               Meaning Before Garment
@@ -68,7 +81,7 @@ export default function AboutPage() {
               ỌNUỌRA is a contemporary menswear house rooted in Nigerian craftsmanship, cultural identity and timeless design. Every garment is created with intention, from the choice of fabric to the final stitch—bringing together refined tailoring and African heritage in a modern wardrobe.
             </p>
           </div>
-          <div className="relative aspect-[4/3] overflow-hidden bg-surface-subtle">
+          <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-surface-subtle">
             <Image
               src="/brand/nd-out.png"
               alt="ỌNUỌRA contemporary menswear"
@@ -103,8 +116,9 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-12 md:py-20" aria-labelledby="permanent-collections">
-        <div className="container-luxe">
+      <section className="relative isolate overflow-hidden py-12 md:py-20" aria-labelledby="permanent-collections">
+        <StoryMonogram side="left" />
+        <div className="container-luxe relative z-10 min-w-0">
           <p className="text-[10px] font-semibold uppercase text-gold">The Permanent Collections</p>
           <h2 id="permanent-collections" className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
             Three Collections. One Philosophy.
@@ -115,9 +129,9 @@ export default function AboutPage() {
           <p className="mt-3 max-w-3xl text-sm leading-6 text-copy-muted">
             Three distinct expressions of the same design philosophy, each created for different occasions while sharing one commitment to craftsmanship and contemporary African style.
           </p>
-          <div className="mt-7 grid gap-3 sm:grid-cols-3 md:gap-5">
+          <div className="mt-7 grid min-w-0 gap-3 sm:grid-cols-3 md:gap-5">
             {collections.map((collection) => (
-              <div key={collection.title}>
+              <div key={collection.title} className="min-w-0">
                 <Link href={collection.href} className="gold-focus group relative block aspect-[4/5] overflow-hidden bg-surface-subtle">
                   <Image src={collection.image} alt={collection.title} fill sizes="(min-width: 640px) 33vw, 100vw" className="object-cover object-top transition duration-700 group-hover:scale-[1.015]" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/78 via-transparent to-transparent" />
@@ -126,7 +140,7 @@ export default function AboutPage() {
                     <h3 className="mt-1 text-xl font-semibold">{collection.title}</h3>
                   </div>
                 </Link>
-                <Link href={collection.href} className="gold-focus mt-3 inline-flex min-h-10 items-center justify-center border border-copy/30 px-4 text-[10px] font-semibold uppercase transition hover:border-gold hover:bg-gold hover:text-obsidian">
+                <Link href={collection.href} className="gold-focus mt-3 inline-flex min-h-10 max-w-full items-center justify-center border border-copy/30 px-4 text-center text-[10px] font-semibold uppercase transition hover:border-gold hover:bg-gold hover:text-obsidian">
                   {collection.buttonLabel}
                 </Link>
               </div>
@@ -136,8 +150,8 @@ export default function AboutPage() {
       </section>
 
       <section className="bg-[#f5e6c8] py-11 text-[#171717] md:py-20" aria-labelledby="founder">
-        <div className="container-luxe grid gap-7 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-14">
-          <div className="relative aspect-[4/3] overflow-hidden bg-surface-subtle">
+        <div className="container-luxe grid min-w-0 gap-7 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-14">
+          <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-surface-subtle">
             <Image
               src="/brand/Founder-img.png"
               alt="Ọnụọra Abuah, founder of ỌNUỌRA Menswear"
@@ -147,7 +161,7 @@ export default function AboutPage() {
               className="object-cover object-[50%_14%]"
             />
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-[10px] font-semibold uppercase text-[#9f751d]">The Founder</p>
             <h2 id="founder" className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
               The Founder
