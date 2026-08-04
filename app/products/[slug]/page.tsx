@@ -47,7 +47,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const colorOptions = allProducts
     .filter((item) => item.family === product.family)
     .map((item) => ({ slug: item.slug, name: item.colorName, colorName: item.colorName, colorValue: item.colorValue }));
-  const related = allProducts.filter((item) => item.slug !== product.slug && item.family !== product.family).slice(0, 4);
+  const recommendationFamilies = (["original", "button", "buttonless"] as const).filter((family) => family !== product.family);
+  const related = recommendationFamilies.flatMap((family) =>
+    allProducts.filter((item) => item.family === family).slice(0, 2)
+  );
   const collection = getCollectionByFamily(product.family);
   const collectionLabel = collection.englishName;
   const galleryImages = Array.from(new Set([product.image, ...product.images])).sort((a, b) => galleryRank(a) - galleryRank(b));
