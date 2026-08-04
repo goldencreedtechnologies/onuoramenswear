@@ -5,6 +5,7 @@ import { CurrencySelector, ProductPrice } from "@/components/currency-provider";
 import { ProductGallery } from "@/components/product-gallery";
 import { ProductOptions } from "@/components/product-options";
 import { ProductCard } from "@/components/product-card";
+import { ShippingRatesModal } from "@/components/shipping-rates-modal";
 import { getStoreProductBySlug, getStoreProducts } from "@/lib/backend/catalog";
 import { getCollectionByFamily } from "@/data/site-config";
 import styles from "./product-page.module.css";
@@ -20,6 +21,13 @@ function galleryRank(image: string) {
   if (normalized.includes("lifestyle") || normalized.includes("studio") || normalized.includes("grid")) return 4;
   if (normalized.includes("-back.") || normalized.includes(".back.")) return 5;
   return 6;
+}
+
+function accurateSwatch(name: string, fallback: string) {
+  const normalized = name.trim().toLowerCase();
+  if (normalized === "wine") return "#7A263A";
+  if (normalized === "navy blue") return "#0A1F44";
+  return fallback;
 }
 
 export async function generateStaticParams() {
@@ -46,11 +54,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const allProducts = await getStoreProducts();
   const colorOptions = allProducts
     .filter((item) => item.family === product.family)
-    .map((item) => ({ slug: item.slug, name: item.colorName, colorName: item.colorName, colorValue: item.colorValue }));
+    .map((item) => ({ slug: item.slug, name: item.colorName, colorName: item.colorName, colorValue: accurateSwatch(item.colorName, item.colorValue) }));
   const recommendationFamilies = (["original", "button", "buttonless"] as const).filter((family) => family !== product.family);
-  const related = recommendationFamilies.flatMap((family) =>
-    allProducts.filter((item) => item.family === family).slice(0, 2)
-  );
+  const firstFamily = allProducts.filter((item) => item.family === recommendationFamilies[0]).slice(0, 2);
+  const secondFamily = allProducts.filter((item) => item.family === recommendationFamilies[1]).slice(0, 2);
+  const related = [firstFamily[0], secondFamily[0], firstFamily[1], secondFamily[1]].filter((item): item is NonNullable<typeof item> => Boolean(item));
   const collection = getCollectionByFamily(product.family);
   const collectionLabel = collection.englishName;
   const galleryImages = Array.from(new Set([product.image, ...product.images])).sort((a, b) => galleryRank(a) - galleryRank(b));
@@ -77,8 +85,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
           <div className="mt-4 border-y border-line py-4 text-sm leading-6 text-copy-muted">
             <p className="font-semibold text-copy">Prepared for dispatch within three working days</p>
-            <p className="mt-2">Tracked delivery across Nigeria and worldwide. Shipping is calculated according to your destination and the number of outfits ordered.</p>
-            <Link href="/shipping" className="gold-focus mt-3 inline-flex border-b border-copy/35 text-[10px] font-semibold uppercase text-copy transition hover:border-gold">View Delivery Rates</Link>
+            <p className="mt-2">Tracked shipping and delivery across Nigeria and worldwide. Shipping is calculated according to your destination and the number of outfits ordered.</p>
+            <ShippingRatesModal />
           </div>
 
           <details className="group mt-5 border-y border-line py-4">
@@ -101,7 +109,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <section className="container-luxe py-12 md:py-20">
         <div className="mb-7 flex items-end justify-between gap-5">
-          <div><p className="text-[10px] font-semibold uppercase text-gold">Complete The Wardrobe</p><h2 className="mt-2 text-2xl font-semibold md:text-3xl">You May Also Like</h2></div>
+          <div><p className="text-[10px] font-semibold uppercase text-gold">Complete The Wardrobe</p><h2 className="mt-2 text-2xl font-semibold md:text-3xl">Complete The Set</h2></div>
           <Link href="/collection" className="gold-focus hidden border-b border-copy/35 pb-1 text-[10px] font-semibold uppercase sm:block">Shop All</Link>
         </div>
         <div className="grid grid-cols-2 gap-x-2.5 gap-y-7 sm:gap-x-5 sm:gap-y-9 lg:grid-cols-4">

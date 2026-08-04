@@ -39,9 +39,6 @@ export function LimitedOfferCarousel() {
                 Explore Collections
                 <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link href="/shipping" className="gold-focus inline-flex min-h-11 items-center border-b border-white/55 px-1 text-[10px] font-semibold uppercase transition hover:border-gold-soft hover:text-gold-soft">
-                View Delivery Rates
-              </Link>
             </div>
           </div>
         </div>
