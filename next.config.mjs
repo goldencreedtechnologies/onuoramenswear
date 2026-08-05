@@ -15,6 +15,14 @@ const nextConfig = {
       }
     ]
   },
+  async rewrites() {
+    return [
+      {
+        source: "/brand/final-hero.png",
+        destination: "/brand/menswear-hero.png"
+      }
+    ];
+  },
   turbopack: {
     root: __dirname
   }
