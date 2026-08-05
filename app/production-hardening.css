@@ -1,0 +1,48 @@
+[role="dialog"][aria-modal="true"] {
+  z-index: 1000 !important;
+  overscroll-behavior: contain;
+  isolation: isolate;
+}
+
+[role="dialog"][aria-modal="true"] > * {
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 1023px) {
+  header > div:nth-child(2) {
+    height: 58px !important;
+    margin-inline: 10px !important;
+  }
+
+  header > div:nth-child(2) > div {
+    padding-inline: 12px !important;
+    gap: 8px !important;
+  }
+
+  header img[alt="ỌNUỌRA Menswear"] {
+    height: 28px !important;
+    width: auto !important;
+  }
+
+  header button[aria-label="Search"] svg,
+  header button[aria-label="Open menu"] svg,
+  header button[aria-label="Close menu"] svg,
+  header button[aria-label^="Open shopping bag"] svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  header > div.fixed {
+    top: 88px !important;
+  }
+
+  header.absolute + main > section:first-child > img {
+    object-position: 72% 18% !important;
+  }
+}
+
+@media (max-width: 639px) {
+  header.absolute + main > section:first-child > img {
+    object-position: 78% 18% !important;
+  }
+}

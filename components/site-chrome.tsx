@@ -6,6 +6,7 @@ import { MiniCartDrawer } from "@/components/mini-cart-drawer";
 import { Navigation } from "@/components/navigation";
 import { CurrencyProvider } from "@/components/currency-provider";
 import { NewsletterPopup } from "@/components/newsletter-signup";
+import { ModalScrollGuard } from "@/components/modal-scroll-guard";
 
 function WhatsAppButton() {
   return (
@@ -32,6 +33,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <CurrencyProvider>
+      <ModalScrollGuard />
       <Navigation />
       {children}
       <Footer />

@@ -3,6 +3,7 @@ import "./globals.css";
 import "./button-radius.css";
 import "./home-header-fix.css";
 import "./mobile-refinement.css";
+import "./production-hardening.css";
 import { SiteChrome } from "@/components/site-chrome";
 
 export const metadata: Metadata = {
