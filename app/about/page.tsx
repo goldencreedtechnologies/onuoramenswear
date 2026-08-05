@@ -47,7 +47,7 @@ export default function AboutPage() {
     <main className="overflow-hidden bg-page pt-[104px] text-copy">
       <section className="relative min-h-[390px] overflow-hidden bg-obsidian text-white sm:min-h-[440px] md:min-h-[520px]">
         <Image
-          src="/brand/story-header.png"
+          src="/brand/story-header-v2.png"
           alt="The ỌNUỌRA house wearing contemporary African menswear in Nigeria"
           fill
           priority

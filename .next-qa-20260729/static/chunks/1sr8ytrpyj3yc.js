@@ -1,0 +1,1 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,17891,t=>{"use strict";var e=t.i(71645),r=t.i(62409);t.s(["ClearCartOnMount",0,function(){return(0,e.useEffect)(()=>{(0,r.clearCart)()},[]),null}])}]);
