@@ -16,12 +16,16 @@ const nextConfig = {
     ]
   },
   async rewrites() {
-    return [
-      {
-        source: "/brand/final-hero.png",
-        destination: "/brand/menswear-hero.png"
-      }
-    ];
+    return {
+      beforeFiles: [
+        {
+          source: "/brand/final-hero.png",
+          destination: "/brand/menswear-hero.png"
+        }
+      ],
+      afterFiles: [],
+      fallback: []
+    };
   },
   turbopack: {
     root: __dirname
