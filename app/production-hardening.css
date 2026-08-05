@@ -36,13 +36,13 @@
     top: 88px !important;
   }
 
-  main > section:first-child > img {
+  header.absolute + main > section:first-child > img {
     object-position: 72% 18% !important;
   }
 }
 
 @media (max-width: 639px) {
-  main > section:first-child > img {
+  header.absolute + main > section:first-child > img {
     object-position: 78% 18% !important;
   }
 }
