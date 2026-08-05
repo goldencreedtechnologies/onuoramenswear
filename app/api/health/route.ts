@@ -3,7 +3,9 @@ import {
   hasStripeConfig,
   hasStripePublishableConfig,
   hasStripeWebhookConfig,
-  hasSupabaseConfig
+  hasSupabaseConfig,
+  hasEmailProviderConfig,
+  getNotificationWorkerSecret
 } from "@/lib/backend/env";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 
@@ -18,8 +20,13 @@ export async function GET() {
     productCount = result.count ?? null;
   }
 
+  const stripeReady = hasStripePublishableConfig() && hasStripeConfig() && hasStripeWebhookConfig();
+  const emailReady = hasEmailProviderConfig() && Boolean(getNotificationWorkerSecret());
+  const productionReady = supabaseReachable && stripeReady && emailReady;
+
   return NextResponse.json({
-    ok: supabaseReachable,
+    ok: productionReady,
+    productionReady,
     supabaseConfigured: hasSupabaseConfig(),
     supabaseServiceConfigured: Boolean(client),
     supabaseReachable,
@@ -29,6 +36,10 @@ export async function GET() {
       secretKeyConfigured: hasStripeConfig(),
       webhookSecretConfigured: hasStripeWebhookConfig()
     },
+    transactionalEmail: {
+      resendConfigured: hasEmailProviderConfig(),
+      retryWorkerConfigured: Boolean(getNotificationWorkerSecret())
+    },
     timestamp: new Date().toISOString()
-  }, { status: supabaseReachable ? 200 : 503 });
+  }, { status: productionReady ? 200 : 503 });
 }

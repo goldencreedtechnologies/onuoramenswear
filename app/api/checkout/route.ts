@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { checkoutDraftSchema, attachStripeCheckoutSession, createOrder, releasePendingOrderInventory } from "@/lib/backend/orders";
-import { getSiteUrl, hasStripeConfig, hasSupabaseConfig } from "@/lib/backend/env";
+import { getSiteUrl, hasStripeConfig, hasSupabaseConfig, isTestCheckoutVoucherEnabled } from "@/lib/backend/env";
 import { ensureCustomerProfile, getAuthenticatedAccountUser } from "@/lib/backend/account";
 import { getStoreProductBySlug } from "@/lib/backend/catalog";
 import { markOrderInventorySold } from "@/lib/backend/inventory";
 import { queueOrderNotification, recordOrderEvent } from "@/lib/backend/order-lifecycle";
+import { processNotificationQueue } from "@/lib/backend/notifications";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 import {
   PRODUCT_PRICES,
@@ -34,6 +35,10 @@ export async function POST(request: Request) {
 
   if (!hasSupabaseConfig()) {
     return NextResponse.json({ error: "Supabase is not configured yet." }, { status: 503 });
+  }
+
+  if (voucherCode === TEST_VOUCHER_CODE && !isTestCheckoutVoucherEnabled()) {
+    return NextResponse.json({ error: "The QA checkout voucher is disabled." }, { status: 403 });
   }
 
   const itemCount = parsed.data.items.reduce((total, item) => total + item.quantity, 0);
@@ -121,9 +126,9 @@ export async function POST(request: Request) {
       customerProfileId: profile?.ok ? profile.profile.id : null,
       template: "order_confirmed",
       recipient: parsed.data.email,
-      subject: `ỌNUỌRA order confirmed · ${order.orderId}`,
+      subject: `ỌNUỌRA order confirmed · ${order.orderNumber}`,
       payload: {
-        orderReference: order.orderId,
+        orderReference: order.orderNumber,
         fullName: parsed.data.fullName,
         currency,
         purchasedItems: order.items.map((item) => ({
@@ -143,6 +148,9 @@ export async function POST(request: Request) {
         shippingMethod: order.deliveryQuote.methodName,
         dispatchStatus: "Order confirmed and preparing for dispatch",
         estimatedDispatchTiming: "Prepared for dispatch within three working days",
+        estimatedDeliveryWindow: `${order.deliveryQuote.estimatedMinDays}-${order.deliveryQuote.estimatedMaxDays} business days after dispatch`,
+        paymentStatus: "Paid with authorised testing voucher",
+        contactInformation: "menswear@onuoraenterprises.com",
         subtotalUsd: order.subtotalUsd,
         shippingUsd: order.shippingUsd,
         discountUsd: order.totalUsd,
@@ -154,10 +162,12 @@ export async function POST(request: Request) {
       }
     });
 
+    await processNotificationQueue({ limit: 10 });
+
     return NextResponse.json({
       ok: true,
       orderId: order.orderId,
-      orderReference: order.orderId,
+      orderReference: order.orderNumber,
       voucherApplied: true,
       successUrl: `${siteUrl}/checkout/success?order_id=${order.orderId}&voucher=1`
     });

@@ -36,7 +36,9 @@ export function ModalScrollGuard() {
     }
 
     function sync() {
-      const hasOpenModal = Boolean(document.querySelector('[role="dialog"][aria-modal="true"]'));
+      const hasOpenModal = Array.from(
+        document.querySelectorAll<HTMLElement>('[role="dialog"][aria-modal="true"]')
+      ).some((dialog) => !dialog.closest('[aria-hidden="true"]'));
       if (hasOpenModal) lock();
       else unlock();
     }

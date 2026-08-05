@@ -12,6 +12,8 @@ import styles from "./product-page.module.css";
 
 type ProductPageProps = { params: Promise<{ slug: string }> };
 
+export const revalidate = 300;
+
 function galleryRank(image: string) {
   const normalized = image.toLowerCase();
   if (normalized.includes("-front.")) return 0;

@@ -1,6 +1,7 @@
 import { getResendApiKey, getTransactionalEmailFrom, hasEmailProviderConfig } from "@/lib/backend/env";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 import { CURRENCY_LOCALES, isCurrencyCode, type CurrencyCode } from "@/data/site-config";
+import { Resend } from "resend";
 
 type NotificationRow = {
   id: string;
@@ -85,6 +86,9 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
     const shippingMethod = getString(row.payload, "shippingMethod", "Tracked delivery");
     const dispatchStatus = getString(row.payload, "dispatchStatus", "Order confirmed");
     const estimatedDispatchTiming = getString(row.payload, "estimatedDispatchTiming", "Prepared for dispatch within three working days");
+    const estimatedDeliveryWindow = getString(row.payload, "estimatedDeliveryWindow", "Confirmed with your dispatch notification");
+    const paymentStatus = getString(row.payload, "paymentStatus", "Paid");
+    const contactInformation = getString(row.payload, "contactInformation", "menswear@onuoraenterprises.com");
     const subtotal = getNumber(row.payload, "subtotal");
     const shipping = getNumber(row.payload, "shipping");
     const discount = getNumber(row.payload, "discount");
@@ -100,10 +104,13 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
       `Shipping method: ${shippingMethod}`,
       `Dispatch status: ${dispatchStatus}`,
       `Estimated dispatch timing: ${estimatedDispatchTiming}`,
+      `Estimated delivery window: ${estimatedDeliveryWindow}`,
+      `Payment status: ${paymentStatus}`,
       `Subtotal: ${money(subtotal, currency)}`,
       `Shipping: ${money(shipping, currency)}`,
       `Discount: -${money(discount, currency)}`,
-      `Total paid: ${money(total, currency)}`
+      `Total paid: ${money(total, currency)}`,
+      `Client Care: ${contactInformation}`
     ].join("\n\n");
     const body = `
       <p style="margin:0 0 16px">Dear ${fullName}, your order is confirmed.</p>
@@ -114,9 +121,11 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
       <p style="margin:0 0 8px"><strong>Shipping method:</strong> ${shippingMethod}</p>
       <p style="margin:0 0 8px"><strong>Dispatch status:</strong> ${dispatchStatus}</p>
       <p style="margin:0 0 18px"><strong>Estimated dispatch timing:</strong> ${estimatedDispatchTiming}</p>
+      <p style="margin:0 0 8px"><strong>Estimated delivery window:</strong> ${estimatedDeliveryWindow}</p>
+      <p style="margin:0 0 18px"><strong>Payment status:</strong> ${paymentStatus}</p>
       <p style="margin:0"><strong>Order summary</strong><br>Subtotal: ${money(subtotal, currency)}<br>Shipping: ${money(shipping, currency)}<br>Discount: -${money(discount, currency)}<br>Total paid: ${money(total, currency)}</p>
     `;
-    const email = baseEmail({ title: "Order Confirmed.", body, action: "We will send another note when your order moves into delivery." });
+    const email = baseEmail({ title: "Order Confirmed.", body, action: `We will send another note when your order moves into delivery. Client Care: ${contactInformation}` });
     return { subject, text, html: email.html };
   }
 
@@ -144,25 +153,18 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
 }
 
 async function sendResendEmail(row: NotificationRow, rendered: RenderedEmail) {
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${getResendApiKey()}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
+  const resend = new Resend(getResendApiKey());
+  const { error } = await resend.emails.send(
+    {
       from: getTransactionalEmailFrom(),
       to: row.recipient,
       subject: rendered.subject,
       html: rendered.html,
       text: rendered.text
-    })
-  });
-
-  if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    throw new Error(detail || `Resend returned ${response.status}`);
-  }
+    },
+    { idempotencyKey: `notification-${row.id}` }
+  );
+  if (error) throw new Error(error.message);
 }
 
 export async function processNotificationQueue(options: ProcessNotificationOptions = {}) {

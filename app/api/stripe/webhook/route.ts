@@ -3,6 +3,7 @@ import type Stripe from "stripe";
 import { getStripeWebhookSecret } from "@/lib/backend/env";
 import { markOrderPaid, markOrderPaymentExpired, markOrderPaymentFailed } from "@/lib/backend/orders";
 import { createStripeClient } from "@/lib/stripe";
+import { processNotificationQueue } from "@/lib/backend/notifications";
 
 function getPaymentIntentId(session: Stripe.Checkout.Session) {
   return typeof session.payment_intent === "string" ? session.payment_intent : session.payment_intent?.id;
@@ -65,6 +66,10 @@ export async function POST(request: Request) {
 
   if (!result.ok) {
     return NextResponse.json({ error: "Unable to process Stripe event." }, { status: 500 });
+  }
+
+  if (event.type === "checkout.session.completed" || event.type === "checkout.session.async_payment_succeeded") {
+    await processNotificationQueue({ limit: 10 });
   }
 
   return NextResponse.json({ received: true });

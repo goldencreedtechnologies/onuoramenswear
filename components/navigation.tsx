@@ -10,6 +10,7 @@ import { products } from "@/data/catalog";
 import { announcementCopy, fixedProductPriceLabel, getCollectionByFamily } from "@/data/site-config";
 import { readCart } from "@/lib/cart";
 import { cn } from "@/lib/cn";
+import { useModalScrollLock } from "@/lib/use-modal-scroll-lock";
 
 const permanentCollectionLinks = [
   { href: "/collection", igbo: "Browse", english: "All Collections" },
@@ -49,19 +50,13 @@ export function Navigation() {
   const collectionsButtonRef = useRef<HTMLButtonElement>(null);
   const collectionsPanelRef = useRef<HTMLDivElement>(null);
   const isHome = pathname === "/";
+  useModalScrollLock(mobileOpen);
 
   function closeMenus() {
     setMobileOpen(false);
     setCollectionsOpen(false);
     setSearchOpen(false);
   }
-
-  useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mobileOpen]);
 
   useEffect(() => {
     if (!collectionsOpen) return;

@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Loader2, LockKeyhole, MapPin } from "lucide-react";
+import { Loader2, LockKeyhole, MapPin, Minus, Plus } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCurrency } from "@/components/currency-provider";
+import { ShippingRatesModal } from "@/components/shipping-rates-modal";
 import {
   DELIVERY_COPY,
   PRODUCT_PRICES,
@@ -13,7 +14,7 @@ import {
   promotionDiscountForQuantity
 } from "@/data/site-config";
 import { resolveShippingRule } from "@/lib/commerce/shipping-rules";
-import { cartSubtotal, readCart, type CartItem } from "@/lib/cart";
+import { cartSubtotal, readCart, updateCartItemQuantity, type CartItem } from "@/lib/cart";
 
 type OrderStatus = { type: "idle" } | { type: "loading" } | { type: "error"; message: string };
 type QuoteStatus = { type: "idle" } | { type: "loading" } | { type: "error"; message: string };
@@ -29,6 +30,7 @@ type DeliveryQuote = {
 };
 
 const TEST_VOUCHER_CODE = "ONUORA-TEST-100";
+const TEST_VOUCHER_ENABLED = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_ENABLE_TEST_CHECKOUT_VOUCHER === "true";
 const SHIPPING_COUNTRY_KEY = "onuora-shipping-country";
 const deliveryFields = new Set(["shippingAddress", "shippingCity", "shippingState", "postalCode", "shippingCountry"]);
 const fieldClass = "gold-focus min-h-12 w-full border border-line bg-page px-4 text-sm font-normal normal-case text-copy outline-none transition placeholder:text-copy-muted/60 hover:border-line-strong focus:border-copy";
@@ -49,7 +51,7 @@ export function CheckoutClient() {
   const wardrobeDiscount = promotionDiscountForQuantity(itemCount, currency);
   const shippingRule = shippingCountry ? resolveShippingRule({ shippingCountry, itemCount, currency }) : null;
   const shipping = shippingRule?.displayCurrency === currency ? shippingRule.displayAmount ?? 0 : 0;
-  const voucherApplied = voucherCode.trim().toUpperCase() === TEST_VOUCHER_CODE;
+  const voucherApplied = TEST_VOUCHER_ENABLED && voucherCode.trim().toUpperCase() === TEST_VOUCHER_CODE;
   const discount = voucherApplied ? subtotal - wardrobeDiscount + shipping : wardrobeDiscount;
   const total = subtotal + shipping - discount;
   const money = (amount: number) => formatCurrency(currency, amount);
@@ -78,6 +80,19 @@ export function CheckoutClient() {
       setDeliveryQuote(null);
       setQuoteStatus({ type: "idle" });
     }
+  }
+
+  function updateQuantity(item: CartItem, quantity: number) {
+    const next = updateCartItemQuantity(
+      item.productSlug,
+      item.size,
+      item.colorName,
+      Math.max(1, quantity)
+    );
+    setItems(next.items);
+    setDeliveryQuote(null);
+    setQuoteStatus({ type: "idle" });
+    setStatus({ type: "idle" });
   }
 
   async function handleDeliveryQuote() {
@@ -269,6 +284,24 @@ export function CheckoutClient() {
               </div>
             )) : <p className="text-sm leading-6 text-copy-muted">Your cart is empty. Add a complete outfit before checkout.</p>}
           </div>
+          {items.length ? (
+            <div className="mt-5 border-y border-line py-4">
+              {items.map((item) => (
+                <div key={`quantity-${item.productSlug}-${item.size}-${item.colorName}`} className="flex items-center justify-between gap-4 py-2 first:pt-0 last:pb-0">
+                  <div className="min-w-0">
+                    <p className="truncate text-[10px] font-semibold uppercase text-copy">{item.name}</p>
+                    <p className="mt-1 text-xs text-copy-muted">Add One More for {money(PRODUCT_PRICES[currency])}</p>
+                  </div>
+                  <div className="flex h-10 shrink-0 items-center border border-line" aria-label={`Quantity for ${item.name}`}>
+                    <button type="button" onClick={() => updateQuantity(item, item.quantity - 1)} disabled={item.quantity <= 1} className="gold-focus grid h-full w-10 place-items-center disabled:cursor-not-allowed disabled:opacity-30" aria-label={`Decrease ${item.name} quantity`}><Minus className="h-3.5 w-3.5" /></button>
+                    <output className="grid h-full w-10 place-items-center border-x border-line text-xs font-semibold" aria-live="polite">{item.quantity}</output>
+                    <button type="button" onClick={() => updateQuantity(item, item.quantity + 1)} className="gold-focus grid h-full w-10 place-items-center" aria-label={`Increase ${item.name} quantity`}><Plus className="h-3.5 w-3.5" /></button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          <ShippingRatesModal />
           <div className="mt-5 space-y-3 text-sm">
             <div className="flex justify-between"><span className="text-copy-muted">Subtotal</span><span>{money(subtotal)}</span></div>
             {wardrobeDiscount > 0 ? <div className="flex justify-between"><span className="text-copy-muted">Wardrobe Discount</span><span>-{money(wardrobeDiscount)}</span></div> : null}

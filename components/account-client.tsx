@@ -82,6 +82,9 @@ export function AccountClient() {
   const [password, setPassword] = useState("");
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
+  const [recoveryMode, setRecoveryMode] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [newEmail, setNewEmail] = useState("");
   const [status, setStatus] = useState<AuthStatus>({ type: "idle" });
   const [account, setAccount] = useState<AccountOverview | null>(null);
   const [loadingAccount, setLoadingAccount] = useState(false);
@@ -134,12 +137,80 @@ export function AccountClient() {
           void loadAccount();
         }
       });
+      const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+        setUserEmail(session?.user.email ?? null);
+        if (event === "PASSWORD_RECOVERY") setRecoveryMode(true);
+        if (event === "SIGNED_IN" && session?.user.email) void loadAccount();
+        if (event === "SIGNED_OUT") setAccount(null);
+      });
+      return () => listener.subscription.unsubscribe();
     } catch {
       queueMicrotask(() => {
         setStatus({ type: "error", message: "Supabase Auth is not configured for this environment yet." });
       });
     }
   }, []);
+
+  async function sendPasswordReset() {
+    if (!email) {
+      setStatus({ type: "error", message: "Enter your email address first." });
+      return;
+    }
+    setStatus({ type: "loading" });
+    const supabase = createSupabaseBrowserClient();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/callback?next=/account`
+    });
+    setStatus(error
+      ? { type: "error", message: error.message }
+      : { type: "success", message: "Password reset instructions have been sent." });
+  }
+
+  async function sendMagicLink() {
+    if (!email) {
+      setStatus({ type: "error", message: "Enter your email address first." });
+      return;
+    }
+    setStatus({ type: "loading" });
+    const supabase = createSupabaseBrowserClient();
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/account` }
+    });
+    setStatus(error
+      ? { type: "error", message: error.message }
+      : { type: "success", message: "A secure sign-in link has been sent." });
+  }
+
+  async function updatePassword(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setStatus({ type: "loading" });
+    const supabase = createSupabaseBrowserClient();
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      setStatus({ type: "error", message: error.message });
+      return;
+    }
+    setNewPassword("");
+    setRecoveryMode(false);
+    setStatus({ type: "success", message: "Your password has been updated." });
+  }
+
+  async function updateEmailAddress(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setStatus({ type: "loading" });
+    const supabase = createSupabaseBrowserClient();
+    const { error } = await supabase.auth.updateUser(
+      { email: newEmail },
+      { emailRedirectTo: `${window.location.origin}/auth/callback?next=/account` }
+    );
+    if (error) {
+      setStatus({ type: "error", message: error.message });
+      return;
+    }
+    setNewEmail("");
+    setStatus({ type: "success", message: "Confirm the email-change links sent by ỌNUỌRA." });
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -265,8 +336,23 @@ export function AccountClient() {
           </div>
         ) : null}
 
+        {recoveryMode ? (
+          <form onSubmit={updatePassword} className="mt-6 grid gap-3 rounded-[26px] border border-gold/18 p-5">
+            <p className="text-xs font-bold uppercase text-gold-soft">Secure account recovery</p>
+            <input value={newPassword} onChange={(event) => setNewPassword(event.target.value)} type="password" minLength={8} required placeholder="New password" autoComplete="new-password" className="gold-focus min-h-10 border border-ivory/10 bg-ivory/5 px-4 text-sm text-ivory" />
+            <button className="gold-focus min-h-10 bg-gold px-4 text-xs font-bold uppercase text-obsidian">Update password</button>
+          </form>
+        ) : null}
+
         <div className="mt-8 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="space-y-5">
+            <form onSubmit={updateEmailAddress} className="rounded-[26px] border border-gold/18 p-5">
+              <p className="text-xs font-bold uppercase text-gold-soft">Change email address</p>
+              <div className="mt-4 grid gap-3">
+                <input value={newEmail} onChange={(event) => setNewEmail(event.target.value)} type="email" required placeholder="New email address" autoComplete="email" className="gold-focus min-h-10 border border-ivory/10 bg-ivory/5 px-4 text-sm text-ivory" />
+                <button className="gold-focus min-h-10 border border-gold/30 px-4 text-xs font-bold uppercase text-gold hover:bg-gold hover:text-obsidian">Send verification</button>
+              </div>
+            </form>
             <form onSubmit={handleProfileSave} className="rounded-[26px] border border-gold/18 p-5">
               <p className="text-xs font-bold uppercase tracking-[0] text-gold-soft">Profile</p>
               <div className="mt-5 grid gap-3">
@@ -499,6 +585,12 @@ export function AccountClient() {
           {status.type === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {mode === "sign-in" ? "Sign in" : "Create account"}
         </button>
+        {mode === "sign-in" ? (
+          <div className="grid grid-cols-2 gap-3">
+            <button type="button" onClick={sendPasswordReset} className="gold-focus min-h-10 border border-ivory/15 px-3 text-[10px] font-bold uppercase text-ivory/70 hover:border-gold hover:text-gold">Reset password</button>
+            <button type="button" onClick={sendMagicLink} className="gold-focus min-h-10 border border-ivory/15 px-3 text-[10px] font-bold uppercase text-ivory/70 hover:border-gold hover:text-gold">Email sign-in link</button>
+          </div>
+        ) : null}
       </form>
     </div>
   );

@@ -31,3 +31,17 @@ export async function POST(request: Request) {
 
   return NextResponse.json(result);
 }
+
+export async function GET(request: Request) {
+  if (!isAuthorized(request)) {
+    return NextResponse.json({ error: "Unauthorized notification worker request." }, { status: 401 });
+  }
+
+  const result = await processNotificationQueue();
+
+  if (!result.ok) {
+    return NextResponse.json({ error: result.reason }, { status: 503 });
+  }
+
+  return NextResponse.json(result);
+}

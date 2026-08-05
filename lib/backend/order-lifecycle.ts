@@ -57,7 +57,7 @@ export async function queueOrderNotification(input: NotificationInput) {
     return { ok: false as const, reason: "Supabase is not configured yet." };
   }
 
-  const { error } = await client.from("notification_queue").insert({
+  const { error } = await client.from("notification_queue").upsert({
     order_id: input.orderId,
     customer_profile_id: input.customerProfileId ?? null,
     template: input.template,
@@ -65,7 +65,7 @@ export async function queueOrderNotification(input: NotificationInput) {
     subject: input.subject ?? null,
     payload: input.payload ?? {},
     scheduled_at: input.scheduledAt ?? new Date().toISOString()
-  });
+  }, { onConflict: "order_id,template,recipient", ignoreDuplicates: true });
 
   if (error) {
     return { ok: false as const, reason: error.message };

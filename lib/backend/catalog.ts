@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { unstable_cache } from "next/cache";
 import {
   products as localProducts,
   type Product,
@@ -165,7 +166,10 @@ function createReadClient() {
   }
 
   return createClient(url, publishableKey, {
-    auth: { persistSession: false, autoRefreshToken: false }
+    auth: { persistSession: false, autoRefreshToken: false },
+    global: {
+      fetch: (input, init) => fetch(input, { ...init, signal: AbortSignal.timeout(8_000) })
+    }
   });
 }
 
@@ -197,7 +201,7 @@ async function readRows() {
   return (legacy.data ?? []) as unknown as ProductRow[];
 }
 
-export async function getStoreProducts(): Promise<StoreProduct[]> {
+async function loadStoreProducts(): Promise<StoreProduct[]> {
   if (!hasSupabaseConfig()) {
     return localProducts.map((product) => correctColourImagery(product));
   }
@@ -209,6 +213,15 @@ export async function getStoreProducts(): Promise<StoreProduct[]> {
   }
 
   return mergeWithLocal(rows);
+}
+
+const getCachedStoreProducts = unstable_cache(loadStoreProducts, ["onuora-store-products"], {
+  revalidate: 300,
+  tags: ["products"]
+});
+
+export async function getStoreProducts(): Promise<StoreProduct[]> {
+  return getCachedStoreProducts();
 }
 
 export async function getStoreProductBySlug(slug: string): Promise<StoreProduct | null> {

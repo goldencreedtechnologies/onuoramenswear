@@ -93,7 +93,11 @@ export function hasStripeWebhookConfig() {
 }
 
 export function getNotificationWorkerSecret() {
-  return getOptionalEnv("NOTIFICATION_WORKER_SECRET");
+  return getFirstEnv(["NOTIFICATION_WORKER_SECRET", "CRON_SECRET"]);
+}
+
+export function isTestCheckoutVoucherEnabled() {
+  return process.env.NODE_ENV !== "production" && getOptionalEnv("ENABLE_TEST_CHECKOUT_VOUCHER") === "true";
 }
 
 export function getResendApiKey() {
@@ -101,7 +105,7 @@ export function getResendApiKey() {
 }
 
 export function getTransactionalEmailFrom() {
-  return getOptionalEnv("TRANSACTIONAL_EMAIL_FROM") || "ỌNUỌRA Client Care <orders@onuoramenswear.com>";
+  return getOptionalEnv("TRANSACTIONAL_EMAIL_FROM") || "ỌNUỌRA Menswear <menswear@onuoraenterprises.com>";
 }
 
 export function hasEmailProviderConfig() {
