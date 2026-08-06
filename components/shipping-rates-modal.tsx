@@ -10,7 +10,15 @@ const internationalRates = [
   { outfits: "7+", usd: "Manual quotation", gbp: "Manual quotation", eur: "Manual quotation", ngn: "Manual quotation" }
 ];
 
-export function ShippingRatesModal() {
+type ShippingRatesModalProps = {
+  triggerLabel?: string;
+  triggerClassName?: string;
+};
+
+export function ShippingRatesModal({
+  triggerLabel = "View Delivery Rates",
+  triggerClassName = "gold-focus mt-3 inline-flex border-b border-copy/35 text-[10px] font-semibold uppercase text-copy transition hover:border-gold"
+}: ShippingRatesModalProps = {}) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -24,8 +32,8 @@ export function ShippingRatesModal() {
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className="gold-focus mt-3 inline-flex border-b border-copy/35 text-[10px] font-semibold uppercase text-copy transition hover:border-gold">
-        View Delivery Rates
+      <button type="button" onClick={() => setOpen(true)} className={triggerClassName}>
+        {triggerLabel}
       </button>
       {open ? (
         <div className="fixed inset-0 z-[170] grid place-items-center bg-black/62 p-3 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Shipping and delivery rates" onMouseDown={(event) => { if (event.currentTarget === event.target) setOpen(false); }}>

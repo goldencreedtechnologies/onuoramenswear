@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Loader2, LockKeyhole, MapPin, Minus, Plus } from "lucide-react";
+import { Loader2, LockKeyhole, MapPin } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCurrency } from "@/components/currency-provider";
 import { ShippingRatesModal } from "@/components/shipping-rates-modal";
@@ -13,8 +13,9 @@ import {
   formatCurrency,
   promotionDiscountForQuantity
 } from "@/data/site-config";
+import { phaseOneCollections, type PhaseOneCollectionProduct } from "@/data/phase-one-collections";
 import { resolveShippingRule } from "@/lib/commerce/shipping-rules";
-import { cartSubtotal, readCart, updateCartItemQuantity, type CartItem } from "@/lib/cart";
+import { addCartItem, cartSubtotal, readCart, type CartItem } from "@/lib/cart";
 
 type OrderStatus = { type: "idle" } | { type: "loading" } | { type: "error"; message: string };
 type QuoteStatus = { type: "idle" } | { type: "loading" } | { type: "error"; message: string };
@@ -35,6 +36,105 @@ const SHIPPING_COUNTRY_KEY = "onuora-shipping-country";
 const deliveryFields = new Set(["shippingAddress", "shippingCity", "shippingState", "postalCode", "shippingCountry"]);
 const fieldClass = "gold-focus min-h-12 w-full border border-line bg-page px-4 text-sm font-normal normal-case text-copy outline-none transition placeholder:text-copy-muted/60 hover:border-line-strong focus:border-copy";
 const labelClass = "grid gap-2 text-[10px] font-semibold uppercase text-copy";
+
+function ordinal(value: number) {
+  const remainder = value % 100;
+  if (remainder >= 11 && remainder <= 13) return `${value}th`;
+  if (value % 10 === 1) return `${value}st`;
+  if (value % 10 === 2) return `${value}nd`;
+  if (value % 10 === 3) return `${value}rd`;
+  return `${value}th`;
+}
+
+function wardrobeProgressMessage(outfitCount: number) {
+  if (outfitCount <= 0) return "Add your first complete outfit to begin building your wardrobe.";
+  if (outfitCount === 1) return "Your second outfit ships within the same delivery band. Add another outfit to make better use of your shipping.";
+
+  const nextReward = Math.ceil((outfitCount + 1) / 3) * 3;
+  const positionInGroup = outfitCount % 3;
+
+  if (positionInGroup === 0) {
+    return `Your wardrobe offer has been applied. Add another two outfits to unlock 50% off your ${ordinal(outfitCount + 3)} outfit.`;
+  }
+  if (positionInGroup === 1) {
+    return "Add one more outfit to move closer to your next wardrobe reward.";
+  }
+  if (outfitCount === 2) {
+    return "Complete your wardrobe. Your third outfit is now 50% off.";
+  }
+  return `One more outfit and your ${ordinal(nextReward)} outfit will be 50% off.`;
+}
+
+type WardrobeUpsellProps = {
+  items: CartItem[];
+  outfitCount: number;
+  onAdd: (product: PhaseOneCollectionProduct, collectionName: string) => void;
+};
+
+function WardrobeUpsell({ items, outfitCount, onAdd }: WardrobeUpsellProps) {
+  const [selectedProducts, setSelectedProducts] = useState<Record<string, string>>(() =>
+    Object.fromEntries(phaseOneCollections.map((collection) => [collection.id, collection.products[0]?.id ?? ""]))
+  );
+  const [announcement, setAnnouncement] = useState("");
+
+  return (
+    <section className="relative isolate overflow-hidden rounded-[1.5rem] border border-[#d8c9aa]/70 bg-[#f8f3e9] p-5 shadow-[0_20px_50px_rgba(42,32,19,0.06)] sm:p-6" aria-labelledby="complete-your-wardrobe">
+      <span aria-hidden="true" className="pointer-events-none absolute -right-9 -top-14 -z-10 select-none text-[12rem] font-semibold leading-none text-[#8d6b2e]/[0.035]">Ọ</span>
+      <span aria-hidden="true" className="pointer-events-none absolute -bottom-20 left-[34%] -z-10 rotate-[-12deg] select-none text-[10rem] font-semibold leading-none text-[#8d6b2e]/[0.025]">Ọ</span>
+      <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-gold">A Considered Addition</p>
+      <h2 id="complete-your-wardrobe" className="mt-2 text-xl font-semibold">Complete Your Wardrobe</h2>
+      <p className="mt-2 text-sm leading-6 text-copy-muted">{wardrobeProgressMessage(outfitCount)}</p>
+      <div className="mt-6 grid gap-4">
+        {phaseOneCollections.map((collection) => {
+          const selectedProduct = collection.products.find((product) => product.id === selectedProducts[collection.id]) ?? collection.products[0];
+          if (!selectedProduct) return null;
+
+          return (
+            <article key={collection.id} className="grid min-w-0 grid-cols-[88px_1fr] gap-4 rounded-xl border border-[#dfd4bf] bg-white/70 p-3 shadow-[0_10px_24px_rgba(42,32,19,0.035)]">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-surface-subtle">
+                <Image src={selectedProduct.images.front} alt={`${collection.title}, ${selectedProduct.color}`} fill sizes="88px" className="object-cover object-top" />
+              </div>
+              <div className="flex min-w-0 flex-col justify-between gap-3">
+                <h3 className="text-xs font-semibold uppercase">{collection.title}</h3>
+                <div className="flex flex-wrap gap-1" role="group" aria-label={`${collection.title} colour selection`}>
+                  {collection.products.map((product) => {
+                    const selected = product.id === selectedProduct.id;
+                    return (
+                      <button
+                        key={product.id}
+                        type="button"
+                        onClick={() => setSelectedProducts((current) => ({ ...current, [collection.id]: product.id }))}
+                        className={`gold-focus grid h-8 w-8 place-items-center rounded-full border ${selected ? "border-gold" : "border-transparent"}`}
+                        aria-label={`Show ${product.color} ${collection.title}`}
+                        aria-pressed={selected}
+                        title={product.color}
+                      >
+                        <span className="block h-4 w-4 rounded-full border border-black/15" style={{ backgroundColor: product.colorValue }} />
+                      </button>
+                    );
+                  })}
+                </div>
+                <button
+                  type="button"
+                  disabled={!items.length}
+                  onClick={() => {
+                    onAdd(selectedProduct, collection.title);
+                    setAnnouncement(`${selectedProduct.color} ${collection.title} added to your bag.`);
+                  }}
+                  className="gold-focus inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-obsidian px-4 text-[10px] font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian disabled:cursor-not-allowed disabled:opacity-45"
+                  aria-label={`Add ${selectedProduct.color} ${collection.title} to bag`}
+                >
+                  Add to Bag
+                </button>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+      <p className="sr-only" aria-live="polite">{announcement}</p>
+    </section>
+  );
+}
 
 export function CheckoutClient() {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -82,13 +182,21 @@ export function CheckoutClient() {
     }
   }
 
-  function updateQuantity(item: CartItem, quantity: number) {
-    const next = updateCartItemQuantity(
-      item.productSlug,
-      item.size,
-      item.colorName,
-      Math.max(1, quantity)
-    );
+  function addWardrobeOutfit(product: PhaseOneCollectionProduct, collectionName: string) {
+    const size = items[0]?.size;
+    if (!size) return;
+
+    const next = addCartItem({
+      productSlug: product.id,
+      name: collectionName,
+      edition: product.color,
+      image: product.images.front,
+      colorName: product.color,
+      colorValue: product.colorValue,
+      size,
+      quantity: 1,
+      unitPriceUsd: product.prices.USD
+    });
     setItems(next.items);
     setDeliveryQuote(null);
     setQuoteStatus({ type: "idle" });
@@ -212,7 +320,7 @@ export function CheckoutClient() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start lg:gap-10">
-        <form ref={formRef} onSubmit={handleSubmit} onChange={handleFormChange} className="grid gap-4">
+        <form id="checkout-form" ref={formRef} onSubmit={handleSubmit} onChange={handleFormChange} className="grid gap-4">
           <h2 className="mb-1 text-sm font-semibold uppercase">Contact</h2>
           <label className={labelClass}>Email<input name="email" type="email" autoComplete="email" required className={fieldClass} /></label>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -263,14 +371,11 @@ export function CheckoutClient() {
 
           <p className="text-xs leading-5 text-copy-muted">{DELIVERY_COPY}</p>
           <p className="text-xs leading-5 text-copy-muted">Prices are shown in {currency}. Final payment details are confirmed securely by Stripe.</p>
-          {status.type === "error" ? <p className="text-sm font-medium text-wine">{status.message}</p> : null}
-          <button type="submit" disabled={status.type === "loading" || !items.length || !deliveryQuote || itemCount >= 7} className="gold-focus mt-2 inline-flex min-h-14 w-full items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian disabled:cursor-not-allowed disabled:opacity-45">
-            {status.type === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            {voucherApplied ? "Complete Test Order" : "Continue To Secure Payment"}
-          </button>
         </form>
 
-        <aside className="bg-surface-subtle p-5 sm:p-6 lg:sticky lg:top-[124px]">
+        <div className="grid min-w-0 gap-4 lg:sticky lg:top-[124px]">
+        <WardrobeUpsell items={items} outfitCount={itemCount} onAdd={addWardrobeOutfit} />
+        <aside className="bg-surface-subtle p-5 sm:p-6">
           <h2 className="text-lg font-semibold">Order Summary</h2>
           <div className="mt-5 space-y-4">
             {items.length ? items.map((item) => (
@@ -284,35 +389,26 @@ export function CheckoutClient() {
               </div>
             )) : <p className="text-sm leading-6 text-copy-muted">Your cart is empty. Add a complete outfit before checkout.</p>}
           </div>
-          {items.length ? (
-            <div className="mt-5 border-y border-line py-4">
-              {items.map((item) => (
-                <div key={`quantity-${item.productSlug}-${item.size}-${item.colorName}`} className="flex items-center justify-between gap-4 py-2 first:pt-0 last:pb-0">
-                  <div className="min-w-0">
-                    <p className="truncate text-[10px] font-semibold uppercase text-copy">{item.name}</p>
-                    <p className="mt-1 text-xs text-copy-muted">Add One More for {money(PRODUCT_PRICES[currency])}</p>
-                  </div>
-                  <div className="flex h-10 shrink-0 items-center border border-line" aria-label={`Quantity for ${item.name}`}>
-                    <button type="button" onClick={() => updateQuantity(item, item.quantity - 1)} disabled={item.quantity <= 1} className="gold-focus grid h-full w-10 place-items-center disabled:cursor-not-allowed disabled:opacity-30" aria-label={`Decrease ${item.name} quantity`}><Minus className="h-3.5 w-3.5" /></button>
-                    <output className="grid h-full w-10 place-items-center border-x border-line text-xs font-semibold" aria-live="polite">{item.quantity}</output>
-                    <button type="button" onClick={() => updateQuantity(item, item.quantity + 1)} className="gold-focus grid h-full w-10 place-items-center" aria-label={`Increase ${item.name} quantity`}><Plus className="h-3.5 w-3.5" /></button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : null}
-          <ShippingRatesModal />
           <div className="mt-5 space-y-3 text-sm">
             <div className="flex justify-between"><span className="text-copy-muted">Subtotal</span><span>{money(subtotal)}</span></div>
             {wardrobeDiscount > 0 ? <div className="flex justify-between"><span className="text-copy-muted">Wardrobe Discount</span><span>-{money(wardrobeDiscount)}</span></div> : null}
-            <div className="flex justify-between">
-              <span className="text-copy-muted">{shippingRule?.label ?? "Shipping"}</span>
+            <div className="flex items-start justify-between gap-5 border-t border-line pt-4">
+              <div>
+                <p className="text-sm text-copy-muted">Shopping</p>
+                <ShippingRatesModal triggerLabel="View Delivery Rate" triggerClassName="gold-focus mt-1 inline-flex border-b border-copy-muted/30 text-[9px] font-medium text-copy-muted transition hover:border-gold hover:text-copy" />
+              </div>
               <span>{!shippingRule ? "Calculated after address" : shippingRule.requiresManualQuote ? "Manual quotation" : formatCurrency(shippingRule.displayCurrency, shippingRule.displayAmount ?? 0)}</span>
             </div>
             {voucherApplied ? <div className="flex justify-between"><span className="text-copy-muted">Testing voucher</span><span>-{money(subtotal - wardrobeDiscount + shipping)}</span></div> : null}
             <div className="flex justify-between border-t border-line pt-4 text-base font-semibold"><span>Total</span><span>{shippingRule?.requiresManualQuote ? "Quotation required" : money(total)}</span></div>
           </div>
+          {status.type === "error" ? <p className="mt-4 text-sm font-medium text-wine">{status.message}</p> : null}
+          <button form="checkout-form" type="submit" disabled={status.type === "loading" || !items.length || !deliveryQuote || itemCount >= 7} className="gold-focus mt-5 inline-flex min-h-14 w-full items-center justify-center gap-3 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian disabled:cursor-not-allowed disabled:opacity-45">
+            {status.type === "loading" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {voucherApplied ? "Complete Test Order" : "Continue To Secure Payment"}
+          </button>
         </aside>
+        </div>
       </div>
     </>
   );

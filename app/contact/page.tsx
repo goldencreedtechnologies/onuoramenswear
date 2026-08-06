@@ -49,7 +49,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
       </section>
       <section className="border-t border-line bg-panel-muted">
         <div className="container-luxe grid min-w-0 gap-7 py-10 md:grid-cols-[260px_1fr_auto] md:items-center md:py-12">
-          <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-[#f3f0e9]"><Image src="/brand/products/button/ndb3/ndb3-angle.webp" alt="ỌNUỌRA burgundy buttoned new arrival" fill sizes="260px" className="object-contain object-top" /></div>
+          <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-[#f3f0e9]"><Image src="/brand/products/button/ndb3/ndb3-angle.png" alt="ỌNUỌRA burgundy Cowrie Collection outfit" fill sizes="260px" className="object-contain object-top" /></div>
           <div className="min-w-0"><p className="text-[10px] font-semibold uppercase text-gold">{newArrivalsPromotion.title}</p><h2 className="mt-2 max-w-2xl text-2xl font-semibold leading-tight">{newArrivalsPromotion.offer}</h2><p className="mt-3 max-w-2xl text-sm leading-6 text-copy-muted">{newArrivalsPromotion.explanation}</p></div>
           <Link href="/collection" className="gold-focus inline-flex min-h-11 items-center justify-center gap-3 border border-copy px-5 text-xs font-semibold uppercase transition hover:bg-copy hover:text-white">Shop All Collections<ArrowRight className="h-4 w-4" /></Link>
         </div>

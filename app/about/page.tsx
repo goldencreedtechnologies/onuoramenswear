@@ -10,7 +10,7 @@ const collections = [
   {
     igbo: "Nkwọ",
     title: "Heritage Collection",
-    image: "/brand/products/original/aja/aja-front.webp",
+    image: "/brand/products/original/aja/aja-front.png",
     href: "/collection/heritage",
     buttonLabel: "Explore Heritage"
   },
@@ -24,7 +24,7 @@ const collections = [
   {
     igbo: "Uzọ",
     title: "Resort Collection",
-    image: "/brand/products/buttonless/nd3/nd3-angle.webp",
+    image: "/brand/products/buttonless/nd3/nd3-angle.png",
     href: "/collection/resort",
     buttonLabel: "Explore Resort"
   }
@@ -39,6 +39,24 @@ function StoryMonogram({ side = "right" }: { side?: "left" | "right" }) {
     >
       Ọ
     </span>
+  );
+}
+
+function FounderMonogramField() {
+  const monograms = [
+    "right-[4%] top-[7%] rotate-[-9deg] text-[11rem] opacity-[0.045] md:text-[14rem]",
+    "right-[25%] top-[43%] rotate-[7deg] text-[5rem] opacity-[0.035] md:text-[7rem]",
+    "-right-[16%] bottom-[-16%] rotate-[13deg] text-[19rem] opacity-[0.055] md:text-[27rem]"
+  ];
+
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden select-none text-[#9f751d]">
+      {monograms.map((className) => (
+        <span key={className} className={`absolute font-semibold leading-none ${className}`}>
+          Ọ
+        </span>
+      ))}
+    </div>
   );
 }
 
@@ -69,16 +87,17 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-[#f5e6c8] py-11 text-[#171717] md:py-20" aria-labelledby="founder">
-        <div className="container-luxe grid min-w-0 gap-7 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-14">
-          <div className="relative aspect-[5/4] min-w-0 overflow-hidden bg-surface-subtle">
+      <section className="relative isolate overflow-hidden bg-[#f5e6c8] py-11 text-[#171717] md:py-20" aria-labelledby="founder">
+        <FounderMonogramField />
+        <div className="container-luxe relative z-10 grid min-w-0 gap-7 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-center lg:gap-14">
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-[34rem] min-w-0 overflow-hidden bg-surface-subtle lg:mx-0">
             <Image
               src="/brand/onuora.png"
               alt="Ọnụọra Abuah, founder of ỌNUỌRA Menswear"
               fill
               quality={94}
-              sizes="(min-width: 1024px) 52vw, 100vw"
-              className="object-cover object-top"
+              sizes="(min-width: 1024px) 40vw, 100vw"
+              className="scale-[1.06] object-cover object-[center_46%]"
             />
           </div>
           <div className="min-w-0">
@@ -93,9 +112,11 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <div className="relative">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#f5e6c8]/15 to-[#f5e6c8]/45" />
       <section className="relative isolate overflow-hidden py-11 md:py-20" aria-labelledby="brand-philosophy">
         <StoryMonogram side="right" />
-        <div className="container-luxe relative z-10 grid min-w-0 gap-7 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-14">
+        <div className="container-luxe relative z-10 grid min-w-0 gap-9 lg:grid-cols-[0.78fr_1.22fr] lg:items-center lg:gap-14">
           <div className="min-w-0">
             <p className="text-[10px] font-semibold uppercase text-gold">Brand Philosophy</p>
             <h2 id="brand-philosophy" className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
@@ -105,15 +126,13 @@ export default function AboutPage() {
               ỌNUỌRA is a contemporary menswear house rooted in Nigerian craftsmanship, cultural identity and timeless design. Every garment is created with intention, from the choice of fabric to the final stitch—bringing together refined tailoring and African heritage in a modern wardrobe.
             </p>
           </div>
-          <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-surface-subtle">
-            <Image
-              src="/brand/tailor.png"
-              alt="ỌNUỌRA brand philosophy and contemporary Nigerian menswear"
-              fill
-              quality={94}
-              sizes="(min-width: 1024px) 52vw, 100vw"
-              className="object-cover object-center"
-            />
+          <div className="relative min-h-[430px] min-w-0 sm:min-h-[520px] lg:min-h-[600px]">
+            <div className="absolute inset-y-0 left-0 w-[78%] overflow-hidden bg-surface-subtle shadow-[0_24px_60px_rgba(42,32,19,0.12)]">
+              <Image src="/brand/tailor.png" alt="ỌNUỌRA tailor hand-finishing a monogrammed garment" fill quality={94} sizes="(min-width: 1024px) 45vw, 78vw" className="object-cover object-center" />
+            </div>
+            <div className="absolute bottom-[5%] right-0 aspect-[4/3] w-[54%] overflow-hidden border-[7px] border-[#faf7f0] bg-surface-subtle shadow-[0_20px_50px_rgba(42,32,19,0.16)] sm:border-[10px]">
+              <Image src="/brand/packaging.jpg" alt="ỌNUỌRA garments prepared in branded protective packaging" fill quality={92} sizes="(min-width: 1024px) 32vw, 54vw" className="object-cover object-center" />
+            </div>
           </div>
         </div>
       </section>
@@ -150,6 +169,7 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      </div>
     </main>
   );
 }

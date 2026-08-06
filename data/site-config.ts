@@ -134,7 +134,7 @@ export const PROMOTIONS = {
       qualifyingQuantity: 3,
       discountedQuantity: 1,
       discountPercent: 50,
-      supportsMultipleGroups: false
+      supportsMultipleGroups: true
     },
     "buy-five-sixth-free": {
       enabled: false,
