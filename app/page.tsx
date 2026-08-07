@@ -73,7 +73,7 @@ export default async function HomePage() {
           priority
           quality={95}
           sizes="100vw"
-          className="object-cover object-[50%_18%] sm:object-[50%_16%]"
+          className="object-contain object-[center_88px] sm:object-cover sm:object-[50%_16%]"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(247,243,232,0)_0%,rgba(247,243,232,.05)_42%,rgba(247,243,232,.58)_78%,rgba(247,243,232,.82)_100%)] sm:bg-[linear-gradient(90deg,rgba(247,243,232,.62)_0%,rgba(247,243,232,.24)_36%,rgba(247,243,232,0)_64%)]" />
         <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/28 to-transparent" />

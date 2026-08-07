@@ -33,7 +33,7 @@ function BrandLogo() {
       alt="ỌNUỌRA Menswear"
       width={260}
       height={82}
-      className="h-9 w-auto object-contain md:h-10"
+      className="h-7 w-auto object-contain sm:h-9 md:h-10"
       priority
     />
   );
@@ -119,15 +119,19 @@ export function Navigation() {
     <header className={cn("inset-x-0 top-0 z-50", isHome ? "absolute" : "fixed")}>
       <div
         className={cn(
-          "flex min-h-8 items-center justify-center px-3 py-1.5 text-center text-[8px] font-semibold uppercase tracking-[0.08em] sm:text-[9px] sm:tracking-[0.12em]",
+          "flex h-7 items-center justify-center overflow-hidden px-3 text-center text-[8px] font-semibold uppercase leading-[1.15] tracking-[0.08em] sm:h-auto sm:min-h-8 sm:overflow-visible sm:py-1.5 sm:text-[9px] sm:leading-normal sm:tracking-[0.12em]",
           isHome ? "bg-transparent text-[#171717]" : "bg-obsidian text-ivory"
         )}
       >
-        {announcementCopy(currency)}
+        <span className="sm:hidden">
+          <span className="block">Worldwide Delivery</span>
+          <span className="mt-0.5 block">Prepared for Dispatch Within Three Working Days</span>
+        </span>
+        <span className="hidden sm:inline">{announcementCopy(currency)}</span>
       </div>
 
-      <div className="mx-3 h-[68px] rounded-[14px] border border-white/55 bg-[#f7f3e8]/94 text-[#171717] shadow-[0_12px_36px_rgb(0_0_0/0.10)] backdrop-blur-xl sm:mx-5 lg:mx-7">
-        <div className="flex h-full items-center justify-between gap-5 px-5 sm:px-7">
+      <div className="mx-3 h-14 rounded-[14px] border border-white/55 bg-[#f7f3e8]/94 text-[#171717] shadow-[0_12px_36px_rgb(0_0_0/0.10)] backdrop-blur-xl sm:mx-5 sm:h-[68px] lg:mx-7">
+        <div className="flex h-full items-center justify-between gap-2 px-4 sm:gap-5 sm:px-7">
           <Link href="/" onClick={closeMenus} className="gold-focus -my-4 flex shrink-0 items-center" aria-label="ỌNUỌRA Home">
             <BrandLogo />
           </Link>
@@ -249,7 +253,7 @@ export function Navigation() {
       ) : null}
 
       {mobileOpen ? (
-        <div className="fixed inset-x-0 bottom-0 top-[100px] overflow-y-auto bg-page text-copy lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 top-[84px] overflow-y-auto bg-page text-copy sm:top-[100px] lg:hidden">
           <nav className="container-luxe flex min-h-full flex-col py-6" aria-label="Mobile navigation">
             <div className="mb-3 flex items-center justify-between border-b border-copy/12 pb-4">
               <span className="text-xs font-semibold uppercase">Currency</span>
