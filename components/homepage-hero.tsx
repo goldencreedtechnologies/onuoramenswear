@@ -39,10 +39,10 @@ export function HomepageHero() {
           priority
           quality={95}
           sizes="100vw"
-          className="home-hero-image object-cover object-[72%_center] sm:object-cover sm:object-[50%_16%]"
+          className="home-hero-image origin-[72%_center] scale-[1.08] object-cover object-[72%_center] sm:origin-center sm:scale-100 sm:object-cover sm:object-[50%_16%]"
         />
         <video
-          className={`home-hero-video absolute inset-0 h-full w-full object-cover object-[72%_center] sm:object-[50%_16%] ${videoActive ? "opacity-100" : "opacity-0"}`}
+          className={`home-hero-video absolute inset-0 h-full w-full origin-[72%_center] scale-[1.08] object-cover object-[72%_center] transition-opacity duration-700 sm:origin-center sm:scale-100 sm:object-[50%_16%] ${videoActive ? "opacity-100" : "opacity-0"}`}
           src={HERO_VIDEO}
           muted
           autoPlay={videoActive}
