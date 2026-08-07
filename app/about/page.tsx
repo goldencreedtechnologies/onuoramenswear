@@ -71,7 +71,7 @@ export default function AboutPage() {
           priority
           quality={94}
           sizes="100vw"
-          className="object-cover object-[68%_center] md:object-center"
+          className="origin-[72%_center] scale-[1.08] object-cover object-[72%_center] sm:scale-100 sm:object-[68%_center] md:object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/76 via-black/34 to-black/12" />
         <div className="container-luxe relative flex min-h-[390px] items-end pb-8 sm:min-h-[440px] md:min-h-[520px] md:pb-12">
