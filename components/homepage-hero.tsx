@@ -1,36 +1,32 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Cta } from "@/components/cta";
 
 const HERO_VIDEO = "/brand/Hero%20Video.mp4";
 
 export function HomepageHero() {
-  const [videoReady, setVideoReady] = useState(false);
   const [videoActive, setVideoActive] = useState(false);
+  const videoReadyRef = useRef(false);
   const timerRef = useRef<number | null>(null);
-  const waitingForVideoRef = useRef(false);
 
   useEffect(() => {
-    const activate = () => {
-      if (videoReady) {
-        setVideoActive(true);
-        return;
-      }
-      waitingForVideoRef.current = true;
-    };
+    timerRef.current = window.setTimeout(() => {
+      if (videoReadyRef.current) setVideoActive(true);
+    }, 8000);
 
-    timerRef.current = window.setTimeout(activate, 8000);
     return () => {
       if (timerRef.current !== null) window.clearTimeout(timerRef.current);
     };
-  }, [videoReady]);
+  }, []);
 
   function handleVideoReady() {
-    setVideoReady(true);
-    if (waitingForVideoRef.current) setVideoActive(true);
+    videoReadyRef.current = true;
+    if (timerRef.current === null) return;
+
+    const elapsed = performance.now();
+    if (elapsed >= 8000) setVideoActive(true);
   }
 
   return (
@@ -81,8 +77,6 @@ export function HomepageHero() {
           </div>
         </div>
       </div>
-
-      <Link href="/collection" className="sr-only focus:not-sr-only">Explore Collections</Link>
     </section>
   );
 }
