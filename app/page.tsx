@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, Ruler, Scissors } from "lucide-react";
 import { CollectionImageSwap } from "@/components/collection-image-swap";
@@ -147,10 +148,13 @@ export default async function HomePage() {
       >
         <div className="container-luxe grid gap-7 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
           <div className="relative aspect-[16/11] overflow-hidden bg-surface-subtle">
-            <img
+            <Image
               src="/brand/hero.jpg"
               alt="The ỌNUỌRA house wearing contemporary menswear in Lagos"
-              className="absolute inset-0 h-full w-full object-cover object-[50%_18%]"
+              fill
+              quality={94}
+              sizes="(min-width: 1024px) 58vw, 100vw"
+              className="object-cover object-[50%_18%]"
             />
           </div>
           <div className="max-w-lg lg:pl-8">
