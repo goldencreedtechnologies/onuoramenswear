@@ -33,7 +33,7 @@ function BrandLogo() {
       alt="ỌNUỌRA Menswear"
       width={260}
       height={82}
-      className="h-7 w-auto object-contain sm:h-9 md:h-10"
+      className="h-6 w-auto object-contain sm:h-9 md:h-10"
       priority
     />
   );
@@ -130,8 +130,8 @@ export function Navigation() {
         <span className="hidden sm:inline">{announcementCopy(currency)}</span>
       </div>
 
-      <div className="mx-3 h-14 rounded-[14px] border border-white/55 bg-[#f7f3e8]/94 text-[#171717] shadow-[0_12px_36px_rgb(0_0_0/0.10)] backdrop-blur-xl sm:mx-5 sm:h-[68px] lg:mx-7">
-        <div className="flex h-full items-center justify-between gap-2 px-4 sm:gap-5 sm:px-7">
+      <div className="mx-3 h-12 rounded-[14px] border border-white/55 bg-[#f7f3e8]/94 text-[#171717] shadow-[0_12px_36px_rgb(0_0_0/0.10)] backdrop-blur-xl sm:mx-5 sm:h-[68px] lg:mx-7">
+        <div className="flex h-full items-center justify-between gap-2 px-3 sm:gap-5 sm:px-7">
           <Link href="/" onClick={closeMenus} className="gold-focus -my-4 flex shrink-0 items-center" aria-label="ỌNUỌRA Home">
             <BrandLogo />
           </Link>
@@ -164,7 +164,7 @@ export function Navigation() {
               aria-label="Search"
               aria-expanded={searchOpen}
             >
-              <Search className="h-[18px] w-[18px]" />
+              <Search className="h-[17px] w-[17px]" />
             </button>
             <Link href="/account" className="gold-focus hidden h-10 w-10 items-center justify-center sm:inline-flex" aria-label="Account">
               <UserRound className="h-[18px] w-[18px]" />
@@ -175,7 +175,7 @@ export function Navigation() {
               className="gold-focus relative inline-flex h-10 w-10 items-center justify-center bg-gold text-obsidian transition hover:bg-obsidian hover:text-white"
               aria-label={`Open shopping bag with ${cartCount} items`}
             >
-              <ShoppingBag className="h-[18px] w-[18px]" />
+              <ShoppingBag className="h-[17px] w-[17px]" />
               {cartCount ? (
                 <span className="absolute right-0.5 top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-obsidian px-1 text-[8px] font-bold text-white">
                   {cartCount}
@@ -193,7 +193,7 @@ export function Navigation() {
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
             >
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileOpen ? <X className="h-[18px] w-[18px]" /> : <Menu className="h-[18px] w-[18px]" />}
             </button>
           </div>
         </div>
@@ -253,7 +253,7 @@ export function Navigation() {
       ) : null}
 
       {mobileOpen ? (
-        <div className="fixed inset-x-0 bottom-0 top-[84px] overflow-y-auto bg-page text-copy sm:top-[100px] lg:hidden">
+        <div className="fixed inset-x-0 bottom-0 top-[76px] overflow-y-auto overscroll-contain bg-page text-copy sm:top-[100px] lg:hidden">
           <nav className="container-luxe flex min-h-full flex-col py-6" aria-label="Mobile navigation">
             <div className="mb-3 flex items-center justify-between border-b border-copy/12 pb-4">
               <span className="text-xs font-semibold uppercase">Currency</span>
