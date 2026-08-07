@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BadgeCheck, Ruler, Scissors } from "lucide-react";
 import { CollectionImageSwap } from "@/components/collection-image-swap";
-import { Cta } from "@/components/cta";
 import { HomepageHero } from "@/components/homepage-hero";
 import { LimitedOfferCarousel } from "@/components/limited-offer-carousel";
 import { ProductCard } from "@/components/product-card";
