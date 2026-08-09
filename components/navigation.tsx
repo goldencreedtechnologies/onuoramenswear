@@ -21,7 +21,6 @@ const permanentCollectionLinks = [
 
 const mobileLinks = [
   { href: "/collection", label: "Shop" },
-  { href: "/collection#collections", label: "Collections" },
   { href: "/about", label: "Our Story" },
   { href: "/journal", label: "Journal" }
 ];
@@ -43,6 +42,7 @@ export function Navigation() {
   const pathname = usePathname();
   const { currency } = useCurrency();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileCollectionsOpen, setMobileCollectionsOpen] = useState(false);
   const [collectionsOpen, setCollectionsOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -54,6 +54,7 @@ export function Navigation() {
 
   function closeMenus() {
     setMobileOpen(false);
+    setMobileCollectionsOpen(false);
     setCollectionsOpen(false);
     setSearchOpen(false);
   }
@@ -186,6 +187,7 @@ export function Navigation() {
               type="button"
               onClick={() => {
                 setMobileOpen((value) => !value);
+                setMobileCollectionsOpen(false);
                 setCollectionsOpen(false);
                 setSearchOpen(false);
               }}
@@ -259,7 +261,45 @@ export function Navigation() {
               <span className="text-xs font-semibold uppercase">Currency</span>
               <CurrencySelector />
             </div>
-            {mobileLinks.map((link) => (
+            {mobileLinks.slice(0, 1).map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={closeMenus}
+                className="gold-focus flex min-h-16 items-center justify-between border-b border-copy/12 text-base font-semibold uppercase tracking-[0.06em]"
+              >
+                {link.label}
+                <span aria-hidden="true">→</span>
+              </Link>
+            ))}
+            <div className="border-b border-copy/12">
+              <button
+                type="button"
+                onClick={() => setMobileCollectionsOpen((value) => !value)}
+                className="gold-focus flex min-h-16 w-full items-center justify-between text-left text-base font-semibold uppercase tracking-[0.06em]"
+                aria-expanded={mobileCollectionsOpen}
+                aria-controls="mobile-collection-links"
+              >
+                Collections
+                <ChevronDown className={cn("h-4 w-4 transition", mobileCollectionsOpen && "rotate-180")} aria-hidden="true" />
+              </button>
+              {mobileCollectionsOpen ? (
+                <div id="mobile-collection-links" className="grid gap-1 border-t border-copy/10 py-3 pl-4">
+                  {permanentCollectionLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={closeMenus}
+                      className="gold-focus flex min-h-11 items-center justify-between text-sm font-semibold"
+                    >
+                      <span>{link.english}</span>
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+            {mobileLinks.slice(1).map((link) => (
               <Link
                 key={link.label}
                 href={link.href}

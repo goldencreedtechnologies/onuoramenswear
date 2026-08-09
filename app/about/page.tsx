@@ -34,8 +34,8 @@ function StoryMonogram({ side = "right" }: { side?: "left" | "right" }) {
   return (
     <span
       aria-hidden="true"
-      className={`pointer-events-none absolute top-1/2 -z-10 -translate-y-1/2 select-none font-semibold leading-none ${side === "right" ? "-right-24 md:right-[2%]" : "-left-24 md:left-[2%]"}`}
-      style={{ fontSize: "clamp(15rem,31vw,31rem)", color: "transparent", WebkitTextStroke: "1px rgba(101,67,33,0.09)" }}
+      className={`pointer-events-none absolute top-1/2 z-0 -translate-y-1/2 select-none font-semibold leading-none ${side === "right" ? "-right-16 md:right-[2%]" : "-left-16 md:left-[2%]"}`}
+      style={{ fontSize: "clamp(15rem,31vw,31rem)", color: "transparent", WebkitTextStroke: "1px rgba(101,67,33,0.12)" }}
     >
       Ọ
     </span>
@@ -63,7 +63,7 @@ function FounderMonogramField() {
 export default function AboutPage() {
   return (
     <main className="overflow-hidden bg-page pt-[84px] text-copy sm:pt-[104px]">
-      <section className="relative min-h-[440px] overflow-hidden bg-obsidian text-white sm:min-h-[440px] md:min-h-[520px]">
+      <section className="relative min-h-[360px] overflow-hidden bg-obsidian text-white sm:min-h-[440px] md:min-h-[520px]">
         <Image
           src="/brand/story-header.png"
           alt="The ỌNUỌRA house wearing contemporary African menswear in Nigeria"
@@ -71,10 +71,10 @@ export default function AboutPage() {
           priority
           quality={94}
           sizes="100vw"
-          className="object-cover object-[77%_top] sm:object-[68%_center] md:object-center"
+          className="object-cover object-[80%_top] sm:object-[68%_center] md:object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/76 via-black/34 to-black/12" />
-        <div className="container-luxe relative flex min-h-[440px] items-end pb-8 sm:min-h-[440px] md:min-h-[520px] md:pb-12">
+        <div className="container-luxe relative flex min-h-[360px] items-end pb-8 sm:min-h-[440px] md:min-h-[520px] md:pb-12">
           <div className="max-w-2xl">
             <p className="text-[10px] font-semibold uppercase text-gold-soft">OUR STORY</p>
             <h1 className="mt-2 text-4xl font-semibold leading-tight sm:text-5xl md:text-6xl">
@@ -116,23 +116,23 @@ export default function AboutPage() {
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#f5e6c8]/15 to-[#f5e6c8]/45" />
       <section className="relative isolate overflow-hidden py-11 md:py-20" aria-labelledby="brand-philosophy">
         <StoryMonogram side="right" />
-        <div className="container-luxe relative z-10 min-w-0">
+        <div className="container-luxe relative z-10 grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:items-stretch lg:gap-8">
+          <div className="min-w-0">
           <div className="max-w-2xl">
             <p className="text-[10px] font-semibold uppercase text-gold">Brand Philosophy</p>
             <h2 id="brand-philosophy" className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
-              Meaning Before Garment
+              Meaning Before Garments
             </h2>
             <p className="mt-4 text-sm leading-7 text-copy-muted">
               ỌNUỌRA is a contemporary menswear house rooted in Nigerian craftsmanship, cultural identity and timeless design. Every garment is created with intention, from the choice of fabric to the final stitch—bringing together refined tailoring and African heritage in a modern wardrobe.
             </p>
           </div>
-          <div className="mt-8 grid min-w-0 gap-4 sm:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] sm:items-end sm:gap-6 lg:mt-10 lg:max-w-6xl">
-            <div className="relative aspect-[4/5] min-w-0 overflow-hidden bg-surface-subtle shadow-[0_24px_60px_rgba(42,32,19,0.12)]">
-              <Image src="/brand/tailor.png" alt="ỌNUỌRA tailor hand-finishing a monogrammed garment" fill quality={94} sizes="(min-width: 1024px) 45vw, 78vw" className="object-cover object-center" />
-            </div>
-            <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-surface-subtle shadow-[0_20px_50px_rgba(42,32,19,0.16)]">
+            <div className="relative mt-8 aspect-[3/2] min-w-0 overflow-hidden bg-surface-subtle shadow-[0_20px_50px_rgba(42,32,19,0.16)] lg:mt-10">
               <Image src="/brand/tailor%202.PNG" alt="Tailor cutting fabric for an ỌNUỌRA garment" fill quality={92} sizes="(min-width: 1024px) 46vw, (min-width: 640px) 52vw, 100vw" className="object-cover object-center" />
             </div>
+          </div>
+          <div className="relative aspect-[4/5] min-w-0 overflow-hidden bg-surface-subtle shadow-[0_24px_60px_rgba(42,32,19,0.12)] lg:min-h-[36rem] lg:aspect-auto">
+            <Image src="/brand/tailor.png" alt="ỌNUỌRA tailor hand-finishing a monogrammed garment" fill quality={94} sizes="(min-width: 1024px) 42vw, (min-width: 640px) 64vw, 100vw" className="object-cover object-center" />
           </div>
         </div>
       </section>

@@ -130,9 +130,9 @@ section[aria-labelledby="founder"] > div > div:last-child > p:first-child {
   }
 }
 
-/* Keep the Story header focused on the models on phones without clipping their heads. */
+/* Keep the Story header focused on the complete group of models on phones. */
 @media (max-width: 767px) {
   main img[alt*="house wearing contemporary African menswear in Nigeria"] {
-    object-position: 77% 0% !important;
+    object-position: 80% 0% !important;
   }
 }

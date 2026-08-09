@@ -314,7 +314,7 @@ export function AccountClient() {
         <div className="flex flex-col gap-4 border-b border-ivory/10 pb-6 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0] text-gold-soft">Client account</p>
-            <h1 className="mt-3 font-display text-4xl md:text-5xl">Welcome back.</h1>
+            <h1 className="mt-3 font-display text-4xl md:text-5xl">Welcome Back.</h1>
             <p className="mt-3 text-sm text-ivory/65">{userEmail}</p>
           </div>
           <button
@@ -538,7 +538,7 @@ export function AccountClient() {
   return (
     <div className="w-full max-w-md rounded-[26px] border border-gold/20 p-5">
       <p className="mb-5 text-xs font-bold uppercase tracking-[0] text-gold-soft">Client account</p>
-      <h1 className="font-display text-4xl">Welcome back.</h1>
+      <h1 className="font-display text-4xl">Welcome Back.</h1>
       <div className="mt-8 grid grid-cols-2 rounded-full border border-ivory/10 p-1 text-xs font-bold uppercase tracking-[0]">
         {[
           ["sign-in", "Sign in"],

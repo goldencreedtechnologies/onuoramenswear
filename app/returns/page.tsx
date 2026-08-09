@@ -9,20 +9,20 @@ export default function ReturnsPage() {
   return (
     <main className="min-h-screen bg-page pt-[104px] text-copy">
       <section className="container-luxe max-w-5xl py-12 md:py-16">
-        <p className="text-[10px] font-semibold uppercase text-gold">Returns & exchanges</p>
+        <p className="text-[10px] font-semibold uppercase text-gold">Returns & Exchanges</p>
         <h1 className="mt-3 max-w-3xl text-3xl font-semibold leading-tight md:text-5xl">
-          A considered policy for a carefully made garment.
+          A Considered Policy for a Carefully Made Garment.
         </h1>
         <div className="mt-10 grid gap-px bg-line md:grid-cols-2">
           <article className="bg-page p-6 md:p-8">
-            <h2 className="text-lg font-semibold">Size exchanges</h2>
+            <h2 className="text-lg font-semibold">Size Exchanges</h2>
             <p className="mt-4 text-sm leading-7 text-copy-muted">
               Request an exchange within 7 days of delivery. The garment must be unworn, unwashed,
               and returned with its original tags and packaging.
             </p>
           </article>
           <article className="bg-page p-6 md:p-8">
-            <h2 className="text-lg font-semibold">Manufacturing faults</h2>
+            <h2 className="text-lg font-semibold">Manufacturing Faults</h2>
             <p className="mt-4 text-sm leading-7 text-copy-muted">
               Refunds are reserved for confirmed manufacturing faults. Client care will review
               submitted photographs and order information before approving the return.
@@ -31,7 +31,7 @@ export default function ReturnsPage() {
         </div>
         <div className="mt-10 grid gap-8 border-t border-line pt-8 md:grid-cols-2">
           <article>
-            <h2 className="text-lg font-semibold">Return condition</h2>
+            <h2 className="text-lg font-semibold">Return Condition</h2>
             <p className="mt-3 text-sm leading-7 text-copy-muted">
               Returned garments must be unworn except for a brief fit check, unwashed, unaltered,
               free from scent or marks, and accompanied by original tags, accessories, and
@@ -39,7 +39,7 @@ export default function ReturnsPage() {
             </p>
           </article>
           <article>
-            <h2 className="text-lg font-semibold">Items not eligible</h2>
+            <h2 className="text-lg font-semibold">Items Not Eligible</h2>
             <p className="mt-3 text-sm leading-7 text-copy-muted">
               Personalised or altered garments, final-sale items, gift cards, and garments damaged
               through wear, washing, storage, or improper care are not eligible unless applicable
@@ -47,7 +47,7 @@ export default function ReturnsPage() {
             </p>
           </article>
           <article>
-            <h2 className="text-lg font-semibold">How to request</h2>
+            <h2 className="text-lg font-semibold">How to Request</h2>
             <p className="mt-3 text-sm leading-7 text-copy-muted">
               Contact Client Care within seven days of delivery with the order number, requested
               resolution, and clear photographs where there is a fault. Wait for return
@@ -55,7 +55,7 @@ export default function ReturnsPage() {
             </p>
           </article>
           <article>
-            <h2 className="text-lg font-semibold">Inspection and resolution</h2>
+            <h2 className="text-lg font-semibold">Inspection and Resolution</h2>
             <p className="mt-3 text-sm leading-7 text-copy-muted">
               Approved returns are inspected on receipt. Exchanges depend on stock. Eligible
               refunds are issued to the original payment method after inspection; banking and
@@ -72,7 +72,7 @@ export default function ReturnsPage() {
           href="/contact"
           className="gold-focus mt-7 inline-flex min-h-12 items-center justify-center bg-obsidian px-6 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian"
         >
-          Contact client care
+          Contact Client Care
         </Link>
       </section>
     </main>

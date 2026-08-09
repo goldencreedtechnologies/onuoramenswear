@@ -106,7 +106,7 @@ export function CartClient() {
             <>
               {shippingRule && !shippingRule.requiresManualQuote && nextShippingIncrease === 0 ? (
                 <>
-                  <h2 className="text-lg font-semibold">Add a second outfit with no increase in international shipping</h2>
+                  <h2 className="text-lg font-semibold">Add a Second Outfit With No Increase in International Shipping</h2>
                   <p className="mt-2 text-sm leading-6 text-copy-muted">Your second outfit remains within the same 1–2 outfit delivery band.</p>
                 </>
               ) : null}
@@ -118,7 +118,7 @@ export function CartClient() {
 
           {itemCount === 2 ? (
             <>
-              <h2 className="text-lg font-semibold">Your third outfit is half price</h2>
+              <h2 className="text-lg font-semibold">Your Third Outfit Is Half Price</h2>
               <div className="mt-4 space-y-2 text-sm">
                 <div className="flex justify-between gap-5"><span className="text-copy-muted">Half-price garment value</span><span>{money(halfPriceValue)}</span></div>
                 <div className="flex justify-between gap-5"><span className="text-copy-muted">Shipping-band increase</span><span>{nextShippingIncrease === null ? "Calculated after address" : money(nextShippingIncrease)}</span></div>
@@ -130,7 +130,7 @@ export function CartClient() {
 
           {itemCount === 3 ? (
             <>
-              <h2 className="text-lg font-semibold">Your wardrobe offer has been applied</h2>
+              <h2 className="text-lg font-semibold">Your Wardrobe Offer Has Been Applied</h2>
               <p className="mt-2 text-sm leading-6 text-copy-muted">You have received 50% off the lowest-priced qualifying outfit.</p>
               <Link href="/collection" className="gold-focus mt-5 inline-flex min-h-12 items-center justify-center border border-copy px-5 text-[10px] font-semibold uppercase transition hover:bg-copy hover:text-white">Continue Shopping</Link>
             </>
@@ -138,7 +138,7 @@ export function CartClient() {
 
           {itemCount >= 4 ? (
             <>
-              <h2 className="text-lg font-semibold">Your active wardrobe discount is shown in the order summary.</h2>
+              <h2 className="text-lg font-semibold">Your Active Wardrobe Discount Is Shown in the Order Summary.</h2>
               <Link href="/collection" className="gold-focus mt-5 inline-flex min-h-12 items-center justify-center border border-copy px-5 text-[10px] font-semibold uppercase transition hover:bg-copy hover:text-white">Continue Shopping</Link>
             </>
           ) : null}

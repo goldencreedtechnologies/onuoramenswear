@@ -7,14 +7,14 @@ export const metadata = {
 
 const sections = [
   {
-    title: "Our commitment",
+    title: "Our Commitment",
     paragraphs: [
       "ỌNUỌRA is committed to making its digital experience usable by as many people as possible, including customers who use assistive technologies or navigate with different visual, motor, auditory, or cognitive needs.",
       "We work toward the Web Content Accessibility Guidelines and review accessibility as the site and services evolve."
     ]
   },
   {
-    title: "What the site supports",
+    title: "What the Site Supports",
     paragraphs: [
       "The storefront is designed with semantic page structure, keyboard-operable controls, visible focus states, descriptive labels, responsive layouts, text alternatives for meaningful imagery, and strong contrast across the consistent ỌNUỌRA palette."
     ],
@@ -26,14 +26,14 @@ const sections = [
     ]
   },
   {
-    title: "Known limitations",
+    title: "Known Limitations",
     paragraphs: [
       "Some third-party payment, mapping, authentication, or embedded services may provide experiences outside our direct control. We select reputable providers and raise accessibility issues when they are identified.",
       "Fashion photography can contain visual detail that is difficult to describe completely; product names, colours, angles, construction, and garment copy are provided alongside imagery."
     ]
   },
   {
-    title: "Requesting assistance",
+    title: "Requesting Assistance",
     paragraphs: [
       "If any part of the website prevents you from completing a purchase or accessing information, contact Client Care with the page, device, browser, and assistance needed. We will offer a reasonable alternative and use the report to improve the service."
     ]
@@ -44,7 +44,7 @@ export default function AccessibilityPage() {
   return (
     <PolicyPage
       eyebrow="Accessibility"
-      title="Luxury should welcome every client."
+      title="Luxury Should Welcome Every Client."
       introduction="Our aim is an elegant experience that remains clear, operable, and understandable across abilities and devices."
       effectiveDate="28 July 2026"
       sections={sections}
