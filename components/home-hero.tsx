@@ -55,12 +55,12 @@ export function HomeHero() {
       <div className={`home-hero-light-gradient pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(247,243,232,0)_0%,rgba(247,243,232,.05)_42%,rgba(247,243,232,.58)_78%,rgba(247,243,232,.82)_100%)] transition-opacity duration-700 ease-out sm:bg-[linear-gradient(90deg,rgba(247,243,232,.62)_0%,rgba(247,243,232,.24)_36%,rgba(247,243,232,0)_64%)] ${videoActive ? "opacity-0" : "opacity-100"}`} />
       <div className="home-hero-top-gradient pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/28 to-transparent" />
       <div className="container-luxe relative z-10 flex min-h-[400px] items-end pb-6 pt-32 sm:min-h-[680px] sm:pb-10 md:min-h-[820px] md:pb-14">
-        <div className={videoActive ? "max-w-xl text-white" : "max-w-xl"}>
+        <div className={videoActive ? "w-full max-w-xl text-left text-white sm:w-auto" : "w-full max-w-xl text-left sm:w-auto"}>
           <p className={`text-[10px] font-semibold uppercase ${videoActive ? "text-gold-soft" : "text-[#9f751d]"}`}>Designed And Made In Nigeria</p>
           <h1 className={`mt-1.5 text-4xl font-semibold leading-[1.04] text-balance sm:text-5xl md:text-6xl ${videoActive ? "text-white" : "text-[#171717]"}`}>
             Contemporary African Menswear
           </h1>
-          <p className={`mt-3 max-w-md text-sm leading-6 sm:mt-4 ${videoActive ? "text-white/82" : "text-black/68"}`}>
+          <p className={`mt-2 max-w-md text-sm leading-6 sm:mt-4 ${videoActive ? "text-white/82" : "text-black/68"}`}>
             Designed With Purpose. Crafted To Last.
           </p>
           <div className="mt-5 flex flex-wrap gap-3 sm:mt-7">
