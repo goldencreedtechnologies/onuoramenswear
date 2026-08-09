@@ -36,8 +36,8 @@ export function ShippingRatesModal({
         {triggerLabel}
       </button>
       {open ? (
-        <div className="fixed inset-0 z-[170] grid place-items-center bg-black/62 p-3 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Shipping and delivery rates" onMouseDown={(event) => { if (event.currentTarget === event.target) setOpen(false); }}>
-          <div className="max-h-[92vh] w-full max-w-3xl overflow-y-auto bg-page p-5 text-copy shadow-2xl md:p-8">
+        <div className="fixed inset-0 z-[170] grid place-items-center overscroll-none bg-black/62 p-3 backdrop-blur-sm sm:p-4" role="dialog" aria-modal="true" aria-label="Shipping and delivery rates" onMouseDown={(event) => { if (event.currentTarget === event.target) setOpen(false); }}>
+          <div className="max-h-[92vh] w-full max-w-3xl overflow-y-auto overscroll-contain bg-page p-5 text-copy shadow-2xl md:p-8">
             <div className="flex items-start justify-between gap-5 border-b border-line pb-5">
               <div>
                 <p className="text-[10px] font-semibold uppercase text-gold">Shipping & Delivery</p>

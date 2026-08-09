@@ -258,8 +258,8 @@ export function ProductOptions({ product, colorOptions }: { product: StoreProduc
       </button>
 
       {sizeGuideOpen ? (
-        <div className="fixed inset-0 z-[160] grid place-items-center bg-black/62 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Size guide">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-auto bg-page p-5 text-copy shadow-2xl md:p-8">
+        <div className="fixed inset-0 z-[160] grid place-items-center overscroll-none bg-black/62 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Size guide">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto overscroll-contain bg-page p-5 text-copy shadow-2xl md:p-8">
             <div className="flex items-start justify-between gap-5 border-b border-line pb-5">
               <div>
                 <p className="text-[10px] font-semibold uppercase text-gold">Size Guide</p>
@@ -269,7 +269,7 @@ export function ProductOptions({ product, colorOptions }: { product: StoreProduc
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto overscroll-contain">
               <table className="w-full min-w-[540px] border-collapse text-left text-sm">
                 <thead>
                   <tr className="border-b border-line text-[10px] uppercase text-copy-muted">
