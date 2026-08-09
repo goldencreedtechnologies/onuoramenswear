@@ -6,6 +6,7 @@ import { getStoreProductBySlug } from "@/lib/backend/catalog";
 import { markOrderInventorySold } from "@/lib/backend/inventory";
 import { queueOrderNotification, recordOrderEvent } from "@/lib/backend/order-lifecycle";
 import { processNotificationQueue } from "@/lib/backend/notifications";
+import { createOrderConfirmationToken } from "@/lib/backend/order-confirmation";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 import {
   PRODUCT_PRICES,
@@ -164,12 +165,14 @@ export async function POST(request: Request) {
 
     await processNotificationQueue({ limit: 10 });
 
+    const confirmationToken = createOrderConfirmationToken(order.orderId);
+
     return NextResponse.json({
       ok: true,
       orderId: order.orderId,
       orderReference: order.orderNumber,
       voucherApplied: true,
-      successUrl: `${siteUrl}/checkout/success?order_id=${order.orderId}&voucher=1`
+      successUrl: `${siteUrl}/checkout/success?order_id=${order.orderId}&voucher=1${confirmationToken ? `&token=${encodeURIComponent(confirmationToken)}` : ""}`
     });
   }
 

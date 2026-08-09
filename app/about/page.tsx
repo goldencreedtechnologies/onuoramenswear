@@ -62,7 +62,7 @@ function FounderMonogramField() {
 
 export default function AboutPage() {
   return (
-    <main className="overflow-hidden bg-page pt-[84px] text-copy sm:pt-[104px]">
+    <main id="story" className="overflow-hidden bg-page pt-[84px] text-copy sm:pt-[104px]">
       <section className="relative min-h-[360px] overflow-hidden bg-obsidian text-white sm:min-h-[440px] md:min-h-[520px]">
         <Image
           src="/brand/story-header.png"

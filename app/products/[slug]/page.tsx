@@ -66,7 +66,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .filter((item): item is NonNullable<typeof item> => Boolean(item));
   const collection = getCollectionByFamily(product.family);
   const collectionLabel = collection.englishName;
-  const galleryImages = Array.from(new Set([product.image, ...product.images])).sort((a, b) => galleryRank(a) - galleryRank(b));
+  const galleryImages = Array.from(
+    new Set(
+      [product.image, ...product.images].filter((image) =>
+        product.slug === "aja"
+          ? /\/aja\/(aja-(front|mid|side)\.png)$/i.test(image)
+          : true
+      )
+    )
+  ).sort((a, b) => galleryRank(a) - galleryRank(b));
 
   return (
     <main className="bg-page pt-[104px] text-copy">

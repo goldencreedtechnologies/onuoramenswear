@@ -78,7 +78,7 @@ export function ShippingRatesModal({
               </section>
               <section className="border-t border-line pt-5">
                 <h3 className="font-semibold text-copy">Tracking, Estimates & Customs</h3>
-                <p className="mt-2">International delivery commonly takes approximately seven to eight working days after dispatch. Tracking is sent by email. Import duties, taxes or courier handling charges remain the recipient&apos;s responsibility where not collected at checkout.</p>
+                <p className="mt-2">International delivery commonly takes 6–8 days after dispatch. Tracking is sent by email. Import duties, taxes or courier handling charges remain the recipient&apos;s responsibility where not collected at checkout.</p>
               </section>
             </div>
           </div>

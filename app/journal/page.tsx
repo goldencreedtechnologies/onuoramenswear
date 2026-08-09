@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { journalPosts } from "@/data/catalog";
 
 export const metadata = {
@@ -12,13 +14,16 @@ const journalImages = [
   "/brand/products/original/aja/ajah-grid.png"
 ];
 
+const journalDestinations = ["/about#story", "/about", "/collection/heritage"];
+
 const categories = ["Behind the Collections", "African Craftsmanship", "Campaigns"];
 
 export default function JournalPage() {
   const entries = journalPosts.slice(0, 3).map((post, index) => ({
     ...post,
     category: categories[index],
-    image: journalImages[index]
+    image: journalImages[index],
+    href: journalDestinations[index]
   }));
   const [featured, ...remaining] = entries;
 
@@ -49,9 +54,9 @@ export default function JournalPage() {
               <p className="text-[10px] font-semibold uppercase text-gold">{featured.category}</p>
               <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">{featured.title}</h2>
               <p className="mt-4 text-sm leading-7 text-copy-muted">{featured.excerpt}</p>
-              <span className="mt-6 inline-flex items-center text-[10px] font-semibold uppercase text-copy-muted">
-                Coming Soon
-              </span>
+              <Link href={featured.href} className="gold-focus mt-6 inline-flex items-center gap-2 border-b border-copy-muted/35 pb-1 text-[10px] font-semibold uppercase tracking-[0.06em] text-copy-muted transition hover:border-gold hover:text-copy" aria-label={`Read ${featured.title}`}>
+                View <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
             </div>
           </article>
         </section>
@@ -73,9 +78,9 @@ export default function JournalPage() {
               <p className="text-[10px] font-semibold uppercase text-gold">{post.category}</p>
               <h2 className="mt-2 text-xl font-semibold leading-tight">{post.title}</h2>
               <p className="mt-3 text-sm leading-6 text-copy-muted">{post.excerpt}</p>
-              <span className="mt-4 inline-flex items-center text-[10px] font-semibold uppercase text-copy-muted">
-                Coming Soon
-              </span>
+              <Link href={post.href} className="gold-focus mt-4 inline-flex items-center gap-2 border-b border-copy-muted/35 pb-1 text-[10px] font-semibold uppercase tracking-[0.06em] text-copy-muted transition hover:border-gold hover:text-copy" aria-label={`Read ${post.title}`}>
+                View <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
             </div>
           </article>
         ))}

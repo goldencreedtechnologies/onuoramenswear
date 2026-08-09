@@ -31,7 +31,7 @@ type DeliveryQuote = {
 };
 
 const TEST_VOUCHER_CODE = "ONUORA-TEST-100";
-const TEST_VOUCHER_ENABLED = process.env.NODE_ENV !== "production" && process.env.NEXT_PUBLIC_ENABLE_TEST_CHECKOUT_VOUCHER === "true";
+const TEST_VOUCHER_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TEST_CHECKOUT_VOUCHER === "true";
 const SHIPPING_COUNTRY_KEY = "onuora-shipping-country";
 const deliveryFields = new Set(["shippingAddress", "shippingCity", "shippingState", "postalCode", "shippingCountry"]);
 const fieldClass = "gold-focus min-h-12 w-full border border-line bg-page px-4 text-sm font-normal normal-case text-copy outline-none transition placeholder:text-copy-muted/60 hover:border-line-strong focus:border-copy";
@@ -395,7 +395,7 @@ export function CheckoutClient() {
             <div className="flex items-start justify-between gap-5 border-t border-line pt-4">
               <div>
                 <p className="text-sm text-copy-muted">Shopping</p>
-                <ShippingRatesModal triggerLabel="View Delivery Rate" triggerClassName="gold-focus mt-1 inline-flex border-b border-copy-muted/30 text-[9px] font-medium text-copy-muted transition hover:border-gold hover:text-copy" />
+                <ShippingRatesModal triggerLabel="View Delivery Rates" triggerClassName="gold-focus mt-1 inline-flex border-b border-copy-muted/30 text-[9px] font-medium text-copy-muted transition hover:border-gold hover:text-copy" />
               </div>
               <span>{!shippingRule ? "Calculated after address" : shippingRule.requiresManualQuote ? "Manual quotation" : formatCurrency(shippingRule.displayCurrency, shippingRule.displayAmount ?? 0)}</span>
             </div>

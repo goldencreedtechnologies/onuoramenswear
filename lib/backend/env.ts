@@ -96,8 +96,12 @@ export function getNotificationWorkerSecret() {
   return getFirstEnv(["NOTIFICATION_WORKER_SECRET", "CRON_SECRET"]);
 }
 
+export function getOrderConfirmationTokenSecret() {
+  return getOptionalEnv("ORDER_CONFIRMATION_TOKEN_SECRET") || getNotificationWorkerSecret() || getSupabaseServiceRoleKey();
+}
+
 export function isTestCheckoutVoucherEnabled() {
-  return process.env.NODE_ENV !== "production" && getOptionalEnv("ENABLE_TEST_CHECKOUT_VOUCHER") === "true";
+  return getOptionalEnv("ENABLE_TEST_CHECKOUT_VOUCHER") === "true";
 }
 
 export function getResendApiKey() {

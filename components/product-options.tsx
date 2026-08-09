@@ -9,11 +9,11 @@ import { cn } from "@/lib/cn";
 import type { StoreProduct } from "@/lib/backend/types";
 
 const sizes = [
-  { label: "S", chest: "36-40", waist: "28-32", trouser: "30" },
-  { label: "M", chest: "40-44", waist: "32-34", trouser: "32" },
-  { label: "L", chest: "44-46", waist: "36-38", trouser: "34" },
-  { label: "XL", chest: "46-50", waist: "38-42", trouser: "36" },
-  { label: "XXL", chest: "50-55", waist: "42-48", trouser: "40" }
+  { label: "S", guideLabel: "Small", chest: "38–40", waist: "31–33", trouser: "30" },
+  { label: "M", guideLabel: "Medium", chest: "40–42", waist: "34–36", trouser: "31" },
+  { label: "L", guideLabel: "Large", chest: "42–44", waist: "37–39", trouser: "32" },
+  { label: "XL", guideLabel: "X-Large", chest: "44–46", waist: "40–42", trouser: "33" },
+  { label: "XXL", guideLabel: "XX-Large", chest: "46–50", waist: "43–46", trouser: "34" }
 ];
 
 type InventoryItem = {
@@ -282,7 +282,7 @@ export function ProductOptions({ product, colorOptions }: { product: StoreProduc
                 <tbody>
                   {sizes.map((size) => (
                     <tr key={size.label} className="border-b border-line">
-                      <td className="py-4 pr-4 font-semibold">{size.label}</td>
+                      <td className="py-4 pr-4 font-semibold">{size.guideLabel}</td>
                       <td className="py-4 pr-4">{size.chest}</td>
                       <td className="py-4 pr-4">{size.waist}</td>
                       <td className="py-4">{size.trouser}</td>

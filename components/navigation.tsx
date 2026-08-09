@@ -20,7 +20,6 @@ const permanentCollectionLinks = [
 ];
 
 const mobileLinks = [
-  { href: "/collection", label: "Shop" },
   { href: "/about", label: "Our Story" },
   { href: "/journal", label: "Journal" }
 ];
@@ -138,7 +137,6 @@ export function Navigation() {
           </Link>
 
           <nav className="hidden h-full items-center gap-10 text-[11px] font-semibold uppercase tracking-[0.09em] lg:flex xl:gap-12" aria-label="Main navigation">
-            <Link href="/collection" className="primary-nav-link gold-focus">SHOP</Link>
             <button
               ref={collectionsButtonRef}
               type="button"
@@ -261,17 +259,6 @@ export function Navigation() {
               <span className="text-xs font-semibold uppercase">Currency</span>
               <CurrencySelector />
             </div>
-            {mobileLinks.slice(0, 1).map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                onClick={closeMenus}
-                className="gold-focus flex min-h-16 items-center justify-between border-b border-copy/12 text-base font-semibold uppercase tracking-[0.06em]"
-              >
-                {link.label}
-                <span aria-hidden="true">→</span>
-              </Link>
-            ))}
             <div className="border-b border-copy/12">
               <button
                 type="button"
@@ -299,7 +286,7 @@ export function Navigation() {
                 </div>
               ) : null}
             </div>
-            {mobileLinks.slice(1).map((link) => (
+            {mobileLinks.map((link) => (
               <Link
                 key={link.label}
                 href={link.href}

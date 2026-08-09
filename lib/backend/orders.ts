@@ -284,7 +284,7 @@ export async function markOrderPaid({
 
   const { data: order, error: orderError } = await client
     .from("orders")
-    .select("id, order_number, email, customer_profile_id, full_name, payment_status, shipping_status, currency, subtotal_usd, shipping_usd, total_usd, shipping_address, shipping_city, shipping_state, shipping_postal_code, shipping_country, delivery_method_name, delivery_estimated_min_days, delivery_estimated_max_days, order_items(product_slug, product_name, product_edition, color_name, size, quantity)")
+    .select("id, order_number, email, customer_profile_id, full_name, payment_status, shipping_status, currency, subtotal_usd, shipping_usd, total_usd, shipping_address, shipping_city, shipping_state, shipping_postal_code, shipping_country, delivery_method_name, delivery_quotes(estimated_min_days, estimated_max_days), order_items(product_slug, product_name, product_edition, color_name, size, quantity)")
     .eq("stripe_checkout_session_id", checkoutSessionId)
     .maybeSingle();
 
@@ -318,6 +318,12 @@ export async function markOrderPaid({
   }
 
   if (!wasAlreadyPaid) {
+    const deliveryQuote = order.delivery_quotes as
+      | { estimated_min_days: number; estimated_max_days: number }
+      | Array<{ estimated_min_days: number; estimated_max_days: number }>
+      | null;
+    const deliveryEstimate = Array.isArray(deliveryQuote) ? deliveryQuote[0] : deliveryQuote;
+
     await recordOrderEvent({
       orderId: order.id as string,
       eventType: "payment_confirmed",
@@ -353,7 +359,7 @@ export async function markOrderPaid({
         shippingMethod: order.delivery_method_name ?? "Tracked delivery",
         dispatchStatus: "Payment confirmed and preparing for dispatch",
         estimatedDispatchTiming: "Prepared for dispatch within three working days",
-        estimatedDeliveryWindow: order.delivery_estimated_min_days && order.delivery_estimated_max_days ? `${order.delivery_estimated_min_days}-${order.delivery_estimated_max_days} business days after dispatch` : "Confirmed with your dispatch notification",
+        estimatedDeliveryWindow: deliveryEstimate?.estimated_min_days && deliveryEstimate?.estimated_max_days ? `${deliveryEstimate.estimated_min_days}-${deliveryEstimate.estimated_max_days} business days after dispatch` : "Confirmed with your dispatch notification",
         paymentStatus: "Paid",
         contactInformation: "menswear@onuoraenterprises.com",
         subtotal: operationalUsdAmountInCurrency(Number(order.subtotal_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
