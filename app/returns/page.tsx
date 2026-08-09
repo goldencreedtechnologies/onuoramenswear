@@ -14,7 +14,7 @@ export default function ReturnsPage() {
           A Considered Policy for a Carefully Made Garment.
         </h1>
         <div className="mt-10 grid gap-px bg-line md:grid-cols-2">
-          <article className="bg-page p-6 md:p-8">
+          <article className="bg-page py-6 pr-6 md:py-8 md:pr-8">
             <h2 className="text-lg font-semibold">Size Exchanges</h2>
             <p className="mt-4 text-sm leading-7 text-copy-muted">
               Request an exchange within 7 days of delivery. The garment must be unworn, unwashed,
@@ -55,6 +55,14 @@ export default function ReturnsPage() {
             </p>
           </article>
           <article>
+            <h2 className="text-lg font-semibold">Delivery Charges & Return Costs</h2>
+            <p className="mt-3 text-sm leading-7 text-copy-muted">
+              Original delivery charges are not normally refundable. Return delivery and custom costs
+              depend on the destination and reason for return. Confirm the correct route with the house
+              before sending the garment. These terms do not remove consumer rights that apply by law.
+            </p>
+          </article>
+          <article>
             <h2 className="text-lg font-semibold">Inspection and Resolution</h2>
             <p className="mt-3 text-sm leading-7 text-copy-muted">
               Approved returns are inspected on receipt. Exchanges depend on stock. Eligible
@@ -63,11 +71,6 @@ export default function ReturnsPage() {
             </p>
           </article>
         </div>
-        <p className="mt-8 max-w-3xl text-sm leading-7 text-copy-muted">
-          Original delivery charges are not normally refundable. Return delivery and customs costs
-          depend on the destination and reason for return. Confirm the correct route with the house
-          before sending a garment. These terms do not remove consumer rights that apply by law.
-        </p>
         <Link
           href="/contact"
           className="gold-focus mt-7 inline-flex min-h-12 items-center justify-center bg-obsidian px-6 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian"

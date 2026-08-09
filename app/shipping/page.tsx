@@ -39,7 +39,7 @@ export default function ShippingPage() {
                 <article key={rate.outfits} className="min-w-0 border border-line bg-page p-4">
                   <p className="text-[10px] font-semibold uppercase text-gold">{rate.outfits} outfits</p>
                   {"manualQuotation" in rate ? (
-                    <div className="mt-3"><p className="font-semibold">Manual Quotation</p><p className="mt-1 text-xs text-copy-muted">6–8 days</p></div>
+                    <div className="mt-3"><p className="font-semibold">Manual Quotation</p></div>
                   ) : (
                     <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
                       <div><dt className="text-[9px] uppercase text-copy-muted">USD</dt><dd className="mt-1 break-words font-semibold">{rate.usd}</dd></div>
@@ -54,7 +54,7 @@ export default function ShippingPage() {
             <div className="mt-6 hidden max-w-full overflow-x-auto border border-line sm:block">
               <table className="w-full min-w-[680px] border-collapse text-left text-sm">
                 <thead className="bg-surface-subtle text-[10px] uppercase text-copy-muted"><tr><th className="border-b border-line px-4 py-4">Outfits</th><th className="border-b border-line px-4 py-4">USD</th><th className="border-b border-line px-4 py-4">GBP</th><th className="border-b border-line px-4 py-4">EUR</th><th className="border-b border-line px-4 py-4">NGN Display</th></tr></thead>
-                <tbody>{internationalRates.map((rate) => <tr key={rate.outfits} className="border-b border-line last:border-b-0"><td className="px-4 py-4 font-semibold">{rate.outfits}</td>{"manualQuotation" in rate ? <td colSpan={4} className="px-4 py-4"><p className="font-semibold">Manual Quotation</p><p className="mt-1 text-xs text-copy-muted">6–8 days</p></td> : <><td className="px-4 py-4">{rate.usd}</td><td className="px-4 py-4">{rate.gbp}</td><td className="px-4 py-4">{rate.eur}</td><td className="px-4 py-4">{rate.ngn}</td></>}</tr>)}</tbody>
+                <tbody>{internationalRates.map((rate) => <tr key={rate.outfits} className="border-b border-line last:border-b-0"><td className="px-4 py-4 font-semibold">{rate.outfits}</td>{"manualQuotation" in rate ? <td colSpan={4} className="px-4 py-4"><p className="font-semibold">Manual Quotation</p></td> : <><td className="px-4 py-4">{rate.usd}</td><td className="px-4 py-4">{rate.gbp}</td><td className="px-4 py-4">{rate.eur}</td><td className="px-4 py-4">{rate.ngn}</td></>}</tr>)}</tbody>
               </table>
             </div>
             <p className="mt-4 text-sm leading-7 text-copy-muted">Orders of seven outfits or more require a shipping and delivery quotation from Client Services.</p>

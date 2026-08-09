@@ -63,7 +63,7 @@ export function ShippingRatesModal({
                     <article key={rate.outfits} className="border border-line p-4">
                       <p className="text-[10px] font-semibold uppercase text-gold">{rate.outfits} outfits</p>
                       {"manualQuotation" in rate ? (
-                        <div className="mt-3"><p className="font-semibold text-copy">Manual Quotation</p><p className="mt-1 text-[11px] text-copy-muted">6–8 days</p></div>
+                        <div className="mt-3"><p className="font-semibold text-copy">Manual Quotation</p></div>
                       ) : (
                         <dl className="mt-3 grid grid-cols-2 gap-3 text-xs">
                           <div><dt className="text-copy-muted">USD</dt><dd className="font-semibold text-copy">{rate.usd}</dd></div>

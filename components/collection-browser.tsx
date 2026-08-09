@@ -19,7 +19,7 @@ const collectionLayouts: Record<string, CollectionLayout> = {
       hover: { productId: "aja", src: "/brand/products/original/aja/aja-side.png", alt: "AJA Heritage Collection side view", className: "object-cover object-top" }
     },
     grid: [
-      { productId: "aja", src: "/brand/products/original/aja/aja-mid.png", alt: "AJA Heritage Collection upper-body view" },
+      { productId: "aja", src: "/brand/products/original/ndu/ndu-angle.png", alt: "NDỤ Heritage Collection angled outfit view" },
       { productId: "ijeoma", src: "/brand/products/original/ijeoma/ijeoma-detail.png", alt: "IJEỌMA Heritage Collection detail" },
       { productId: "nsuo", src: "/brand/products/original/nsuo/nsuo-lifestyle.png", alt: "NSỤO Heritage Collection lifestyle image" },
       { productId: "ebube", src: "/brand/products/original/ebube/ebube-mid.png", alt: "EBUBE Heritage Collection upper-body view" }
@@ -77,7 +77,7 @@ function SupportingGrid({ section, assets, priority }: { section: CollectionSect
     <div className="grid min-w-0 grid-cols-2 gap-2.5 sm:gap-3.5">
       {assets.map((asset, index) => {
         const product = findProduct(section, asset.productId);
-        const image = <div className="relative aspect-[4/5] min-w-0 overflow-hidden bg-[#f1f0ec]"><Image src={asset.src} alt={asset.alt} fill priority={priority && index < 2} quality={93} sizes="(min-width: 1024px) 250px, (min-width: 768px) 22vw, 45vw" className={`transition duration-700 ease-out group-hover:scale-[1.015] ${asset.className ?? "object-cover object-top"}`} /></div>;
+        const image = <div className="relative aspect-[4/5] min-w-0 overflow-hidden bg-[#f1f0ec]"><Image src={asset.src} alt={asset.alt} fill priority={priority && index < 2} quality={92} sizes="(min-width: 1024px) 250px, (min-width: 768px) 22vw, 45vw" className={`transition duration-700 ease-out group-hover:scale-[1.015] ${asset.className ?? "object-cover object-top"}`} /></div>;
         if (!product?.href) return <div key={asset.src} className="group min-w-0">{image}</div>;
         return <Link key={asset.src} href={product.href} className="gold-focus group block min-w-0" aria-label={`Explore ${section.title} detail`}>{image}</Link>;
       })}
