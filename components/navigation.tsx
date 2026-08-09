@@ -116,7 +116,7 @@ export function Navigation() {
   }, [query]);
 
   return (
-    <header className={cn("inset-x-0 top-0 z-50", isHome ? "absolute" : "fixed")}>
+    <header className="fixed inset-x-0 top-0 z-50">
       <div
         className={cn(
           "flex h-7 items-center justify-center overflow-hidden px-3 text-center text-[8px] font-semibold uppercase leading-[1.15] tracking-[0.08em] sm:h-auto sm:min-h-8 sm:overflow-visible sm:py-1.5 sm:text-[9px] sm:leading-normal sm:tracking-[0.12em]",
