@@ -5,7 +5,7 @@ import { markOrderInventorySold, releaseOrderInventory, reserveOrderInventory } 
 import { queueOrderNotification, recordOrderEvent } from "@/lib/backend/order-lifecycle";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 import { priceToUsd } from "@/lib/cart";
-import { isAdditionalProductColour, isCurrencyCode, operationalUsdAmountInCurrency } from "@/data/site-config";
+import { isAdditionalProductColour, isCurrencyCode, operationalUsdAmountInCurrency, promotionDiscountForQuantity } from "@/data/site-config";
 
 export const checkoutDraftSchema = z.object({
   email: z.string().email(),
@@ -89,6 +89,7 @@ export async function createOrder(draft: CheckoutDraftInput) {
     });
   }
 
+  const itemCount = pricedItems.reduce((total, item) => total + item.quantity, 0);
   const subtotalUsd = pricedItems.reduce((total, item) => total + item.unitPriceUsd * item.quantity, 0);
   const deliveryQuote = await resolveDeliveryQuote({
     email: draft.email,
@@ -99,12 +100,13 @@ export async function createOrder(draft: CheckoutDraftInput) {
     shippingAddress: draft.shippingAddress,
     destinationLatitude: draft.destinationLatitude,
     destinationLongitude: draft.destinationLongitude,
-    itemCount: pricedItems.reduce((total, item) => total + item.quantity, 0),
+    itemCount,
     subtotalUsd,
     deliveryQuoteId: draft.deliveryQuoteId
   });
   const shippingUsd = deliveryQuote.shippingUsd;
-  const totalUsd = subtotalUsd + shippingUsd;
+  const discountUsd = promotionDiscountForQuantity(itemCount, "USD");
+  const totalUsd = Math.max(0, subtotalUsd + shippingUsd - discountUsd);
 
   const { data: order, error } = await client
     .from("orders")
@@ -223,7 +225,8 @@ export async function createOrder(draft: CheckoutDraftInput) {
     deliveryQuote,
     subtotalUsd,
     shippingUsd,
-    totalUsd
+    totalUsd,
+    discountUsd
   };
 }
 
@@ -355,7 +358,10 @@ export async function markOrderPaid({
         contactInformation: "menswear@onuoraenterprises.com",
         subtotal: operationalUsdAmountInCurrency(Number(order.subtotal_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
         shipping: operationalUsdAmountInCurrency(Number(order.shipping_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
-        discount: 0,
+        discount: operationalUsdAmountInCurrency(
+          Math.max(0, Number(order.subtotal_usd) + Number(order.shipping_usd) - Number(order.total_usd)),
+          isCurrencyCode(order.currency) ? order.currency : "USD"
+        ),
         totalUsd: Number(order.total_usd),
         total: operationalUsdAmountInCurrency(
           Number(order.total_usd),

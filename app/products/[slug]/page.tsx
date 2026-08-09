@@ -46,7 +46,8 @@ export async function generateMetadata({ params }: ProductPageProps) {
   const collection = getCollectionByFamily(product.family);
   return {
     title: `${collection.englishName} in ${product.colorName}`,
-    description: `${product.colorName} contemporary menswear from the ${collection.englishName}.`
+    description: `${product.colorName} contemporary menswear from the ${collection.englishName}.`,
+    alternates: { canonical: `/products/${product.slug}` }
   };
 }
 
@@ -60,9 +61,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
     .filter((item) => item.family === product.family)
     .map((item) => ({ slug: item.slug, name: item.colorName, colorName: item.colorName, colorValue: accurateSwatch(item.colorName, item.colorValue, item.family) }));
   const recommendationFamilies = (["original", "button", "buttonless"] as const).filter((family) => family !== product.family);
-  const firstFamily = allProducts.filter((item) => item.family === recommendationFamilies[0]).slice(0, 2);
-  const secondFamily = allProducts.filter((item) => item.family === recommendationFamilies[1]).slice(0, 2);
-  const related = [firstFamily[0], secondFamily[0], firstFamily[1], secondFamily[1]].filter((item): item is NonNullable<typeof item> => Boolean(item));
+  const related = recommendationFamilies
+    .map((family) => allProducts.find((item) => item.family === family))
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
   const collection = getCollectionByFamily(product.family);
   const collectionLabel = collection.englishName;
   const galleryImages = Array.from(new Set([product.image, ...product.images])).sort((a, b) => galleryRank(a) - galleryRank(b));
@@ -116,7 +117,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
           <div><p className="text-[10px] font-semibold uppercase text-gold">Complete The Wardrobe</p><h2 className="mt-2 text-2xl font-semibold md:text-3xl">Complete The Set</h2></div>
           <Link href="/collection" className="gold-focus hidden border-b border-copy/35 pb-1 text-[10px] font-semibold uppercase sm:block">Shop All</Link>
         </div>
-        <div className="grid grid-cols-2 gap-x-2.5 gap-y-7 sm:gap-x-5 sm:gap-y-9 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-2.5 gap-y-7 sm:gap-x-5 sm:gap-y-9 lg:grid-cols-2">
           {related.map((item) => <ProductCard key={item.slug} product={item} collectionOnly />)}
         </div>
       </section>

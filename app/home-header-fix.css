@@ -40,7 +40,7 @@
     object-position: 50% 0% !important;
   }
 
-  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > div.absolute.inset-0 {
+  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > div.absolute.inset-0:not(.home-hero-video-overlay):not(.home-hero-light-gradient) {
     background: radial-gradient(
       ellipse 60% 56% at 7% 78%,
       rgb(247 243 232 / 96%) 0%,
@@ -57,7 +57,7 @@
     opacity: 1 !important;
   }
 
-  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl {
+  main > section:not([data-home-hero]):has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl {
     position: static;
     margin-left: 0;
     padding: 0;
@@ -65,17 +65,17 @@
     background: none;
   }
 
-  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl h1 {
+  main > section:not([data-home-hero]):has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl h1 {
     color: #171717 !important;
     text-shadow: none;
   }
 
-  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl p {
+  main > section:not([data-home-hero]):has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl p {
     color: rgb(23 23 23 / 76%) !important;
     text-shadow: none;
   }
 
-  main > section:has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl > p:first-child {
+  main > section:not([data-home-hero]):has(> img[alt="ỌNUỌRA models wearing contemporary African menswear"]) .container-luxe > div.max-w-xl > p:first-child {
     display: block;
     margin-left: 0;
     padding: 0;
@@ -107,20 +107,6 @@ section[aria-labelledby="founder"] > div > div:last-child > p:first-child {
 }
 
 @media (max-width: 639px) {
-  header > div:first-child {
-    min-height: 42px !important;
-    font-size: 0 !important;
-    line-height: 1.35 !important;
-  }
-
-  header > div:first-child::before {
-    content: "Prepared for dispatch within three working days\A Worldwide\00a0 Delivery";
-    white-space: pre-line;
-    font-size: 8px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-  }
-
   main:has(> section > img[alt="ỌNUỌRA models wearing contemporary African menswear"]) > section:last-child {
     display: none !important;
   }
@@ -141,5 +127,12 @@ section[aria-labelledby="founder"] > div > div:last-child > p:first-child {
   main article img[alt=""] {
     object-fit: cover !important;
     object-position: center top !important;
+  }
+}
+
+/* Keep the Story header focused on the models on phones without clipping their heads. */
+@media (max-width: 767px) {
+  main img[alt*="house wearing contemporary African menswear in Nigeria"] {
+    object-position: 77% 0% !important;
   }
 }

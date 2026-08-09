@@ -62,8 +62,8 @@ function FounderMonogramField() {
 
 export default function AboutPage() {
   return (
-    <main className="overflow-hidden bg-page pt-[104px] text-copy">
-      <section className="relative min-h-[390px] overflow-hidden bg-obsidian text-white sm:min-h-[440px] md:min-h-[520px]">
+    <main className="overflow-hidden bg-page pt-[84px] text-copy sm:pt-[104px]">
+      <section className="relative min-h-[440px] overflow-hidden bg-obsidian text-white sm:min-h-[440px] md:min-h-[520px]">
         <Image
           src="/brand/story-header.png"
           alt="The ỌNUỌRA house wearing contemporary African menswear in Nigeria"
@@ -71,10 +71,10 @@ export default function AboutPage() {
           priority
           quality={94}
           sizes="100vw"
-          className="object-cover object-[68%_center] md:object-center"
+          className="object-cover object-[77%_top] sm:object-[68%_center] md:object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/76 via-black/34 to-black/12" />
-        <div className="container-luxe relative flex min-h-[390px] items-end pb-8 sm:min-h-[440px] md:min-h-[520px] md:pb-12">
+        <div className="container-luxe relative flex min-h-[440px] items-end pb-8 sm:min-h-[440px] md:min-h-[520px] md:pb-12">
           <div className="max-w-2xl">
             <p className="text-[10px] font-semibold uppercase text-gold-soft">OUR STORY</p>
             <h1 className="mt-2 text-4xl font-semibold leading-tight sm:text-5xl md:text-6xl">
@@ -116,8 +116,8 @@ export default function AboutPage() {
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#f5e6c8]/15 to-[#f5e6c8]/45" />
       <section className="relative isolate overflow-hidden py-11 md:py-20" aria-labelledby="brand-philosophy">
         <StoryMonogram side="right" />
-        <div className="container-luxe relative z-10 grid min-w-0 gap-9 lg:grid-cols-[0.78fr_1.22fr] lg:items-center lg:gap-14">
-          <div className="min-w-0">
+        <div className="container-luxe relative z-10 min-w-0">
+          <div className="max-w-2xl">
             <p className="text-[10px] font-semibold uppercase text-gold">Brand Philosophy</p>
             <h2 id="brand-philosophy" className="mt-3 text-3xl font-semibold leading-tight md:text-4xl">
               Meaning Before Garment
@@ -126,12 +126,12 @@ export default function AboutPage() {
               ỌNUỌRA is a contemporary menswear house rooted in Nigerian craftsmanship, cultural identity and timeless design. Every garment is created with intention, from the choice of fabric to the final stitch—bringing together refined tailoring and African heritage in a modern wardrobe.
             </p>
           </div>
-          <div className="relative min-h-[430px] min-w-0 sm:min-h-[520px] lg:min-h-[600px]">
-            <div className="absolute inset-y-0 left-0 w-[78%] overflow-hidden bg-surface-subtle shadow-[0_24px_60px_rgba(42,32,19,0.12)]">
+          <div className="mt-8 grid min-w-0 gap-4 sm:grid-cols-[minmax(0,0.86fr)_minmax(0,1.14fr)] sm:items-end sm:gap-6 lg:mt-10 lg:max-w-6xl">
+            <div className="relative aspect-[4/5] min-w-0 overflow-hidden bg-surface-subtle shadow-[0_24px_60px_rgba(42,32,19,0.12)]">
               <Image src="/brand/tailor.png" alt="ỌNUỌRA tailor hand-finishing a monogrammed garment" fill quality={94} sizes="(min-width: 1024px) 45vw, 78vw" className="object-cover object-center" />
             </div>
-            <div className="absolute bottom-[5%] right-0 aspect-[4/3] w-[54%] overflow-hidden border-[7px] border-[#faf7f0] bg-surface-subtle shadow-[0_20px_50px_rgba(42,32,19,0.16)] sm:border-[10px]">
-              <Image src="/brand/packaging.jpg" alt="ỌNUỌRA garments prepared in branded protective packaging" fill quality={92} sizes="(min-width: 1024px) 32vw, 54vw" className="object-cover object-center" />
+            <div className="relative aspect-[4/3] min-w-0 overflow-hidden bg-surface-subtle shadow-[0_20px_50px_rgba(42,32,19,0.16)]">
+              <Image src="/brand/tailor%202.PNG" alt="Tailor cutting fabric for an ỌNUỌRA garment" fill quality={92} sizes="(min-width: 1024px) 46vw, (min-width: 640px) 52vw, 100vw" className="object-cover object-center" />
             </div>
           </div>
         </div>

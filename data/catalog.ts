@@ -231,9 +231,9 @@ export const products: Product[] = [
     family: "original", colorName: "Black", colorValue: "#1F1F1F", modelName: "Kharn"
   }),
   createProduct({
-    slug: "ohuru", name: "ỌHỤRỤ", edition: "Cream Edition", meaning: "Fresh",
+    slug: "ohuru", name: "ỌHỤRỤ", edition: "Sahara Beige Edition", meaning: "Fresh",
     palette: "#F5E6C8", pageText: "#1F1F1F", pageMuted: "#654321", pagePanel: "#FFF9ED",
-    family: "original", colorName: "Cream", colorValue: "#F5E6C8", modelName: "Charlie"
+    family: "original", colorName: "Sahara Beige", colorValue: "#F5E6C8", modelName: "Charlie"
   }),
   createProduct({
     slug: "ndu", name: "NDỤ", edition: "Burgundy Edition", meaning: "Life",
@@ -247,12 +247,12 @@ export const products: Product[] = [
   createProduct({
     slug: "aja", name: "AJA", edition: "Forest Edition", meaning: "Sanctuary",
     palette: "#0B1516", pageText: "#F7F3E8", pageMuted: "#C9D4C9", pagePanel: "#18302B",
-    family: "original", colorName: "Forest Green", colorValue: "#0B1516", modelName: "Edson"
+    family: "original", colorName: "Forest", colorValue: "#0B1516", modelName: "Edson"
   }),
   createProduct({
-    slug: "nsuo", name: "NSỤO", edition: "White Edition", meaning: "Water",
+    slug: "nsuo", name: "NSỤO", edition: "Off-White Edition", meaning: "Water",
     palette: "#F7F3E8", pageText: "#1F1F1F", pageMuted: "#654321", pagePanel: "#FFFFFF",
-    family: "original", colorName: "White", colorValue: "#F7F3E8", modelName: "Edson"
+    family: "original", colorName: "Off-White", colorValue: "#F7F3E8", modelName: "Edson"
   }),
   createProduct({
     slug: "ndb1", name: "NDB1", edition: "Blue Edition", meaning: "Composure",

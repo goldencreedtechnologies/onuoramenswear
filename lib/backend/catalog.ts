@@ -39,6 +39,21 @@ const correctedColourImages: Partial<Record<string, string[]>> = {
   ]
 };
 
+const customerFacingColourNames: Partial<Record<string, string>> = {
+  aja: "Forest",
+  nsuo: "Off-White",
+  ohuru: "Sahara Beige"
+};
+
+function customerFacingColourName(slug: string, fallback: string) {
+  return customerFacingColourNames[slug] ?? fallback;
+}
+
+function customerFacingEdition(slug: string, fallback: string) {
+  const colourName = customerFacingColourNames[slug];
+  return colourName ? `${colourName} Edition` : fallback;
+}
+
 type ProductRow = {
   id?: string;
   slug: string;
@@ -106,7 +121,7 @@ function mapRow(row: ProductRow): StoreProduct {
   return correctColourImagery({
     slug: row.slug,
     name: row.name,
-    edition: row.edition,
+    edition: customerFacingEdition(row.slug, row.edition),
     meaning: row.meaning,
     price: `$${PRODUCT_PRICES.USD}`,
     image: row.image,
@@ -121,7 +136,7 @@ function mapRow(row: ProductRow): StoreProduct {
     storyTitle: row.story_title,
     occasion: row.occasion,
     family,
-    colorName: row.color_name || fallback.colorName,
+    colorName: customerFacingColourName(row.slug, row.color_name || fallback.colorName),
     colorValue: row.color_value || row.palette || fallback.colorValue,
     modelName: row.model_name || fallback.modelName,
     details: normalizeDetails(row.details || fallback.details),

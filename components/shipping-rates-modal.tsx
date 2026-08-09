@@ -7,7 +7,7 @@ const internationalRates = [
   { outfits: "1–2", usd: "$60", gbp: "£50", eur: "€55", ngn: "₦100,000" },
   { outfits: "3–4", usd: "$90", gbp: "£75", eur: "€80", ngn: "₦150,000" },
   { outfits: "5–6", usd: "$120", gbp: "£100", eur: "€110", ngn: "₦200,000" },
-  { outfits: "7+", usd: "Manual quotation", gbp: "Manual quotation", eur: "Manual quotation", ngn: "Manual quotation" }
+  { outfits: "7+", manualQuotation: true }
 ];
 
 type ShippingRatesModalProps = {
@@ -41,7 +41,7 @@ export function ShippingRatesModal({
             <div className="flex items-start justify-between gap-5 border-b border-line pb-5">
               <div>
                 <p className="text-[10px] font-semibold uppercase text-gold">Shipping & Delivery</p>
-                <h2 className="mt-2 text-2xl font-semibold md:text-3xl">Nigeria & Worldwide Rates</h2>
+                <h2 className="mt-2 text-2xl font-semibold md:text-3xl">Worldwide Shipping Rates</h2>
               </div>
               <button type="button" onClick={() => setOpen(false)} className="gold-focus flex h-11 w-11 shrink-0 items-center justify-center rounded-full hover:bg-surface-subtle" aria-label="Close shipping rates"><X className="h-5 w-5" /></button>
             </div>
@@ -49,7 +49,7 @@ export function ShippingRatesModal({
             <div className="mt-6 grid gap-6 text-sm leading-7 text-copy-muted">
               <section>
                 <h3 className="font-semibold text-copy">Prepared for Dispatch Within Three Working Days</h3>
-                <p className="mt-2">Available garments are prepared for dispatch within three working days following payment and inventory confirmation.</p>
+                <p className="mt-2">Available garments are prepared for dispatch within 3 working days following payment and inventory confirmation.</p>
               </section>
               <section className="border-t border-line pt-5">
                 <h3 className="font-semibold text-copy">Shipping & Delivery Within Nigeria</h3>
@@ -62,12 +62,16 @@ export function ShippingRatesModal({
                   {internationalRates.map((rate) => (
                     <article key={rate.outfits} className="border border-line p-4">
                       <p className="text-[10px] font-semibold uppercase text-gold">{rate.outfits} outfits</p>
-                      <dl className="mt-3 grid grid-cols-2 gap-3 text-xs">
-                        <div><dt className="text-copy-muted">USD</dt><dd className="font-semibold text-copy">{rate.usd}</dd></div>
-                        <div><dt className="text-copy-muted">GBP</dt><dd className="font-semibold text-copy">{rate.gbp}</dd></div>
-                        <div><dt className="text-copy-muted">EUR</dt><dd className="font-semibold text-copy">{rate.eur}</dd></div>
-                        <div><dt className="text-copy-muted">NGN</dt><dd className="font-semibold text-copy">{rate.ngn}</dd></div>
-                      </dl>
+                      {"manualQuotation" in rate ? (
+                        <div className="mt-3"><p className="font-semibold text-copy">Manual Quotation</p><p className="mt-1 text-[11px] text-copy-muted">6–8 days</p></div>
+                      ) : (
+                        <dl className="mt-3 grid grid-cols-2 gap-3 text-xs">
+                          <div><dt className="text-copy-muted">USD</dt><dd className="font-semibold text-copy">{rate.usd}</dd></div>
+                          <div><dt className="text-copy-muted">GBP</dt><dd className="font-semibold text-copy">{rate.gbp}</dd></div>
+                          <div><dt className="text-copy-muted">EUR</dt><dd className="font-semibold text-copy">{rate.eur}</dd></div>
+                          <div><dt className="text-copy-muted">NGN</dt><dd className="font-semibold text-copy">{rate.ngn}</dd></div>
+                        </dl>
+                      )}
                     </article>
                   ))}
                 </div>

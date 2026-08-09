@@ -8,6 +8,44 @@
   overscroll-behavior: contain;
 }
 
+@keyframes home-hero-fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes home-hero-fade-in {
+  to { opacity: 1; }
+}
+
+@keyframes home-hero-copy-to-light {
+  to { color: rgb(255 255 255 / 100%); }
+}
+
+@keyframes home-hero-kicker-to-gold {
+  to { color: #cfad5b; }
+}
+
+/* A CSS-timed visual hand-off keeps the introductory hero deterministic even
+   while the client bundle is still loading. The component state mirrors it
+   once hydration is available. */
+main > section[data-home-hero] > .home-hero-image,
+main > section[data-home-hero] > .home-hero-light-gradient {
+  animation: home-hero-fade-out 700ms ease-out 8s forwards;
+}
+
+main > section[data-home-hero] > .home-hero-video,
+main > section[data-home-hero] > .home-hero-video-overlay {
+  animation: home-hero-fade-in 700ms ease-out 8s forwards;
+}
+
+main > section[data-home-hero] .container-luxe > div.max-w-xl h1,
+main > section[data-home-hero] .container-luxe > div.max-w-xl > p:not(:first-child) {
+  animation: home-hero-copy-to-light 700ms ease-out 8s forwards;
+}
+
+main > section[data-home-hero] .container-luxe > div.max-w-xl > p:first-child {
+  animation: home-hero-kicker-to-gold 700ms ease-out 8s forwards;
+}
+
 @media (max-width: 1023px) {
   header > div:nth-child(2) {
     height: 58px !important;
@@ -44,5 +82,42 @@
 @media (max-width: 639px) {
   header.absolute + main > section:first-child > img {
     object-position: 78% 18% !important;
+  }
+}
+
+@media (max-width: 639px) {
+  header.absolute + main > section[data-home-hero] > :is(.home-hero-image, .home-hero-video) {
+    top: 0 !important;
+    height: 100% !important;
+    object-position: center 86px !important;
+  }
+}
+
+/* Existing desktop art-direction rules pre-date the additional video layers.
+   Keep the approved still treatment while ensuring the video darkens only once it is active. */
+@media (min-width: 1024px) {
+  main > section[data-home-hero],
+  main > section[data-home-hero] > .container-luxe {
+    min-height: 640px !important;
+  }
+
+  main > section[data-home-hero] > .home-hero-video-overlay {
+    background: linear-gradient(to bottom, rgb(0 0 0 / 34%), rgb(0 0 0 / 28%), rgb(0 0 0 / 48%)) !important;
+  }
+
+  main > section[data-home-hero][data-video-active="true"] .container-luxe > div.max-w-xl {
+    color: white !important;
+  }
+
+  main > section[data-home-hero][data-video-active="true"] .container-luxe > div.max-w-xl h1 {
+    color: white !important;
+  }
+
+  main > section[data-home-hero][data-video-active="true"] .container-luxe > div.max-w-xl p {
+    color: rgb(255 255 255 / 82%) !important;
+  }
+
+  main > section[data-home-hero][data-video-active="true"] .container-luxe > div.max-w-xl > p:first-child {
+    color: #cfad5b !important;
   }
 }

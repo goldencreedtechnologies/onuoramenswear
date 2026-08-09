@@ -13,7 +13,21 @@ export const metadata: Metadata = {
   },
   description:
     "Contemporary African menswear designed and made in Nigeria for a global wardrobe.",
-  metadataBase: new URL("https://onuoramenswear.com")
+  metadataBase: new URL("https://onuoramenswear.com"),
+  openGraph: {
+    type: "website",
+    locale: "en_NG",
+    siteName: "ỌNUỌRA Menswear",
+    title: "ỌNUỌRA Menswear | Contemporary African Menswear",
+    description:
+      "Contemporary African menswear designed and made in Nigeria for a global wardrobe."
+  },
+  twitter: {
+    card: "summary",
+    title: "ỌNUỌRA Menswear | Contemporary African Menswear",
+    description:
+      "Contemporary African menswear designed and made in Nigeria for a global wardrobe."
+  }
 };
 
 export default function RootLayout({

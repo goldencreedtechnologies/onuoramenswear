@@ -9,7 +9,7 @@ const internationalRates = [
   { outfits: "1–2", usd: "$60", gbp: "£50", eur: "€55", ngn: "₦100,000" },
   { outfits: "3–4", usd: "$90", gbp: "£75", eur: "€80", ngn: "₦150,000" },
   { outfits: "5–6", usd: "$120", gbp: "£100", eur: "€110", ngn: "₦200,000" },
-  { outfits: "7+", usd: "Manual quotation", gbp: "Manual quotation", eur: "Manual quotation", ngn: "Manual quotation" }
+  { outfits: "7+", manualQuotation: true }
 ];
 
 export default function ShippingPage() {
@@ -17,13 +17,13 @@ export default function ShippingPage() {
     <main className="min-h-screen w-full overflow-hidden bg-page pt-[104px] text-copy">
       <section className="container-luxe min-w-0 py-10 sm:py-12 md:py-16">
         <p className="text-[10px] font-semibold uppercase text-gold">Shipping & Delivery</p>
-        <h1 className="mt-3 max-w-4xl text-3xl font-semibold leading-tight md:text-5xl">Shipping & Delivery Across Nigeria and Worldwide</h1>
+        <h1 className="mt-3 max-w-4xl text-3xl font-semibold leading-tight md:text-5xl">Worldwide Shipping Rates</h1>
         <p className="mt-5 max-w-3xl text-sm leading-7 text-copy-muted">Every ỌNUỌRA order is prepared, inspected and packaged before dispatch. Your available shipping and delivery service and final charge are shown at checkout after you enter your complete address.</p>
 
         <div className="mt-10 grid min-w-0 gap-9 md:mt-12 md:gap-10">
           <section className="min-w-0 border-t border-line pt-7" aria-labelledby="dispatch">
             <h2 id="dispatch" className="text-xl font-semibold">Prepared for Dispatch Within Three Working Days</h2>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-copy-muted">Available garments are prepared for dispatch within three working days following payment and inventory confirmation. Orders placed at weekends or on public holidays begin processing on the next working day. Where an unexpected delay occurs, we will contact you directly.</p>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-copy-muted">Available garments are prepared for dispatch within 3 working days following payment and inventory confirmation. Orders placed at weekends or on public holidays begin processing on the next working day. Where an unexpected delay occurs, we will contact you directly.</p>
           </section>
 
           <section className="min-w-0 border-t border-line pt-7" aria-labelledby="nigeria-delivery">
@@ -38,19 +38,23 @@ export default function ShippingPage() {
               {internationalRates.map((rate) => (
                 <article key={rate.outfits} className="min-w-0 border border-line bg-page p-4">
                   <p className="text-[10px] font-semibold uppercase text-gold">{rate.outfits} outfits</p>
-                  <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
-                    <div><dt className="text-[9px] uppercase text-copy-muted">USD</dt><dd className="mt-1 break-words font-semibold">{rate.usd}</dd></div>
-                    <div><dt className="text-[9px] uppercase text-copy-muted">GBP</dt><dd className="mt-1 break-words font-semibold">{rate.gbp}</dd></div>
-                    <div><dt className="text-[9px] uppercase text-copy-muted">EUR</dt><dd className="mt-1 break-words font-semibold">{rate.eur}</dd></div>
-                    <div><dt className="text-[9px] uppercase text-copy-muted">NGN Display</dt><dd className="mt-1 break-words font-semibold">{rate.ngn}</dd></div>
-                  </dl>
+                  {"manualQuotation" in rate ? (
+                    <div className="mt-3"><p className="font-semibold">Manual Quotation</p><p className="mt-1 text-xs text-copy-muted">6–8 days</p></div>
+                  ) : (
+                    <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
+                      <div><dt className="text-[9px] uppercase text-copy-muted">USD</dt><dd className="mt-1 break-words font-semibold">{rate.usd}</dd></div>
+                      <div><dt className="text-[9px] uppercase text-copy-muted">GBP</dt><dd className="mt-1 break-words font-semibold">{rate.gbp}</dd></div>
+                      <div><dt className="text-[9px] uppercase text-copy-muted">EUR</dt><dd className="mt-1 break-words font-semibold">{rate.eur}</dd></div>
+                      <div><dt className="text-[9px] uppercase text-copy-muted">NGN Display</dt><dd className="mt-1 break-words font-semibold">{rate.ngn}</dd></div>
+                    </dl>
+                  )}
                 </article>
               ))}
             </div>
             <div className="mt-6 hidden max-w-full overflow-x-auto border border-line sm:block">
               <table className="w-full min-w-[680px] border-collapse text-left text-sm">
                 <thead className="bg-surface-subtle text-[10px] uppercase text-copy-muted"><tr><th className="border-b border-line px-4 py-4">Outfits</th><th className="border-b border-line px-4 py-4">USD</th><th className="border-b border-line px-4 py-4">GBP</th><th className="border-b border-line px-4 py-4">EUR</th><th className="border-b border-line px-4 py-4">NGN Display</th></tr></thead>
-                <tbody>{internationalRates.map((rate) => <tr key={rate.outfits} className="border-b border-line last:border-b-0"><td className="px-4 py-4 font-semibold">{rate.outfits}</td><td className="px-4 py-4">{rate.usd}</td><td className="px-4 py-4">{rate.gbp}</td><td className="px-4 py-4">{rate.eur}</td><td className="px-4 py-4">{rate.ngn}</td></tr>)}</tbody>
+                <tbody>{internationalRates.map((rate) => <tr key={rate.outfits} className="border-b border-line last:border-b-0"><td className="px-4 py-4 font-semibold">{rate.outfits}</td>{"manualQuotation" in rate ? <td colSpan={4} className="px-4 py-4"><p className="font-semibold">Manual Quotation</p><p className="mt-1 text-xs text-copy-muted">6–8 days</p></td> : <><td className="px-4 py-4">{rate.usd}</td><td className="px-4 py-4">{rate.gbp}</td><td className="px-4 py-4">{rate.eur}</td><td className="px-4 py-4">{rate.ngn}</td></>}</tr>)}</tbody>
               </table>
             </div>
             <p className="mt-4 text-sm leading-7 text-copy-muted">Orders of seven outfits or more require a shipping and delivery quotation from Client Services.</p>
