@@ -286,7 +286,7 @@ export async function markOrderPaid({
 
   const { data: order, error: orderError } = await client
     .from("orders")
-    .select("id, order_number, created_at, tracking_id, email, customer_profile_id, full_name, payment_status, shipping_status, currency, subtotal_usd, shipping_usd, total_usd, shipping_address, shipping_city, shipping_state, shipping_postal_code, shipping_country, delivery_method_name, delivery_quotes(estimated_min_days, estimated_max_days), order_items(product_slug, product_name, product_edition, color_name, size, quantity, unit_price_usd)")
+    .select("id, order_number, created_at, tracking_id, email, customer_profile_id, full_name, payment_provider, payment_status, shipping_status, currency, subtotal_usd, shipping_usd, total_usd, shipping_address, shipping_city, shipping_state, shipping_postal_code, shipping_country, delivery_method_name, delivery_quotes(estimated_min_days, estimated_max_days), order_items(product_slug, product_name, product_edition, color_name, size, quantity, unit_price_usd)")
     .eq("stripe_checkout_session_id", checkoutSessionId)
     .maybeSingle();
 
@@ -367,7 +367,7 @@ export async function markOrderPaid({
         dispatchStatus: "Payment confirmed and preparing for dispatch",
         estimatedDispatchTiming: "Prepared for dispatch within three working days",
         estimatedDeliveryWindow: deliveryEstimate?.estimated_min_days && deliveryEstimate?.estimated_max_days ? `${deliveryEstimate.estimated_min_days}-${deliveryEstimate.estimated_max_days} business days after dispatch` : "Confirmed with your dispatch notification",
-        paymentStatus: "Paid",
+        paymentStatus: order.payment_provider === "stripe_testing_voucher" ? "Paid with authorised 100% testing voucher" : "Paid",
         contactInformation: "orders@onuoramenswear.com",
         subtotal: operationalUsdAmountInCurrency(Number(order.subtotal_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
         shipping: operationalUsdAmountInCurrency(Number(order.shipping_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),

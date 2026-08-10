@@ -18,6 +18,7 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
   const confirmation = voucherOrder && order_id
     ? await getOrderConfirmation(order_id, token)
     : await getOrderConfirmationForStripeSession(session_id);
+  const zeroValueVoucher = voucherOrder || confirmation?.zeroValueVoucher;
   const emailWasSent = confirmation?.emailStatus === "sent";
 
   return (
@@ -29,14 +30,14 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
             <Check className="h-5 w-5" />
           </span>
           <p className="mt-6 text-[10px] font-semibold uppercase text-gold">
-            {voucherOrder ? "Order confirmed" : "Payment received"}
+            {zeroValueVoucher ? "Order confirmed" : "Payment received"}
           </p>
           <h1 className="mt-3 text-3xl font-semibold leading-tight md:text-5xl">
             Your order is confirmed.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-copy-muted">
-            {voucherOrder
-              ? `Thank you${confirmation?.fullName ? `, ${confirmation.fullName}` : ""}. Your 100% testing voucher was applied and no payment was required. Your order has been received and is now preparing for dispatch review.`
+            {zeroValueVoucher
+              ? `Thank you${confirmation?.fullName ? `, ${confirmation.fullName}` : ""}. Your authorised 100% voucher was applied and no payment was required. Your order has been received and is now preparing for dispatch review.`
               : confirmation
                 ? `Thank you${confirmation.fullName ? `, ${confirmation.fullName}` : ""}. Your payment has been confirmed and the house will begin fulfilment shortly.`
                 : "Thank you for choosing ỌNUỌRA. Stripe is confirming the payment and the house will begin fulfilment as soon as that confirmation arrives."}
@@ -64,14 +65,14 @@ export default async function CheckoutSuccessPage({ searchParams }: CheckoutSucc
               <p className="mt-4 border-t border-line pt-4">{emailWasSent ? "Your order confirmation and invoice have been sent to your email." : "Your order confirmation is being prepared and will be sent to your email shortly."}</p>
               <Link href="/tracking" className="gold-focus mt-4 inline-flex min-h-11 items-center justify-center bg-obsidian px-4 text-[10px] font-semibold uppercase tracking-[0.08em] text-ivory hover:bg-gold hover:text-obsidian">Track your order</Link>
             </div>
-          ) : voucherOrder ? (
+          ) : zeroValueVoucher ? (
             <div className="mx-auto mt-6 max-w-xl border border-line bg-panel-muted p-5 text-left text-sm leading-7 text-copy-muted">
               <p><span className="font-semibold text-copy">Dispatch status:</span> Order confirmed and preparing for dispatch</p>
               <p><span className="font-semibold text-copy">Estimated dispatch:</span> Within 3 working days</p>
               <p className="mt-3">We are preparing your order confirmation. If it does not arrive shortly, please contact Client Services.</p>
             </div>
           ) : null}
-          {!confirmation && !voucherOrder ? (
+          {!confirmation && !zeroValueVoucher ? (
             <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-copy-muted">
               We are finalising your payment confirmation. This page will update once the secure payment notification is received.
             </p>

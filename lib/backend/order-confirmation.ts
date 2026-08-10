@@ -13,6 +13,7 @@ type ConfirmationOrderRow = {
   tracking_status: string;
   created_at: string;
   full_name: string;
+  payment_provider: string | null;
   status: string;
   payment_status: string;
   shipping_status: string | null;
@@ -84,6 +85,7 @@ async function toConfirmation(client: NonNullable<ReturnType<typeof createSupaba
 
   return {
     fullName: order.full_name,
+    zeroValueVoucher: order.payment_provider === "stripe_testing_voucher",
     orderNumber: order.order_number,
     trackingId: order.tracking_id,
     trackingStatus: order.tracking_status,
@@ -126,7 +128,7 @@ async function readOrderConfirmation(column: "id" | "stripe_checkout_session_id"
   const { data, error } = await client
     .from("orders")
     .select(
-      "id, order_number, tracking_id, tracking_status, created_at, full_name, status, payment_status, shipping_status, currency, subtotal_usd, shipping_usd, total_usd, shipping_address, shipping_city, shipping_state, shipping_postal_code, shipping_country, delivery_method_name, delivery_quotes(estimated_min_days, estimated_max_days), order_items(product_slug, product_name, product_edition, color_name, size, quantity, unit_price_usd)"
+      "id, order_number, tracking_id, tracking_status, created_at, full_name, payment_provider, status, payment_status, shipping_status, currency, subtotal_usd, shipping_usd, total_usd, shipping_address, shipping_city, shipping_state, shipping_postal_code, shipping_country, delivery_method_name, delivery_quotes(estimated_min_days, estimated_max_days), order_items(product_slug, product_name, product_edition, color_name, size, quantity, unit_price_usd)"
     )
     .eq(column, value)
     .maybeSingle();
