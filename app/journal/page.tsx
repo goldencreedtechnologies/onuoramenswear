@@ -14,7 +14,11 @@ const journalImages = [
   "/brand/products/original/aja/ajah-grid.png"
 ];
 
-const journalDestinations = ["/about#story", "/about", "/collection/heritage"];
+const journalDestinations = [
+  "/journal/new-language-contemporary-african-menswear",
+  "/journal/inside-making-onuora-outfit",
+  "/journal/permanent-collections"
+];
 
 const categories = ["Behind the Collections", "African Craftsmanship", "Campaigns"];
 

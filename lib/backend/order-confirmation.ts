@@ -9,6 +9,9 @@ const tokenContext = "onuora:order-confirmation:v1";
 type ConfirmationOrderRow = {
   id: string;
   order_number: string;
+  tracking_id: string;
+  tracking_status: string;
+  created_at: string;
   full_name: string;
   status: string;
   payment_status: string;
@@ -63,23 +66,16 @@ export function hasValidOrderConfirmationToken(orderId: string, token: string | 
   return expectedBuffer.length === receivedBuffer.length && timingSafeEqual(expectedBuffer, receivedBuffer);
 }
 
-export async function getOrderConfirmation(orderId: string, token: string | undefined) {
-  if (!hasValidOrderConfirmationToken(orderId, token)) return null;
-
-  const client = createSupabaseServiceClient();
-  if (!client) return null;
-
-  const { data, error } = await client
-    .from("orders")
-    .select(
-      "id, order_number, full_name, status, payment_status, shipping_status, currency, subtotal_usd, shipping_usd, total_usd, shipping_address, shipping_city, shipping_state, shipping_postal_code, shipping_country, delivery_method_name, delivery_quotes(estimated_min_days, estimated_max_days), order_items(product_slug, product_name, product_edition, color_name, size, quantity, unit_price_usd)"
-    )
-    .eq("id", orderId)
+async function toConfirmation(client: NonNullable<ReturnType<typeof createSupabaseServiceClient>>, order: ConfirmationOrderRow) {
+  const { data: notification } = await client
+    .from("notification_queue")
+    .select("status")
+    .eq("order_id", order.id)
+    .eq("template", "order_confirmed")
+    .order("created_at", { ascending: false })
+    .limit(1)
     .maybeSingle();
 
-  if (error || !data) return null;
-
-  const order = data as ConfirmationOrderRow;
   const deliveryQuote = Array.isArray(order.delivery_quotes) ? order.delivery_quotes[0] : order.delivery_quotes;
   const currency: CurrencyCode = isCurrencyCode(order.currency) ? order.currency : "USD";
   const subtotalUsd = Number(order.subtotal_usd);
@@ -89,6 +85,10 @@ export async function getOrderConfirmation(orderId: string, token: string | unde
   return {
     fullName: order.full_name,
     orderNumber: order.order_number,
+    trackingId: order.tracking_id,
+    trackingStatus: order.tracking_status,
+    orderDate: order.created_at,
+    emailStatus: notification?.status ?? "queued",
     status: order.status,
     paymentStatus: order.payment_status,
     shippingStatus: order.shipping_status ?? "not_started",
@@ -117,4 +117,31 @@ export async function getOrderConfirmation(orderId: string, token: string | unde
       quantity: item.quantity
     }))
   };
+}
+
+async function readOrderConfirmation(column: "id" | "stripe_checkout_session_id", value: string) {
+  const client = createSupabaseServiceClient();
+  if (!client) return null;
+
+  const { data, error } = await client
+    .from("orders")
+    .select(
+      "id, order_number, tracking_id, tracking_status, created_at, full_name, status, payment_status, shipping_status, currency, subtotal_usd, shipping_usd, total_usd, shipping_address, shipping_city, shipping_state, shipping_postal_code, shipping_country, delivery_method_name, delivery_quotes(estimated_min_days, estimated_max_days), order_items(product_slug, product_name, product_edition, color_name, size, quantity, unit_price_usd)"
+    )
+    .eq(column, value)
+    .maybeSingle();
+
+  if (error || !data) return null;
+
+  return toConfirmation(client, data as ConfirmationOrderRow);
+}
+
+export async function getOrderConfirmation(orderId: string, token: string | undefined) {
+  if (!hasValidOrderConfirmationToken(orderId, token)) return null;
+  return readOrderConfirmation("id", orderId);
+}
+
+export async function getOrderConfirmationForStripeSession(sessionId: string | undefined) {
+  if (!sessionId || !sessionId.startsWith("cs_")) return null;
+  return readOrderConfirmation("stripe_checkout_session_id", sessionId);
 }

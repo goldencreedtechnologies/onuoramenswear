@@ -4,18 +4,10 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Cta } from "@/components/cta";
 
-const HERO_IMAGE_DURATION_MS = 8_000;
-
 export function HomeHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [transitionDue, setTransitionDue] = useState(false);
   const [videoReady, setVideoReady] = useState(false);
-  const videoActive = transitionDue && videoReady;
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setTransitionDue(true), HERO_IMAGE_DURATION_MS);
-    return () => window.clearTimeout(timer);
-  }, []);
+  const videoActive = videoReady;
 
   useEffect(() => {
     if (!videoActive) return;

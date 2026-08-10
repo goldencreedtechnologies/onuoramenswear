@@ -345,17 +345,17 @@ export const trustSignals = [
 
 export const journalPosts = [
   {
-    title: "The New Language Of Contemporary African Menswear",
+    title: "The New Language of Contemporary African Menswear",
     tag: "Behind the Collections",
     excerpt: "How modern African tailoring can feel rooted, precise and relevant now."
   },
   {
-    title: "Inside The Making Of An ỌNUỌRA Outfit",
+    title: "Inside the Making of an ỌNUỌRA Outfit",
     tag: "African Craftsmanship",
     excerpt: "A closer look at proportion, construction, finishing and Nigerian authorship."
   },
   {
-    title: "The Permanent Collections Campaign",
+    title: "The Permanent Collections",
     tag: "Campaigns",
     excerpt: "Three collections, one philosophy and a wardrobe designed for different occasions."
   }

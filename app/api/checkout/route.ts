@@ -94,6 +94,8 @@ export async function POST(request: Request) {
         status: "paid",
         payment_status: "paid",
         payment_provider: "testing_voucher",
+        tracking_status: "order_confirmed",
+        tracking_updated_at: now,
         subtotal_usd: order.subtotalUsd,
         shipping_usd: order.shippingUsd,
         total_usd: 0,
@@ -137,8 +139,11 @@ export async function POST(request: Request) {
           edition: item.edition,
           colour: item.colorName,
           size: item.size,
-          quantity: item.quantity
+          quantity: item.quantity,
+          unitPrice: PRODUCT_PRICES[currency]
         })),
+        orderDate: new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric" }).format(new Date(order.createdAt)),
+        trackingId: order.trackingId,
         deliveryAddress: [
           parsed.data.shippingAddress,
           parsed.data.shippingCity,
@@ -151,7 +156,7 @@ export async function POST(request: Request) {
         estimatedDispatchTiming: "Prepared for dispatch within three working days",
         estimatedDeliveryWindow: `${order.deliveryQuote.estimatedMinDays}-${order.deliveryQuote.estimatedMaxDays} business days after dispatch`,
         paymentStatus: "Paid with authorised testing voucher",
-        contactInformation: "menswear@onuoraenterprises.com",
+        contactInformation: "orders@onuoramenswear.com",
         subtotalUsd: order.subtotalUsd,
         shippingUsd: order.shippingUsd,
         discountUsd: order.totalUsd,

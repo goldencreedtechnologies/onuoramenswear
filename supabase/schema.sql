@@ -162,6 +162,8 @@ create table if not exists public.delivery_quotes (
   created_at timestamptz not null default now()
 );
 
+create sequence if not exists public.onuora_tracking_number_seq;
+
 create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
   customer_profile_id uuid references public.customer_profiles(id) on delete set null,
@@ -194,6 +196,9 @@ create table if not exists public.orders (
   inventory_sold_at timestamptz,
   stripe_checkout_session_id text,
   stripe_payment_intent_id text,
+  tracking_id text not null unique default ('TRK-' || to_char(current_date, 'YYYY') || '-' || lpad(nextval('public.onuora_tracking_number_seq')::text, 8, '0')),
+  tracking_status text not null default 'order_received' check (tracking_status in ('order_received', 'order_confirmed', 'preparing_order', 'ready_for_dispatch', 'dispatched', 'in_transit', 'out_for_delivery', 'delivered')),
+  tracking_updated_at timestamptz not null default now(),
   subtotal_usd numeric(10,2) not null default 0,
   shipping_usd numeric(10,2) not null default 0,
   total_usd numeric(10,2) not null default 0,

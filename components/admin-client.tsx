@@ -112,6 +112,9 @@ type AdminOrder = {
   subtotalUsd: number;
   shippingUsd: number;
   totalUsd: number;
+  trackingId: string;
+  trackingStatus: string;
+  trackingUpdatedAt: string;
   createdAt: string;
   items: Array<{
     id: string;
@@ -257,6 +260,7 @@ type AdminModule = {
 const orderStatuses = ["pending_payment", "paid", "processing", "fulfilled", "cancelled", "payment_expired", "payment_failed"];
 const shippingStatuses = ["not_started", "quote_attached", "preparing", "ready_to_ship", "in_transit", "delivered", "manual_review"];
 const paymentStatuses = ["unpaid", "paid", "expired", "refunded", "failed"];
+const trackingStatuses = ["order_received", "order_confirmed", "preparing_order", "ready_for_dispatch", "dispatched", "in_transit", "out_for_delivery", "delivered"];
 
 const adminModules: AdminModule[] = [
   { id: "dashboard", label: "Dashboard", section: "Command", icon: LayoutDashboard, permission: "analytics.view", description: "Executive overview, sales pulse, operational health, tasks, and command widgets." },
@@ -421,7 +425,7 @@ export function AdminClient() {
   const lowStock = useMemo(() => inventory.filter((item) => item.isLowStock || item.isSoldOut), [inventory]);
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
-      const haystack = [order.id, order.email, order.fullName, order.status, order.paymentStatus, order.shippingStatus].join(" ").toLowerCase();
+      const haystack = [order.id, order.trackingId, order.email, order.fullName, order.status, order.paymentStatus, order.shippingStatus, order.trackingStatus].join(" ").toLowerCase();
       const matchesSearch = haystack.includes(globalSearch.toLowerCase());
       const matchesFilter = orderFilter === "all" || [order.status, order.paymentStatus, order.shippingStatus].includes(orderFilter);
       return matchesSearch && matchesFilter;
@@ -544,7 +548,7 @@ export function AdminClient() {
     setStatus({ type: "success", message: successMessage });
   }
 
-  async function updateOrder(orderId: string, payload: { status?: string; shippingStatus?: string; paymentStatus?: string }) {
+  async function updateOrder(orderId: string, payload: { status?: string; shippingStatus?: string; paymentStatus?: string; trackingStatus?: string }) {
     if (!window.confirm("Update this order status?")) return;
     setSavingId(orderId);
     const response = await fetch(`/api/admin/orders/${orderId}/status`, {
@@ -932,6 +936,7 @@ export function AdminClient() {
               <tr key={order.id} className="border-t border-gold/10 align-top">
                 <td className="px-4 py-4">
                   <p className="font-semibold text-copy">{shortId(order.id)}</p>
+                  <p className="mt-1 text-xs text-copy-muted">{order.trackingId}</p>
                   <p className="mt-1 text-xs text-copy-muted">{formatDate(order.createdAt)}</p>
                   <p className="mt-2 text-xs text-copy-muted">{order.deliveryMethodName ?? "Delivery method pending"}</p>
                 </td>
@@ -963,6 +968,9 @@ export function AdminClient() {
                     </select>
                     <select value={order.shippingStatus} onChange={(event) => updateOrder(order.id, { shippingStatus: event.target.value })} className="gold-focus min-h-10 rounded-2xl border border-gold/15 bg-page px-3 text-sm text-copy">
                       {shippingStatuses.map((value) => <option key={value} value={value}>{titleCase(value)}</option>)}
+                    </select>
+                    <select value={order.trackingStatus} onChange={(event) => updateOrder(order.id, { trackingStatus: event.target.value })} className="gold-focus min-h-10 rounded-2xl border border-gold/15 bg-page px-3 text-sm text-copy">
+                      {trackingStatuses.map((value) => <option key={value} value={value}>{titleCase(value)}</option>)}
                     </select>
                     {savingId === order.id ? <p className="inline-flex items-center gap-2 text-xs text-gold"><Loader2 className="h-3 w-3 animate-spin" />Saving</p> : null}
                   </div>

@@ -3,6 +3,7 @@ import { getStoreProducts } from "@/lib/backend/catalog";
 import { recordOrderEvent } from "@/lib/backend/order-lifecycle";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { trackingStatuses } from "@/lib/backend/tracking";
 
 export const orderStatusSchema = z.object({
   status: z
@@ -12,6 +13,7 @@ export const orderStatusSchema = z.object({
   shippingStatus: z
     .enum(["not_started", "quote_attached", "preparing", "ready_to_ship", "in_transit", "delivered", "manual_review"])
     .optional(),
+  trackingStatus: z.enum(trackingStatuses).optional(),
   note: z.string().trim().max(280).optional()
 });
 
@@ -118,6 +120,9 @@ type OrderRow = {
   shipping_usd: number;
   subtotal_usd: number;
   total_usd: number;
+  tracking_id: string;
+  tracking_status: string;
+  tracking_updated_at: string;
   created_at: string;
   updated_at: string;
   order_items?: OrderItemRow[];
@@ -176,6 +181,9 @@ function mapOrder(row: OrderRow) {
     subtotalUsd: toNumber(row.subtotal_usd),
     shippingUsd: toNumber(row.shipping_usd),
     totalUsd: toNumber(row.total_usd),
+    trackingId: row.tracking_id,
+    trackingStatus: row.tracking_status,
+    trackingUpdatedAt: row.tracking_updated_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     items: (row.order_items ?? []).map((item) => ({
@@ -395,7 +403,7 @@ export async function getAdminOrders() {
   const { data, error } = await serviceClient
     .from("orders")
     .select(
-      "id, email, full_name, phone, status, payment_status, shipping_status, inventory_status, delivery_method_name, shipping_country, shipping_city, shipping_state, shipping_address, subtotal_usd, shipping_usd, total_usd, created_at, updated_at, order_items(id, product_slug, quantity, size, unit_price_usd)"
+      "id, email, full_name, phone, status, payment_status, shipping_status, inventory_status, delivery_method_name, shipping_country, shipping_city, shipping_state, shipping_address, subtotal_usd, shipping_usd, total_usd, tracking_id, tracking_status, tracking_updated_at, created_at, updated_at, order_items(id, product_slug, quantity, size, unit_price_usd)"
     )
     .order("created_at", { ascending: false })
     .limit(80);
@@ -436,11 +444,16 @@ export async function updateAdminOrderStatus(admin: AdminSession, orderId: strin
     updates.shipping_status = input.shippingStatus;
   }
 
+  if (input.trackingStatus) {
+    updates.tracking_status = input.trackingStatus;
+    updates.tracking_updated_at = new Date().toISOString();
+  }
+
   const { data, error } = await serviceClient
     .from("orders")
     .update(updates)
     .eq("id", orderId)
-    .select("id, status, payment_status, shipping_status, inventory_status")
+    .select("id, status, payment_status, shipping_status, inventory_status, tracking_status")
     .maybeSingle();
 
   if (error || !data) {
@@ -458,7 +471,8 @@ export async function updateAdminOrderStatus(admin: AdminSession, orderId: strin
     source: "admin",
     metadata: {
       adminUserId: admin.id,
-      adminRole: admin.role
+      adminRole: admin.role,
+      trackingStatus: data.tracking_status
     }
   });
 

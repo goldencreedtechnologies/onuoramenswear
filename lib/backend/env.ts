@@ -109,7 +109,7 @@ export function getResendApiKey() {
 }
 
 export function getTransactionalEmailFrom() {
-  return getOptionalEnv("TRANSACTIONAL_EMAIL_FROM") || "ỌNUỌRA Menswear <menswear@onuoraenterprises.com>";
+  return getOptionalEnv("TRANSACTIONAL_EMAIL_FROM") || "ỌNUỌRA Menswear <orders@onuoramenswear.com>";
 }
 
 export function hasEmailProviderConfig() {
