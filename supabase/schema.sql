@@ -250,6 +250,9 @@ create table if not exists public.notification_queue (
   updated_at timestamptz not null default now()
 );
 
+create unique index if not exists notification_queue_order_template_recipient_key
+  on public.notification_queue (order_id, template, recipient);
+
 create table if not exists public.admin_users (
   id uuid primary key default gen_random_uuid(),
   auth_user_id uuid not null unique references auth.users(id) on delete cascade,
