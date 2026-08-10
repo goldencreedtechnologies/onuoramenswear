@@ -286,6 +286,14 @@ export function Navigation() {
                 </div>
               ) : null}
             </div>
+            <Link
+              href="/account"
+              onClick={closeMenus}
+              className="gold-focus flex min-h-16 items-center justify-between border-b border-copy/12 text-base font-semibold uppercase tracking-[0.06em]"
+            >
+              <span className="inline-flex items-center gap-3"><UserRound className="h-4 w-4" aria-hidden="true" />Account</span>
+              <span aria-hidden="true">→</span>
+            </Link>
             {mobileLinks.map((link) => (
               <Link
                 key={link.label}
