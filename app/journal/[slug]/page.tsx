@@ -62,8 +62,8 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
             </section>
           ))}
         </div>
-        <div aria-hidden="true" className="pointer-events-none relative mx-auto mt-10 h-36 w-36 opacity-[0.16] md:absolute md:bottom-20 md:right-10 md:mt-0 md:h-64 md:w-64 md:opacity-[0.12] lg:right-20">
-          <Image src="/brand/onuora-mark-gold.png" alt="" fill sizes="(min-width: 768px) 256px, 144px" className="object-contain saturate-0 brightness-50" />
+        <div aria-hidden="true" className="pointer-events-none relative mx-auto mt-10 h-36 w-36 opacity-40 mix-blend-screen md:absolute md:bottom-20 md:right-10 md:mt-0 md:h-64 md:w-64 lg:right-20">
+          <Image src="/brand/onuora-mark-gold.png" alt="" fill priority sizes="(min-width: 768px) 256px, 144px" className="object-contain" />
         </div>
       </article>
 
