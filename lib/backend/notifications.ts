@@ -116,7 +116,8 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
     const itemHtml = items.map((item) => `<li style="margin:0 0 10px">${escapeHtml(item.quantity ?? 1)} × ${escapeHtml(item.name ?? "ỌNUỌRA outfit")}${item.edition ? ` · ${escapeHtml(item.edition)}` : ""}${item.colour ? ` · ${escapeHtml(item.colour)}` : ""}${item.size ? ` · Size ${escapeHtml(item.size)}` : ""}${typeof item.unitPrice === "number" ? ` · ${escapeHtml(money(item.unitPrice, currency))} each` : ""}</li>`).join("");
     const text = [
       `${fullName ? `Dear ${fullName},` : "Thank you,"} your order is confirmed.`,
-      `Order reference: ${orderReference}`,
+      `Order number: ${orderReference}`,
+      ...(trackingId ? [`Tracking ID: ${trackingId}`] : []),
       ...(orderDate ? [`Order date: ${orderDate}`] : []),
       "Purchased items:",
       itemText,
@@ -130,12 +131,12 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
       `Shipping: ${money(shipping, currency)}`,
       `Discount: -${money(discount, currency)}`,
       `Total paid: ${money(total, currency)}`,
-      `Client Care: ${contactInformation}`,
-      ...(trackingId ? [`Tracking ID: ${trackingId}`] : [])
+      `Client Care: ${contactInformation}`
     ].join("\n\n");
     const body = `
       <p style="margin:0 0 16px">${fullName ? `Dear ${escapeHtml(fullName)},` : "Thank you,"} your order is confirmed.</p>
-      <p style="margin:0 0 8px"><strong>Order reference:</strong> ${escapeHtml(orderReference)}</p>
+      <p style="margin:0 0 8px"><strong>Order number:</strong> ${escapeHtml(orderReference)}</p>
+      ${trackingId ? `<p style="margin:0 0 8px"><strong>Tracking ID:</strong> ${escapeHtml(trackingId)}</p>` : ""}
       ${orderDate ? `<p style="margin:0 0 16px"><strong>Order date:</strong> ${escapeHtml(orderDate)}</p>` : ""}
       <p style="margin:0 0 8px"><strong>Purchased items</strong></p>
       <ul style="margin:0 0 18px;padding-left:20px">${itemHtml}</ul>

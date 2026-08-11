@@ -32,8 +32,7 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
   if (!article) notFound();
 
   return (
-    <main className="relative overflow-hidden bg-[#f4eee6] pt-[104px] text-copy">
-      <div aria-hidden="true" className="pointer-events-none absolute -right-20 top-44 hidden h-[420px] w-[420px] rounded-full border-[34px] border-obsidian/[0.045] md:block" />
+    <main className="relative overflow-hidden bg-[linear-gradient(180deg,#fbf8f2_0%,#f4eee6_58%,#faf8f4_100%)] pt-[104px] text-copy">
       <section className="container-luxe relative pb-12 pt-9 md:pb-18 md:pt-14">
         <Link href="/journal" className="gold-focus inline-flex min-h-11 items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-copy-muted transition hover:text-copy">
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
@@ -55,13 +54,16 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
       <article className="container-luxe relative pb-14 md:pb-20">
         <div className="max-w-3xl border-t border-copy/12 pt-10 md:pt-14">
           {article.sections.map((section, index) => (
-            <section key={section.heading ?? index} className={index === 0 ? "" : "mt-11 md:mt-14"}>
-              {section.heading ? <h2 className="font-display text-3xl font-semibold leading-tight md:text-4xl">{section.heading}</h2> : null}
-              <div className={section.heading ? "mt-5 space-y-5 text-[15px] leading-8 text-copy-muted md:text-base" : "space-y-5 text-[15px] leading-8 text-copy-muted md:text-base"}>
+            <section key={section.heading ?? index} className={index === 0 ? "" : "mt-10 border-t border-copy/10 pt-8 md:mt-12 md:pt-10"}>
+              {section.heading ? <h2 className="font-display text-2xl font-semibold leading-[1.15] tracking-[-0.02em] md:text-3xl">{section.heading}</h2> : null}
+              <div className={section.heading ? "mt-4 space-y-3 text-[15px] leading-6 text-copy-muted md:text-base md:leading-7" : "space-y-3 text-[15px] leading-6 text-copy-muted md:text-base md:leading-7"}>
                 {section.paragraphs.map((paragraph, paragraphIndex) => <p key={paragraphIndex}>{paragraph}</p>)}
               </div>
             </section>
           ))}
+        </div>
+        <div aria-hidden="true" className="pointer-events-none relative mx-auto mt-10 h-36 w-36 opacity-[0.16] md:absolute md:bottom-20 md:right-10 md:mt-0 md:h-64 md:w-64 md:opacity-[0.12] lg:right-20">
+          <Image src="/brand/onuora-mark-gold.png" alt="" fill sizes="(min-width: 768px) 256px, 144px" className="object-contain saturate-0 brightness-50" />
         </div>
       </article>
 
