@@ -4,6 +4,7 @@ import { resolveDeliveryQuote } from "@/lib/backend/delivery";
 import { markOrderInventorySold, releaseOrderInventory, reserveOrderInventory } from "@/lib/backend/inventory";
 import { queueOrderNotification, recordOrderEvent } from "@/lib/backend/order-lifecycle";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
+import { getOrderNotificationEmail } from "@/lib/backend/env";
 import { priceToUsd } from "@/lib/cart";
 import { isAdditionalProductColour, isCurrencyCode, operationalUsdAmountInCurrency, promotionDiscountForQuantity } from "@/data/site-config";
 
@@ -382,6 +383,39 @@ export async function markOrderPaid({
         )
       }
     });
+    const orderNotificationEmail = getOrderNotificationEmail();
+
+    if (orderNotificationEmail) {
+      await queueOrderNotification({
+        orderId: order.id as string,
+        customerProfileId: order.customer_profile_id as string | null,
+        template: "new_order_admin",
+        recipient: orderNotificationEmail,
+        subject: `New ỌNUỌRA order · ${order.order_number}`,
+        payload: {
+          orderReference: order.order_number,
+          fullName: order.full_name,
+          customerEmail: order.email,
+          currency: isCurrencyCode(order.currency) ? order.currency : "USD",
+          purchasedItems: (order.order_items ?? []).map((item) => ({
+            name: item.product_name ?? item.product_slug,
+            edition: item.product_edition ?? undefined,
+            colour: item.color_name ?? undefined,
+            size: item.size,
+            quantity: item.quantity
+          })),
+          trackingId: order.tracking_id,
+          paymentStatus: order.payment_provider === "stripe_testing_voucher" ? "Paid with authorised 100% testing voucher" : "Paid",
+          subtotal: operationalUsdAmountInCurrency(Number(order.subtotal_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
+          shipping: operationalUsdAmountInCurrency(Number(order.shipping_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
+          discount: operationalUsdAmountInCurrency(
+            Math.max(0, Number(order.subtotal_usd) + Number(order.shipping_usd) - Number(order.total_usd)),
+            isCurrencyCode(order.currency) ? order.currency : "USD"
+          ),
+          total: operationalUsdAmountInCurrency(Number(order.total_usd), isCurrencyCode(order.currency) ? order.currency : "USD")
+        }
+      });
+    }
   }
 
   return { ok: true as const };

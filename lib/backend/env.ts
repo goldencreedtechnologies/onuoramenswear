@@ -112,6 +112,10 @@ export function getTransactionalEmailFrom() {
   return getOptionalEnv("TRANSACTIONAL_EMAIL_FROM") || "ỌNUỌRA Menswear <orders@onuoramenswear.com>";
 }
 
+export function getOrderNotificationEmail() {
+  return getOptionalEnv("ORDER_NOTIFICATION_EMAIL").trim();
+}
+
 export function hasEmailProviderConfig() {
   return Boolean(getResendApiKey() && getTransactionalEmailFrom());
 }

@@ -53,7 +53,7 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
   if (!article) notFound();
 
   return (
-    <main className="relative overflow-hidden bg-[linear-gradient(180deg,#fbf8f2_0%,#f6f1e9_52%,#fbf9f5_100%)] pt-[104px] text-copy">
+    <main className="relative overflow-hidden bg-[linear-gradient(180deg,#faf7ef_0%,#f1e9dc_54%,#faf8f3_100%)] pt-[104px] text-copy">
       <section className="container-luxe relative pb-11 pt-9 md:pb-16 md:pt-14">
         <Link href="/journal" className="gold-focus inline-flex min-h-11 items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-copy-muted transition hover:text-copy">
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
@@ -74,9 +74,10 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
       </section>
 
       <article className="container-luxe relative pb-24 md:pb-20">
-        <div className="max-w-3xl border-t border-copy/12 pt-10 md:pt-14">
+        <div className="border-t border-copy/12 pt-10 md:pt-14 lg:grid lg:grid-cols-[minmax(0,44rem)_minmax(17rem,1fr)] lg:gap-14 xl:gap-24">
+          <div>
           {article.sections.map((section, index) => (
-            <section key={section.heading ?? index} className={index === 0 ? "" : "mt-9 border-t border-copy/10 pt-8 md:mt-11 md:pt-10"}>
+            <section key={section.heading ?? index} className={index === 0 ? "" : "mt-9 border-t border-copy/10 pt-8 md:mt-11 md:pt-10 lg:border lg:border-copy/10 lg:bg-[#fffcf5]/45 lg:px-9 lg:py-10"}>
               {section.heading ? (
                 <>
                   <div aria-hidden="true" className="h-px w-10 bg-gold/70" />
@@ -92,8 +93,21 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
               </div>
             </section>
           ))}
+          </div>
+          <aside aria-label="Journal article details" className="relative hidden lg:block">
+            <div className="sticky top-36 border-l border-copy/15 pl-9 xl:pl-12">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">ỌNUỌRA Journal</p>
+              <p className="mt-3 max-w-[16rem] font-display text-2xl leading-tight text-copy">An editorial note from the house.</p>
+              <div className="my-8 h-px w-full bg-copy/12" />
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-copy-muted">{article.category}</p>
+              <p className="mt-3 max-w-[17rem] text-sm leading-6 text-copy-muted">{article.subtitle}</p>
+              <div aria-hidden="true" className="relative mt-12 h-64 w-64 max-w-full opacity-70 mix-blend-screen xl:h-72 xl:w-72">
+                <Image src="/brand/onuora-mark-gold.png" alt="" fill sizes="288px" className="object-contain" />
+              </div>
+            </div>
+          </aside>
         </div>
-        <div aria-hidden="true" className="pointer-events-none absolute bottom-3 right-3 h-20 w-20 opacity-[0.45] mix-blend-screen sm:bottom-4 sm:right-8 sm:h-24 sm:w-24 md:bottom-20 md:right-10 md:h-64 md:w-64 md:opacity-40 lg:right-20">
+        <div aria-hidden="true" className="pointer-events-none absolute bottom-3 right-3 h-20 w-20 opacity-[0.45] mix-blend-screen sm:bottom-4 sm:right-8 sm:h-24 sm:w-24 md:bottom-20 md:right-10 md:h-64 md:w-64 md:opacity-40 lg:hidden">
           <Image src="/brand/onuora-mark-gold.png" alt="" fill priority sizes="(min-width: 768px) 256px, 144px" className="object-contain" />
         </div>
       </article>
