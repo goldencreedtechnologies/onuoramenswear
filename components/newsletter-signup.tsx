@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, MouseEvent, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -140,11 +140,25 @@ export function NewsletterPopup() {
     setOpen(false);
   }
 
+  function handleBackdropClick(event: MouseEvent<HTMLDivElement>) {
+    if (event.target === event.currentTarget) close();
+  }
+
+  useEffect(() => {
+    if (!open) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") close();
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
+
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[140] grid place-items-center bg-black/58 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Join the ỌNUỌRA Circle">
-      <button type="button" className="absolute inset-0" onClick={close} aria-label="Close newsletter signup" />
+    <div className="fixed inset-0 z-[140] grid place-items-center bg-black/58 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Join the ỌNUỌRA Circle" onClick={handleBackdropClick}>
       <section className="relative z-10 w-full max-w-[360px] bg-[#f7f3e8] p-6 text-copy shadow-2xl sm:max-w-md sm:p-8">
         <button
           type="button"
