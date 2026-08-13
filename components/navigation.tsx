@@ -102,7 +102,6 @@ export function Navigation() {
     return products
       .filter((product) =>
         [
-          product.name,
           product.edition,
           product.colorName,
           getCollectionByFamily(product.family).englishName,
@@ -239,7 +238,7 @@ export function Navigation() {
                     <Image src={product.image} alt="" fill sizes="48px" className="object-cover" />
                   </span>
                   <span>
-                    <span className="block text-sm font-semibold">{product.name}</span>
+                    <span className="block text-sm font-semibold">{getCollectionByFamily(product.family).englishName}</span>
                     <span className="mt-1 block text-[10px] uppercase text-copy-muted">
                       {product.colorName} · {fixedProductPriceLabel(currency)}
                     </span>

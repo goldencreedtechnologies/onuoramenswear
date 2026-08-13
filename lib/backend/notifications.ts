@@ -1,4 +1,4 @@
-import { getResendApiKey, getSiteUrl, getTransactionalEmailFrom, hasEmailProviderConfig } from "@/lib/backend/env";
+import { getOrderNotificationEmail, getResendApiKey, getSiteUrl, getTransactionalEmailFrom, hasEmailProviderConfig } from "@/lib/backend/env";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 import { CURRENCY_LOCALES, isCurrencyCode, type CurrencyCode } from "@/data/site-config";
 import { Resend } from "resend";
@@ -33,6 +33,12 @@ type ConfirmedItem = {
   size?: string;
   quantity?: number;
   unitPrice?: number;
+};
+
+type InternalNotificationEvent = {
+  heading: string;
+  intro: string;
+  paymentStatus?: string;
 };
 
 function getString(payload: Record<string, unknown>, key: string, fallback = "") {
@@ -96,6 +102,43 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
   const currency = isCurrencyCode(currencyValue) ? currencyValue : "USD";
   const total = getNumber(row.payload, "total", getNumber(row.payload, "totalUsd"));
 
+  if (["internal_contact", "internal_circle_signup"].includes(row.template)) {
+    const event: InternalNotificationEvent = row.template === "internal_contact"
+      ? { heading: "New Client Care Enquiry.", intro: "A customer has sent a new message to the house." }
+      : { heading: "New Circle Sign-Up.", intro: "A visitor has joined the ỌNUỌRA Circle." };
+    const customerEmail = getString(row.payload, "customerEmail");
+    const phone = getString(row.payload, "phone");
+    const enquiry = getString(row.payload, "enquiry");
+    const country = getString(row.payload, "country");
+    const message = getString(row.payload, "message");
+    const subject = row.subject ?? `ỌNUỌRA website notification · ${event.heading.replace(/\.$/, "")}`;
+    const body = `
+      <p style="margin:0 0 16px">${escapeHtml(event.intro)}</p>
+      ${fullName ? `<p style="margin:0 0 8px"><strong>Name:</strong> ${escapeHtml(fullName)}</p>` : ""}
+      ${customerEmail ? `<p style="margin:0 0 8px"><strong>Email:</strong> ${escapeHtml(customerEmail)}</p>` : ""}
+      ${phone ? `<p style="margin:0 0 8px"><strong>Phone:</strong> ${escapeHtml(phone)}</p>` : ""}
+      ${country ? `<p style="margin:0 0 8px"><strong>Country:</strong> ${escapeHtml(country)}</p>` : ""}
+      ${enquiry ? `<p style="margin:0 0 8px"><strong>Enquiry:</strong> ${escapeHtml(enquiry)}</p>` : ""}
+      ${message ? `<p style="margin:16px 0 0"><strong>Message</strong><br>${escapeHtml(message).replace(/\n/g, "<br>")}</p>` : ""}
+    `;
+    const text = [event.intro, fullName && `Name: ${fullName}`, customerEmail && `Email: ${customerEmail}`, phone && `Phone: ${phone}`, country && `Country: ${country}`, enquiry && `Enquiry: ${enquiry}`, message && `Message: ${message}`].filter(Boolean).join("\n\n");
+    const email = baseEmail({ title: event.heading, body });
+    return { subject, text, html: email.html };
+  }
+
+  if (row.template === "abandoned_checkout") {
+    const resumeUrl = getString(row.payload, "resumeUrl", `${getSiteUrl().replace(/\/$/, "")}/cart`);
+    const subject = row.subject ?? "Can we help you complete your ỌNUỌRA order?";
+    const body = `
+      <p style="margin:0 0 16px">${fullName ? `Dear ${escapeHtml(fullName)},` : "Hello,"} we noticed you were unable to complete your order.</p>
+      <p style="margin:0 0 8px">If something prevented you from completing payment, reply to this email with the option that best describes what happened:</p>
+      <ul style="margin:0 0 16px;padding-left:20px"><li>A problem with my card or payment</li><li>The payment page did not work</li><li>A network or connection issue</li><li>A question about delivery</li><li>More information about the garment</li><li>I changed my mind or something else</li></ul>
+      <p style="margin:0">Your selected pieces remain available subject to inventory.</p>
+    `;
+    const email = baseEmail({ title: "Need A Hand?", body, action: "Return to your bag whenever you are ready.", actionHref: resumeUrl });
+    return { subject, text: `${fullName ? `Dear ${fullName},` : "Hello,"} we noticed you were unable to complete your order. Reply to this email if you need help with payment, delivery, a garment question, or anything else.`, html: email.html };
+  }
+
   if (row.template === "order_confirmed") {
     const subject = row.subject ?? "Your ỌNUỌRA order is confirmed";
     const orderReference = getString(row.payload, "orderReference", row.order_id ?? "");
@@ -105,7 +148,7 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
     const estimatedDispatchTiming = getString(row.payload, "estimatedDispatchTiming", "Prepared for dispatch within three working days");
     const estimatedDeliveryWindow = getString(row.payload, "estimatedDeliveryWindow", "Confirmed with your dispatch notification");
     const paymentStatus = getString(row.payload, "paymentStatus", "Paid");
-    const contactInformation = getString(row.payload, "contactInformation", "orders@onuoramenswear.com");
+    const contactInformation = getString(row.payload, "contactInformation", "menswear@onuoraenterprises.com");
     const orderDate = getString(row.payload, "orderDate");
     const trackingId = getString(row.payload, "trackingId");
     const subtotal = getNumber(row.payload, "subtotal");
@@ -223,6 +266,7 @@ async function sendResendEmail(row: NotificationRow, rendered: RenderedEmail) {
   const { error } = await resend.emails.send(
     {
       from: getTransactionalEmailFrom(),
+      ...(getOrderNotificationEmail() ? { replyTo: getOrderNotificationEmail() } : {}),
       to: row.recipient,
       subject: rendered.subject,
       html: rendered.html,
@@ -265,6 +309,22 @@ export async function processNotificationQueue(options: ProcessNotificationOptio
   let failed = 0;
 
   for (const row of rows) {
+    if (row.template === "abandoned_checkout" && row.order_id) {
+      const { data: order } = await client
+        .from("orders")
+        .select("status, payment_status")
+        .eq("id", row.order_id)
+        .maybeSingle();
+
+      if (!order || order.payment_status === "paid" || ["cancelled", "fulfilled"].includes(order.status)) {
+        await client
+          .from("notification_queue")
+          .update({ status: "cancelled", last_error: null, updated_at: new Date().toISOString() })
+          .eq("id", row.id);
+        continue;
+      }
+    }
+
     const rendered = renderNotificationEmail(row);
 
     try {

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Mail, MessageCircle } from "lucide-react";
+import { ContactForm } from "@/components/contact-form";
 import { newArrivalsPromotion } from "@/data/phase-one-collections";
 
 export const metadata = {
@@ -8,14 +9,13 @@ export const metadata = {
   description: "Contact ỌNUỌRA for sizing, styling, orders, shipping and delivery, and membership support."
 };
 
-const inputClass =
-  "gold-focus min-h-12 w-full min-w-0 border border-line bg-page px-4 text-sm font-normal normal-case text-copy outline-none transition focus:border-copy";
+const inputClass = "gold-focus min-h-12 w-full min-w-0 border border-line bg-page px-4 text-sm font-normal normal-case text-copy outline-none transition focus:border-copy";
 
 type ContactPageProps = { searchParams: Promise<{ enquiry?: string }> };
 
 export default async function ContactPage({ searchParams }: ContactPageProps) {
   const { enquiry } = await searchParams;
-  const largeOrderSelected = enquiry === "large-order-delivery-quote";
+  const defaultEnquiry = enquiry === "large-order-delivery-quote" ? "Large Order / Delivery Quote" : "Product and sizing";
 
   return (
     <main className="min-h-screen overflow-hidden bg-page pt-[104px] text-copy">
@@ -25,27 +25,12 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           <h1 className="mt-3 max-w-md text-3xl font-semibold leading-tight md:text-4xl">Helping You Arrive Well</h1>
           <p className="mt-5 max-w-md text-sm leading-7 text-copy-muted">Speak with the house about sizing, shipping and delivery, styling, existing orders, or ỌNUỌRA Circle access.</p>
           <div className="mt-8 min-w-0 border-t border-line">
-            <a href="mailto:orders@onuoramenswear.com" className="gold-focus flex min-w-0 items-center gap-3 break-all border-b border-line py-4 text-sm hover:text-gold"><Mail className="h-4 w-4 shrink-0" />orders@onuoramenswear.com</a>
-            <a href="mailto:orders@onuoramenswear.com?subject=Styling%20consultation" className="gold-focus flex min-w-0 items-center gap-3 border-b border-line py-4 text-sm hover:text-gold"><MessageCircle className="h-4 w-4 shrink-0" />Request a styling consultation</a>
+            <a href="mailto:menswear@onuoraenterprises.com" className="gold-focus flex min-w-0 items-center gap-3 break-all border-b border-line py-4 text-sm hover:text-gold"><Mail className="h-4 w-4 shrink-0" />menswear@onuoraenterprises.com</a>
+            <a href="mailto:menswear@onuoraenterprises.com?subject=Styling%20consultation" className="gold-focus flex min-w-0 items-center gap-3 border-b border-line py-4 text-sm hover:text-gold"><MessageCircle className="h-4 w-4 shrink-0" />Request a styling consultation</a>
           </div>
         </div>
 
-        <form action="mailto:orders@onuoramenswear.com" method="post" encType="text/plain" className="grid min-w-0 gap-4">
-          <div className="grid min-w-0 gap-4 sm:grid-cols-2">
-            <label className="grid min-w-0 gap-2 text-[10px] font-semibold uppercase">Name<input name="name" autoComplete="name" required className={inputClass} /></label>
-            <label className="grid min-w-0 gap-2 text-[10px] font-semibold uppercase">Email<input name="email" type="email" autoComplete="email" required className={inputClass} /></label>
-          </div>
-          <label className="grid min-w-0 gap-2 text-[10px] font-semibold uppercase">Phone<input name="phone" type="tel" autoComplete="tel" className={inputClass} /></label>
-          <label className="grid min-w-0 gap-2 text-[10px] font-semibold uppercase">
-            Enquiry
-            <select name="enquiry" defaultValue={largeOrderSelected ? "Large Order / Delivery Quote" : "Product and sizing"} className={inputClass}>
-              <option>Product and sizing</option><option>Order support</option><option>Shipping & Delivery</option><option>Large Order / Delivery Quote</option><option>Styling</option><option>ỌNUỌRA Circle</option>
-            </select>
-          </label>
-          <label className="grid min-w-0 gap-2 text-[10px] font-semibold uppercase">Message<textarea name="message" required className={`${inputClass} min-h-40 py-4`} /></label>
-          <button type="submit" className="gold-focus min-h-12 bg-obsidian px-5 text-xs font-semibold uppercase text-ivory transition hover:bg-gold hover:text-obsidian">Send enquiry</button>
-          <p className="text-xs leading-5 text-copy-muted">Sending opens your email application with the enquiry details prepared.</p>
-        </form>
+        <ContactForm defaultEnquiry={defaultEnquiry} inputClass={inputClass} />
       </section>
       <section className="border-t border-line bg-panel-muted">
         <div className="container-luxe grid min-w-0 gap-7 py-10 md:grid-cols-[260px_1fr_auto] md:items-center md:py-12">

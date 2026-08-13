@@ -3,10 +3,12 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { products } from "@/data/catalog";
+import { getCollectionByFamily } from "@/data/site-config";
 
 export function RotatingHeroCard() {
   const [index, setIndex] = useState(0);
   const product = products[index % products.length];
+  const collection = getCollectionByFamily(product.family);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -22,7 +24,7 @@ export function RotatingHeroCard() {
         <Image
           key={product.slug}
           src={product.image}
-          alt={`${product.name} ${product.edition}`}
+          alt={`${collection.englishName} in ${product.colorName}`}
           fill
           sizes="270px"
           className="garment-image h-full w-full transition duration-500"
@@ -30,8 +32,8 @@ export function RotatingHeroCard() {
       </div>
       <div className="mt-4 flex items-end justify-between gap-4">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0] text-gold-soft">{product.edition}</p>
-          <p className="font-display text-2xl leading-none">{product.name}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0] text-gold-soft">{product.colorName}</p>
+          <p className="font-display text-2xl leading-none">{collection.englishName}</p>
         </div>
         <p className="max-w-[7rem] text-right text-xs leading-5 text-ivory/68">{product.meaning}</p>
       </div>

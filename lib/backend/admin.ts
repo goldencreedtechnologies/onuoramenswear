@@ -4,6 +4,7 @@ import { recordOrderEvent } from "@/lib/backend/order-lifecycle";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { trackingStatuses } from "@/lib/backend/tracking";
+import { getOrderItemCollectionLabel } from "@/data/site-config";
 
 export const orderStatusSchema = z.object({
   status: z
@@ -131,6 +132,7 @@ type OrderRow = {
 type OrderItemRow = {
   id: string;
   product_slug: string;
+  color_name: string | null;
   quantity: number;
   size: string;
   unit_price_usd: number;
@@ -188,7 +190,8 @@ function mapOrder(row: OrderRow) {
     updatedAt: row.updated_at,
     items: (row.order_items ?? []).map((item) => ({
       id: item.id,
-      productSlug: item.product_slug,
+      label: getOrderItemCollectionLabel(item.product_slug),
+      colour: item.color_name ?? "Selected Colour",
       quantity: item.quantity,
       size: item.size,
       unitPriceUsd: toNumber(item.unit_price_usd)
@@ -403,7 +406,7 @@ export async function getAdminOrders() {
   const { data, error } = await serviceClient
     .from("orders")
     .select(
-      "id, email, full_name, phone, status, payment_status, shipping_status, inventory_status, delivery_method_name, shipping_country, shipping_city, shipping_state, shipping_address, subtotal_usd, shipping_usd, total_usd, tracking_id, tracking_status, tracking_updated_at, created_at, updated_at, order_items(id, product_slug, quantity, size, unit_price_usd)"
+      "id, email, full_name, phone, status, payment_status, shipping_status, inventory_status, delivery_method_name, shipping_country, shipping_city, shipping_state, shipping_address, subtotal_usd, shipping_usd, total_usd, tracking_id, tracking_status, tracking_updated_at, created_at, updated_at, order_items(id, product_slug, color_name, quantity, size, unit_price_usd)"
     )
     .order("created_at", { ascending: false })
     .limit(80);
@@ -765,7 +768,13 @@ export async function getAdminProducts() {
     return { ok: false as const, reason: error.message };
   }
 
-  return { ok: true as const, products: data ?? [] };
+  return {
+    ok: true as const,
+    products: (data ?? []).map((product) => ({
+      ...product,
+      name: getOrderItemCollectionLabel(product.slug)
+    }))
+  };
 }
 
 export async function upsertAdminProduct(admin: AdminSession, input: z.infer<typeof productAdminSchema>) {

@@ -2,6 +2,7 @@
 
 import { ImageIcon, Loader2, Plus, Save, Settings, ShieldCheck, ShoppingBag, Users } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { getOrderItemCollectionLabel } from "@/data/site-config";
 
 type Status = { type: "idle" | "loading" | "error" | "success"; message?: string };
 
@@ -298,7 +299,7 @@ export function AdminControlCenter() {
           <div className="grid gap-3">
             {products.map((product) => (
               <div key={product.slug} className="border border-gold/15 p-4">
-                <p className="font-display text-2xl leading-none">{product.name}</p>
+                <p className="font-display text-2xl leading-none">{getOrderItemCollectionLabel(product.slug)}</p>
                 <p className="mt-2 text-sm text-ivory/55">{product.edition} / {product.price}</p>
                 <p className="mt-2 text-xs text-gold">{product.slug}</p>
               </div>

@@ -1,6 +1,6 @@
 import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { isCurrencyCode, operationalUsdAmountInCurrency, type CurrencyCode } from "@/data/site-config";
+import { getOrderItemCollectionLabel, isCurrencyCode, operationalUsdAmountInCurrency, type CurrencyCode } from "@/data/site-config";
 import { getOrderConfirmationTokenSecret } from "@/lib/backend/env";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 
@@ -112,8 +112,8 @@ async function toConfirmation(client: NonNullable<ReturnType<typeof createSupaba
         ? `${deliveryQuote.estimated_min_days}-${deliveryQuote.estimated_max_days} business days after dispatch`
         : "Confirmed with your dispatch notification",
     items: (order.order_items ?? []).map((item) => ({
-      name: item.product_name ?? item.product_slug,
-      edition: item.product_edition,
+      name: getOrderItemCollectionLabel(item.product_slug),
+      edition: null,
       colour: item.color_name,
       size: item.size,
       quantity: item.quantity

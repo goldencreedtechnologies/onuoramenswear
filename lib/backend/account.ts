@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getOrderItemCollectionLabel } from "@/data/site-config";
 
 export const accountProfileSchema = z.object({
   fullName: z.string().trim().min(2).max(120).optional().or(z.literal("")),
@@ -63,7 +64,8 @@ export type CustomerOrder = {
   createdAt: string;
   items: Array<{
     id: string;
-    productSlug: string;
+    label: string;
+    colour: string;
     quantity: number;
     size: string;
     unitPriceUsd: number;
@@ -107,6 +109,7 @@ type OrderRow = {
   order_items?: Array<{
     id: string;
     product_slug: string;
+    color_name: string | null;
     quantity: number;
     size: string;
     unit_price_usd: number;
@@ -154,7 +157,8 @@ function mapOrder(row: OrderRow): CustomerOrder {
     createdAt: row.created_at,
     items: (row.order_items ?? []).map((item) => ({
       id: item.id,
-      productSlug: item.product_slug,
+      label: getOrderItemCollectionLabel(item.product_slug),
+      colour: item.color_name ?? "Selected Colour",
       quantity: item.quantity,
       size: item.size,
       unitPriceUsd: Number(item.unit_price_usd)
@@ -235,7 +239,7 @@ export async function getAccountOverview(user: AccountUser) {
     client
       .from("orders")
       .select(
-        "id, status, payment_status, shipping_status, delivery_method_name, currency, subtotal_usd, shipping_usd, total_usd, created_at, order_items(id, product_slug, quantity, size, unit_price_usd)"
+        "id, status, payment_status, shipping_status, delivery_method_name, currency, subtotal_usd, shipping_usd, total_usd, created_at, order_items(id, product_slug, color_name, quantity, size, unit_price_usd)"
       )
       .eq("customer_profile_id", prepared.profile.id)
       .order("created_at", { ascending: false })

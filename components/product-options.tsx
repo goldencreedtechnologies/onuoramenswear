@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Check, Minus, Plus, Ruler, ShoppingBag, X } from "lucide-react";
-import { ADDITIONAL_PRODUCT_COLOURS } from "@/data/site-config";
+import { ADDITIONAL_PRODUCT_COLOURS, getCollectionByFamily } from "@/data/site-config";
 import { addCartItem, productToCartItem } from "@/lib/cart";
 import { cn } from "@/lib/cn";
 import type { StoreProduct } from "@/lib/backend/types";
@@ -144,9 +144,9 @@ export function ProductOptions({ product, colorOptions }: { product: StoreProduc
                     ? "border-copy ring-1 ring-copy ring-offset-2 ring-offset-page"
                     : "border-copy/20 hover:border-copy"
                 )}
-                aria-label={`${option.name}, ${option.colorName}${isSelected ? ", selected" : ""}`}
+                aria-label={`${getCollectionByFamily(product.family).englishName}, ${option.colorName}${isSelected ? ", selected" : ""}`}
                 aria-current={isSelected ? "page" : undefined}
-                title={`${option.name} / ${option.colorName}`}
+                title={`${getCollectionByFamily(product.family).englishName} / ${option.colorName}`}
               >
                 <span className="h-5 w-5 rounded-full border border-black/15" style={{ backgroundColor: option.colorValue }} />
               </Link>

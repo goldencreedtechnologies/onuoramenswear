@@ -87,7 +87,7 @@ function collectionProducts(
       const images = correctedColourImages[product.slug] ?? product.images;
       return {
         id: product.slug,
-        name: product.name,
+        name: collectionLabel,
         color: product.colorName,
         colorValue: product.colorValue,
         description: collectionLabel,

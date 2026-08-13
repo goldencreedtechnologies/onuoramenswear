@@ -15,40 +15,40 @@ const collectionLayouts: Record<string, CollectionLayout> = {
   original: {
     hero: {
       productId: "aja",
-      front: { productId: "aja", src: "/brand/products/original/aja/aja-front.png", alt: "AJA Heritage Collection full outfit", className: "object-cover object-top" },
-      hover: { productId: "aja", src: "/brand/products/original/aja/aja-side.png", alt: "AJA Heritage Collection side view", className: "object-cover object-top" }
+      front: { productId: "aja", src: "/brand/products/original/aja/aja-front.png", alt: "Heritage Collection Forest full outfit", className: "object-cover object-top" },
+      hover: { productId: "aja", src: "/brand/products/original/aja/aja-side.png", alt: "Heritage Collection Forest side view", className: "object-cover object-top" }
     },
     grid: [
-      { productId: "aja", src: "/brand/products/original/ndu/ndu-angle.png", alt: "NDỤ Heritage Collection angled outfit view" },
-      { productId: "ijeoma", src: "/brand/products/original/ijeoma/ijeoma-detail.png", alt: "IJEỌMA Heritage Collection detail" },
-      { productId: "nsuo", src: "/brand/products/original/nsuo/nsuo-lifestyle.png", alt: "NSỤO Heritage Collection lifestyle image" },
-      { productId: "ebube", src: "/brand/products/original/ebube/ebube-mid.png", alt: "EBUBE Heritage Collection upper-body view" }
+      { productId: "aja", src: "/brand/products/original/ndu/ndu-angle.png", alt: "Heritage Collection angled outfit view" },
+      { productId: "ijeoma", src: "/brand/products/original/ijeoma/ijeoma-detail.png", alt: "Heritage Collection detail" },
+      { productId: "nsuo", src: "/brand/products/original/nsuo/nsuo-lifestyle.png", alt: "Heritage Collection Off-White lifestyle image" },
+      { productId: "ebube", src: "/brand/products/original/ebube/ebube-mid.png", alt: "Heritage Collection upper-body view" }
     ]
   },
   "with-button": {
     hero: {
       productId: "ndb2",
-      front: { productId: "ndb2", src: "/brand/products/button/ndb2/ndb2-front.png", alt: "NDB2 Cowrie Collection full outfit", className: "object-cover object-top" },
-      hover: { productId: "ndb2", src: "/brand/products/button/ndb2/ndb2-angle.png", alt: "NDB2 Cowrie Collection angled view", className: "object-cover object-top" }
+      front: { productId: "ndb2", src: "/brand/products/button/ndb2/ndb2-front.png", alt: "Cowrie Collection full outfit", className: "object-cover object-top" },
+      hover: { productId: "ndb2", src: "/brand/products/button/ndb2/ndb2-angle.png", alt: "Cowrie Collection angled view", className: "object-cover object-top" }
     },
     grid: [
-      { productId: "ndb4", src: "/brand/products/button/ndb4/ndb4-mid.png", alt: "NDB4 Cowrie Collection upper-body view" },
-      { productId: "ndb2", src: "/brand/products/button/ndb2/nd2-detail.png", alt: "NDB2 Cowrie Collection detail" },
-      { productId: "ndb5", src: "/brand/products/button/ndb5/nd5-lifestyle.png", alt: "NDB5 Cowrie Collection lifestyle image" },
-      { productId: "ndb1", src: "/brand/products/button/ndb1/ndb1-angle.png", alt: "NDB1 Cowrie Collection angled view" }
+      { productId: "ndb4", src: "/brand/products/button/ndb4/ndb4-mid.png", alt: "Cowrie Collection upper-body view" },
+      { productId: "ndb2", src: "/brand/products/button/ndb2/nd2-detail.png", alt: "Cowrie Collection detail" },
+      { productId: "ndb5", src: "/brand/products/button/ndb5/ndb5-lifestyle.png", alt: "Cowrie Collection lifestyle image" },
+      { productId: "ndb1", src: "/brand/products/button/ndb1/ndb1-angle.png", alt: "Cowrie Collection angled view" }
     ]
   },
   "without-button": {
     hero: {
       productId: "nd3",
-      front: { productId: "nd3", src: "/brand/products/buttonless/nd3/nd3-angle.png", alt: "ND3 Resort Collection angled outfit", className: "object-cover object-top" },
-      hover: { productId: "nd3", src: "/brand/products/buttonless/nd3/nd3-back.png", alt: "ND3 Resort Collection back view", className: "object-cover object-top" }
+      front: { productId: "nd3", src: "/brand/products/buttonless/nd3/nd3-angle.png", alt: "Resort Collection angled outfit", className: "object-cover object-top" },
+      hover: { productId: "nd3", src: "/brand/products/buttonless/nd3/nd3-back.png", alt: "Resort Collection back view", className: "object-cover object-top" }
     },
     grid: [
-      { productId: "nd4", src: "/brand/products/buttonless/nd4/nd4-mid.png", alt: "ND4 Resort Collection upper-body view" },
-      { productId: "nd3", src: "/brand/products/buttonless/nd3/nd3-detail.png", alt: "ND3 Resort Collection detail" },
-      { productId: "nd1", src: "/brand/products/buttonless/nd1/nd1-lifestyle.png", alt: "ND1 Resort Collection lifestyle image" },
-      { productId: "nd2", src: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png", alt: "ND2 Resort Collection studio portrait" }
+      { productId: "nd4", src: "/brand/products/buttonless/nd4/nd4-mid.png", alt: "Resort Collection upper-body view" },
+      { productId: "nd3", src: "/brand/products/buttonless/nd3/nd3-detail.png", alt: "Resort Collection detail" },
+      { productId: "nd1", src: "/brand/products/buttonless/nd1/nd1-lifestyle.png", alt: "Resort Collection lifestyle image" },
+      { productId: "nd2", src: "/brand/products/buttonless/nd2/nd2-studio-registered-source.png", alt: "Resort Collection studio portrait" }
     ]
   }
 };

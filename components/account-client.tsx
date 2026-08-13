@@ -47,7 +47,8 @@ type Order = {
   createdAt: string;
   items: Array<{
     id: string;
-    productSlug: string;
+    label: string;
+    colour: string;
     quantity: number;
     size: string;
     unitPriceUsd: number;
@@ -519,7 +520,7 @@ export function AccountClient() {
                       </div>
                       <div className="mt-4 border-t border-ivory/10 pt-3 text-sm leading-6 text-ivory/65">
                         {order.items.map((item) => (
-                          <p key={item.id}>{item.quantity}x {item.productSlug.toUpperCase()} / Size {item.size}</p>
+                          <p key={item.id}>{item.quantity} × {item.label} / {item.colour} / Size {item.size}</p>
                         ))}
                       </div>
                     </div>

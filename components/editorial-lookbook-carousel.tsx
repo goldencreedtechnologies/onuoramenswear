@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { StoreProduct } from "@/lib/backend/types";
 import { cn } from "@/lib/cn";
+import { getCollectionByFamily } from "@/data/site-config";
 
 type EditorialLookbookCarouselProps = {
   products: StoreProduct[];
@@ -23,6 +24,8 @@ function ProductScreen({
   product: StoreProduct;
   compact?: boolean;
 }) {
+  const collection = getCollectionByFamily(product.family);
+
   return (
     <div
       className="relative h-full w-full overflow-hidden"
@@ -30,16 +33,16 @@ function ProductScreen({
     >
       <div className={cn("relative z-10", compact ? "px-3 pt-3" : "px-4 pt-5")}>
         <p className={cn("font-bold uppercase tracking-[0]", compact ? "text-[8px]" : "text-[10px]")} style={{ color: product.pageMuted }}>
-          {product.name}
+          {collection.englishName}
         </p>
         <p className={cn("mt-1 font-semibold uppercase tracking-[0]", compact ? "text-[7px]" : "text-[9px]")} style={{ color: product.pageMuted }}>
-          {product.edition}
+          {product.colorName}
         </p>
       </div>
       <div className="absolute inset-0 flex items-center justify-center">
         <Image
           src={product.image}
-          alt={`${product.name} ${product.edition}`}
+          alt={`${collection.englishName} in ${product.colorName}`}
           fill
           sizes={compact ? "140px" : "120px"}
           className="h-full w-full object-cover object-top"
@@ -67,7 +70,7 @@ function OrbitCard({
         "absolute h-[178px] w-[122px] overflow-hidden rounded-[20px] border border-[#161412] bg-[#161412] p-[3px] shadow-[0_18px_34px_rgba(0,0,0,0.18)] transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-[0_24px_42px_rgba(0,0,0,0.22)] md:h-[206px] md:w-[140px]",
         className
       )}
-      aria-label={`Show ${product.name}`}
+      aria-label={`Show ${getCollectionByFamily(product.family).englishName} in ${product.colorName}`}
     >
       <div className="h-full w-full overflow-hidden rounded-[17px]">
         <ProductScreen product={product} compact />

@@ -43,6 +43,26 @@ export function getCollectionByFamily(family: CollectionFamily) {
   return COLLECTIONS.find((collection) => collection.family === family) ?? COLLECTIONS[0];
 }
 
+/**
+ * Product slugs are implementation identifiers. They must never become the
+ * label a customer or the house sees on an order.
+ */
+export function getCollectionByProductSlug(slug: string) {
+  const normalized = slug.trim().toLowerCase();
+  if (normalized.startsWith("ndb")) return getCollectionByFamily("button");
+  if (/^nd\d+$/i.test(normalized)) return getCollectionByFamily("buttonless");
+  return getCollectionByFamily("original");
+}
+
+export function getOrderItemCollectionLabel(slug: string) {
+  return getCollectionByProductSlug(slug).englishName;
+}
+
+export function formatOrderItemLabel(input: { productSlug: string; colour?: string | null; size?: string | null }) {
+  const collection = getCollectionByProductSlug(input.productSlug).englishName;
+  return [collection, input.colour?.trim() || "Selected Colour", input.size?.trim() || "Selected Size"].join(" — ");
+}
+
 export type CurrencyCode = "NGN" | "GBP" | "USD" | "EUR";
 
 export const SUPPORTED_CURRENCIES: CurrencyCode[] = ["NGN", "GBP", "USD", "EUR"];

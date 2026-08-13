@@ -57,6 +57,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { getCollectionByFamily } from "@/data/site-config";
 
 type Status = { type: "idle" | "loading" | "error" | "success"; message?: string };
 
@@ -118,7 +119,8 @@ type AdminOrder = {
   createdAt: string;
   items: Array<{
     id: string;
-    productSlug: string;
+    label: string;
+    colour: string;
     quantity: number;
     size: string;
     unitPriceUsd: number;
@@ -436,7 +438,7 @@ export function AdminClient() {
     [globalSearch, inventory]
   );
   const filteredProducts = useMemo(
-    () => products.filter((product) => [product.name, product.slug, product.edition, product.meaning].join(" ").toLowerCase().includes(globalSearch.toLowerCase())),
+    () => products.filter((product) => [getCollectionByFamily(product.family).englishName, product.slug, product.color_name, product.meaning].join(" ").toLowerCase().includes(globalSearch.toLowerCase())),
     [globalSearch, products]
   );
 
@@ -945,7 +947,7 @@ export function AdminClient() {
                   <p className="mt-1 text-xs text-copy-muted">{order.email}</p>
                   <p className="mt-1 text-xs text-copy-muted">{order.phone ?? "No phone"}</p>
                   <p className="mt-2 max-w-xs text-xs leading-5 text-copy-muted">{[order.shippingAddress, order.shippingCity, order.shippingState, order.shippingCountry].filter(Boolean).join(", ") || "Address not attached"}</p>
-                  <p className="mt-2 text-xs text-copy-muted">{order.items.map((item) => `${item.quantity}x ${item.productSlug.toUpperCase()} ${item.size}`).join(", ")}</p>
+                  <p className="mt-2 text-xs text-copy-muted">{order.items.map((item) => `${item.quantity} × ${item.label} — ${item.colour} — ${item.size}`).join(", ")}</p>
                 </td>
                 <td className="px-4 py-4">
                   <StatusPill value={order.status} />
@@ -1095,11 +1097,11 @@ export function AdminClient() {
               <article key={product.slug} className="rounded-[24px] border border-gold/15 bg-panel p-4">
                 <div className="grid gap-4 sm:grid-cols-[88px_1fr_auto] sm:items-center">
                   <div className="relative h-24 overflow-hidden rounded-[20px] border border-gold/10 bg-page">
-                    {product.image ? <Image src={product.image} alt={product.name} fill className="object-contain p-2" sizes="88px" /> : null}
+                    {product.image ? <Image src={product.image} alt={`${getCollectionByFamily(product.family).englishName} in ${product.color_name}`} fill className="object-contain p-2" sizes="88px" /> : null}
                   </div>
                   <div>
-                    <p className="font-display text-2xl leading-none text-copy">{product.name}</p>
-                    <p className="mt-2 text-sm text-copy-muted">{product.edition} / {product.meaning} / {product.price}</p>
+                    <p className="font-display text-2xl leading-none text-copy">{getCollectionByFamily(product.family).englishName}</p>
+                    <p className="mt-2 text-sm text-copy-muted">{product.color_name} / {product.meaning} / {product.price}</p>
                     <p className="mt-1 text-[10px] font-semibold uppercase text-gold">{product.family} / {product.color_name} / Model {product.model_name}</p>
                     <p className="mt-2 line-clamp-2 text-xs leading-5 text-copy-muted">{product.story_title}</p>
                     <div className="mt-3 flex flex-wrap gap-2">

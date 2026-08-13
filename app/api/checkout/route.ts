@@ -124,8 +124,8 @@ export async function POST(request: Request) {
         currency: stripeCurrency,
         unit_amount: PRODUCT_PRICES[currency] * 100,
         product_data: {
-          name: collectionName,
-          description: `Product: Complete Two-Piece Set · Colour: ${item.colorName} · Size: ${item.size}`
+          name: `${collectionName} — ${item.colorName} — ${item.size}`,
+          description: "Complete Two-Piece Outfit"
         }
       }
     };
@@ -187,13 +187,15 @@ export async function POST(request: Request) {
         source: "onuoramenswear",
         outfit_count: String(itemCount),
         shipping_band: shippingRule.label,
+        product_summary: order.items.map((item) => `${item.name} — ${item.colorName} — ${item.size}`).join(" | "),
         ...(isTestVoucher ? { voucher_code: TEST_VOUCHER_CODE } : {})
       },
       ...(!isTestVoucher ? {
         payment_intent_data: {
           metadata: {
             order_id: order.orderId,
-            source: "onuoramenswear"
+            source: "onuoramenswear",
+            product_summary: order.items.map((item) => `${item.name} — ${item.colorName} — ${item.size}`).join(" | ")
           }
         }
       } : {}),

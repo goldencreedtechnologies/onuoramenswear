@@ -4,9 +4,9 @@ import { resolveDeliveryQuote } from "@/lib/backend/delivery";
 import { markOrderInventorySold, releaseOrderInventory, reserveOrderInventory } from "@/lib/backend/inventory";
 import { queueOrderNotification, recordOrderEvent } from "@/lib/backend/order-lifecycle";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
-import { getOrderNotificationEmail } from "@/lib/backend/env";
+import { getAbandonedCheckoutDelayMinutes, getOrderNotificationEmail, getSiteUrl } from "@/lib/backend/env";
 import { priceToUsd } from "@/lib/cart";
-import { isAdditionalProductColour, isCurrencyCode, operationalUsdAmountInCurrency, promotionDiscountForQuantity } from "@/data/site-config";
+import { getCollectionByFamily, getOrderItemCollectionLabel, isAdditionalProductColour, isCurrencyCode, operationalUsdAmountInCurrency, promotionDiscountForQuantity } from "@/data/site-config";
 
 export const checkoutDraftSchema = z.object({
   email: z.string().email(),
@@ -84,7 +84,7 @@ export async function createOrder(draft: CheckoutDraftInput) {
       colorName,
       colorValue,
       unitPriceUsd: priceToUsd(product.price),
-      name: product.name,
+      name: getCollectionByFamily(product.family).englishName,
       edition: product.edition,
       image: product.image
     });
@@ -153,7 +153,7 @@ export async function createOrder(draft: CheckoutDraftInput) {
     size: item.size,
     unit_price_usd: item.unitPriceUsd,
     product_name: item.name,
-    product_edition: item.edition,
+    product_edition: null,
     color_name: item.colorName,
     color_value: item.colorValue
   }));
@@ -215,6 +215,19 @@ export async function createOrder(draft: CheckoutDraftInput) {
         colorValue: item.colorValue,
         quantity: item.quantity
       }))
+    }
+  });
+
+  await queueOrderNotification({
+    orderId: order.id as string,
+    customerProfileId: draft.customerProfileId ?? null,
+    template: "abandoned_checkout",
+    recipient: draft.email,
+    subject: "Can we help you complete your ỌNUỌRA order?",
+    scheduledAt: new Date(Date.now() + getAbandonedCheckoutDelayMinutes() * 60_000).toISOString(),
+    payload: {
+      fullName: draft.fullName,
+      resumeUrl: `${getSiteUrl().replace(/\/$/, "")}/cart`
     }
   });
 
@@ -352,6 +365,13 @@ export async function markOrderPaid({
   }
 
   if (!wasAlreadyPaid) {
+    await client
+      .from("notification_queue")
+      .update({ status: "cancelled", updated_at: new Date().toISOString() })
+      .eq("order_id", order.id)
+      .eq("template", "abandoned_checkout")
+      .eq("status", "queued");
+
     const deliveryQuote = order.delivery_quotes as
       | { estimated_min_days: number; estimated_max_days: number }
       | Array<{ estimated_min_days: number; estimated_max_days: number }>
@@ -383,8 +403,7 @@ export async function markOrderPaid({
         fullName: order.full_name,
         currency: isCurrencyCode(order.currency) ? order.currency : "USD",
         purchasedItems: (order.order_items ?? []).map((item) => ({
-          name: item.product_name ?? item.product_slug,
-          edition: item.product_edition ?? undefined,
+          name: getOrderItemCollectionLabel(item.product_slug),
           colour: item.color_name ?? undefined,
           size: item.size,
           quantity: item.quantity,
@@ -398,7 +417,7 @@ export async function markOrderPaid({
         estimatedDispatchTiming: "Prepared for dispatch within three working days",
         estimatedDeliveryWindow: deliveryEstimate?.estimated_min_days && deliveryEstimate?.estimated_max_days ? `${deliveryEstimate.estimated_min_days}-${deliveryEstimate.estimated_max_days} business days after dispatch` : "Confirmed with your dispatch notification",
         paymentStatus: order.payment_provider === "stripe_testing_voucher" ? "Paid with authorised 100% testing voucher" : "Paid",
-        contactInformation: "orders@onuoramenswear.com",
+        contactInformation: "menswear@onuoraenterprises.com",
         subtotal: operationalUsdAmountInCurrency(Number(order.subtotal_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
         shipping: operationalUsdAmountInCurrency(Number(order.shipping_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
         discount: operationalUsdAmountInCurrency(
@@ -427,8 +446,7 @@ export async function markOrderPaid({
           customerEmail: order.email,
           currency: isCurrencyCode(order.currency) ? order.currency : "USD",
           purchasedItems: (order.order_items ?? []).map((item) => ({
-            name: item.product_name ?? item.product_slug,
-            edition: item.product_edition ?? undefined,
+            name: getOrderItemCollectionLabel(item.product_slug),
             colour: item.color_name ?? undefined,
             size: item.size,
             quantity: item.quantity
@@ -459,7 +477,7 @@ async function closeUnpaidOrder(checkoutSessionId: string, outcome: "expired" | 
 
   const { data: order, error: orderError } = await client
     .from("orders")
-    .select("id, order_number, email, customer_profile_id, full_name, payment_status, currency, subtotal_usd, shipping_usd, total_usd, tracking_id, order_items(product_name, product_edition, color_name, size, quantity)")
+    .select("id, order_number, email, customer_profile_id, full_name, payment_status, currency, subtotal_usd, shipping_usd, total_usd, tracking_id, order_items(product_slug, product_name, product_edition, color_name, size, quantity)")
     .eq("stripe_checkout_session_id", checkoutSessionId)
     .maybeSingle();
 
@@ -536,8 +554,7 @@ async function closeUnpaidOrder(checkoutSessionId: string, outcome: "expired" | 
           total: operationalUsdAmountInCurrency(Number(order.total_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
           trackingId: order.tracking_id,
           purchasedItems: (order.order_items ?? []).map((item) => ({
-            name: item.product_name,
-            edition: item.product_edition ?? undefined,
+            name: getOrderItemCollectionLabel(item.product_slug),
             colour: item.color_name ?? undefined,
             size: item.size,
             quantity: item.quantity

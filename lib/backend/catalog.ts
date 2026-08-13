@@ -10,7 +10,7 @@ import {
   getSupabaseUrl,
   hasSupabaseConfig
 } from "@/lib/backend/env";
-import { DELIVERY_COPY, PRODUCT_INCLUSION_LABEL, PRODUCT_PRICES, PRODUCT_TYPE_LABEL } from "@/data/site-config";
+import { DELIVERY_COPY, PRODUCT_INCLUSION_LABEL, PRODUCT_PRICES, PRODUCT_TYPE_LABEL, getCollectionByFamily } from "@/data/site-config";
 import type { StoreProduct } from "@/lib/backend/types";
 
 const legacyProductColumns =
@@ -52,6 +52,10 @@ function customerFacingColourName(slug: string, fallback: string) {
 function customerFacingEdition(slug: string, fallback: string) {
   const colourName = customerFacingColourNames[slug];
   return colourName ? `${colourName} Edition` : fallback;
+}
+
+function customerFacingProductName(family: ProductFamily) {
+  return getCollectionByFamily(family).englishName;
 }
 
 type ProductRow = {
@@ -108,6 +112,7 @@ function mapRow(row: ProductRow): StoreProduct {
   if (local && !isProductFamily(row.family)) {
     return correctColourImagery({
       ...local,
+      name: customerFacingProductName(local.family),
       price: `$${PRODUCT_PRICES.USD}`,
       id: row.id,
       sort_order: row.sort_order,
@@ -120,7 +125,7 @@ function mapRow(row: ProductRow): StoreProduct {
 
   return correctColourImagery({
     slug: row.slug,
-    name: row.name,
+    name: customerFacingProductName(family),
     edition: customerFacingEdition(row.slug, row.edition),
     meaning: row.meaning,
     price: `$${PRODUCT_PRICES.USD}`,
@@ -159,6 +164,7 @@ function mergeWithLocal(rows: ProductRow[]) {
       ? mapRow(row)
       : correctColourImagery({
           ...product,
+          name: customerFacingProductName(product.family),
           sort_order: index + 1
         } satisfies StoreProduct);
   });
@@ -218,13 +224,13 @@ async function readRows() {
 
 async function loadStoreProducts(): Promise<StoreProduct[]> {
   if (!hasSupabaseConfig()) {
-    return localProducts.map((product) => correctColourImagery(product));
+    return localProducts.map((product) => correctColourImagery({ ...product, name: customerFacingProductName(product.family) }));
   }
 
   const rows = await readRows();
 
   if (!rows?.length) {
-    return localProducts.map((product) => correctColourImagery(product));
+    return localProducts.map((product) => correctColourImagery({ ...product, name: customerFacingProductName(product.family) }));
   }
 
   return mergeWithLocal(rows);

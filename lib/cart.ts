@@ -1,4 +1,4 @@
-import { PRODUCT_PRICES, getCollectionByFamily } from "@/data/site-config";
+import { PRODUCT_PRICES, getCollectionByFamily, getCollectionByProductSlug } from "@/data/site-config";
 import type { StoreProduct } from "@/lib/backend/types";
 
 export const cartStorageKey = "onuora-cart";
@@ -25,12 +25,6 @@ export function priceToUsd(_price?: string) {
 
 export function cartItemKey(item: Pick<CartItem, "productSlug" | "size" | "colorName">) {
   return `${item.productSlug}::${item.size}::${item.colorName.toLowerCase()}`;
-}
-
-function collectionNameForSlug(slug: string) {
-  if (slug.startsWith("ndb")) return "Cowrie Collection";
-  if (/^nd\d+$/i.test(slug)) return "Resort Collection";
-  return "Heritage Collection";
 }
 
 export function productToCartItem(
@@ -75,7 +69,7 @@ function normalizeCartItem(value: unknown): CartItem | null {
 
   return {
     productSlug: item.productSlug,
-    name: collectionNameForSlug(item.productSlug),
+    name: getCollectionByProductSlug(item.productSlug).englishName,
     edition: colorName,
     image: item.image,
     colorName,

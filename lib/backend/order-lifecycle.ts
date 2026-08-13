@@ -14,7 +14,7 @@ type OrderEventInput = {
 };
 
 type NotificationInput = {
-  orderId: string;
+  orderId?: string | null;
   customerProfileId?: string | null;
   template: string;
   recipient: string;
@@ -31,7 +31,7 @@ export async function recordOrderEvent(input: OrderEventInput) {
   }
 
   const { error } = await client.from("order_events").insert({
-    order_id: input.orderId,
+    order_id: input.orderId ?? null,
     event_type: input.eventType,
     status: input.status ?? null,
     payment_status: input.paymentStatus ?? null,
