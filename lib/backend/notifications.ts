@@ -170,30 +170,38 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
     return { subject, ...baseEmail({ title: "Payment Not Completed.", body, action: "Review your payment method and begin checkout again when ready." }) };
   }
 
-  if (row.template === "new_order_admin") {
+  if (["new_order_admin", "checkout_started_admin", "payment_expired_admin", "payment_failed_admin"].includes(row.template)) {
     const orderReference = getString(row.payload, "orderReference", row.order_id ?? "");
     const customerEmail = getString(row.payload, "customerEmail");
     const trackingId = getString(row.payload, "trackingId");
+    const event = row.template === "checkout_started_admin"
+      ? { heading: "Checkout Started.", intro: "A customer has started checkout. Payment is still pending.", paymentStatus: "Pending payment" }
+      : row.template === "payment_expired_admin"
+        ? { heading: "Checkout Expired.", intro: "A customer checkout session expired before payment was completed.", paymentStatus: "Expired — no payment received" }
+        : row.template === "payment_failed_admin"
+          ? { heading: "Payment Not Completed.", intro: "Stripe could not complete the customer payment.", paymentStatus: "Failed — no payment received" }
+          : { heading: "New Order Received.", intro: "A new paid order has been received.", paymentStatus: "Paid" };
+    const paymentStatus = getString(row.payload, "paymentStatus", event.paymentStatus);
     const items = getItems(row.payload);
     const itemText = items.map((item) => `${item.quantity ?? 1} × ${item.name ?? "ỌNUỌRA outfit"}${item.edition ? ` · ${item.edition}` : ""}${item.colour ? ` · ${item.colour}` : ""}${item.size ? ` · Size ${item.size}` : ""}`).join("\n");
     const itemHtml = items.map((item) => `<li style="margin:0 0 8px">${escapeHtml(item.quantity ?? 1)} × ${escapeHtml(item.name ?? "ỌNUỌRA outfit")}${item.edition ? ` · ${escapeHtml(item.edition)}` : ""}${item.colour ? ` · ${escapeHtml(item.colour)}` : ""}${item.size ? ` · Size ${escapeHtml(item.size)}` : ""}</li>`).join("");
     const subject = row.subject ?? `New ỌNUỌRA order · ${orderReference}`;
     const body = `
-      <p style="margin:0 0 16px">A new paid order has been received.</p>
+      <p style="margin:0 0 16px">${escapeHtml(event.intro)}</p>
       <p style="margin:0 0 8px"><strong>Order number:</strong> ${escapeHtml(orderReference)}</p>
       ${trackingId ? `<p style="margin:0 0 8px"><strong>Tracking ID:</strong> ${escapeHtml(trackingId)}</p>` : ""}
       <p style="margin:0 0 8px"><strong>Customer:</strong> ${escapeHtml(fullName)}${customerEmail ? ` · ${escapeHtml(customerEmail)}` : ""}</p>
-      <p style="margin:0 0 8px"><strong>Payment status:</strong> ${escapeHtml(getString(row.payload, "paymentStatus", "Paid"))}</p>
+      <p style="margin:0 0 8px"><strong>Payment status:</strong> ${escapeHtml(paymentStatus)}</p>
       <p style="margin:0 0 8px"><strong>Order summary</strong><br>Subtotal: ${money(getNumber(row.payload, "subtotal"), currency)}<br>Shipping: ${money(getNumber(row.payload, "shipping"), currency)}<br>Discount: -${money(getNumber(row.payload, "discount"), currency)}<br>Total paid: ${money(total, currency)}</p>
       <p style="margin:16px 0 8px"><strong>Items</strong></p>
       <ul style="margin:0;padding-left:20px">${itemHtml}</ul>
     `;
     const text = [
-      "A new paid order has been received.",
+      event.intro,
       `Order number: ${orderReference}`,
       ...(trackingId ? [`Tracking ID: ${trackingId}`] : []),
       `Customer: ${fullName}${customerEmail ? ` · ${customerEmail}` : ""}`,
-      `Payment status: ${getString(row.payload, "paymentStatus", "Paid")}`,
+      `Payment status: ${paymentStatus}`,
       `Subtotal: ${money(getNumber(row.payload, "subtotal"), currency)}`,
       `Shipping: ${money(getNumber(row.payload, "shipping"), currency)}`,
       `Discount: -${money(getNumber(row.payload, "discount"), currency)}`,
@@ -201,7 +209,7 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
       "Items:",
       itemText
     ].join("\n\n");
-    const email = baseEmail({ title: "New Order Received.", body });
+    const email = baseEmail({ title: event.heading, body });
     return { subject, text, html: email.html };
   }
 

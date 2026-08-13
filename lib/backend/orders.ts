@@ -218,6 +218,35 @@ export async function createOrder(draft: CheckoutDraftInput) {
     }
   });
 
+  const orderNotificationEmail = getOrderNotificationEmail();
+
+  if (orderNotificationEmail) {
+    await queueOrderNotification({
+      orderId: order.id as string,
+      customerProfileId: draft.customerProfileId ?? null,
+      template: "checkout_started_admin",
+      recipient: orderNotificationEmail,
+      subject: `Checkout started · ${order.order_number}`,
+      payload: {
+        orderReference: order.order_number,
+        fullName: draft.fullName,
+        customerEmail: draft.email,
+        currency: draft.currency,
+        subtotal: operationalUsdAmountInCurrency(subtotalUsd, isCurrencyCode(draft.currency) ? draft.currency : "USD"),
+        shipping: operationalUsdAmountInCurrency(shippingUsd, isCurrencyCode(draft.currency) ? draft.currency : "USD"),
+        total: operationalUsdAmountInCurrency(totalUsd, isCurrencyCode(draft.currency) ? draft.currency : "USD"),
+        trackingId: order.tracking_id,
+        purchasedItems: pricedItems.map((item) => ({
+          name: item.name,
+          edition: item.edition,
+          colour: item.colorName,
+          size: item.size,
+          quantity: item.quantity
+        }))
+      }
+    });
+  }
+
   return {
     ok: true as const,
     orderId: order.id as string,
@@ -430,7 +459,7 @@ async function closeUnpaidOrder(checkoutSessionId: string, outcome: "expired" | 
 
   const { data: order, error: orderError } = await client
     .from("orders")
-    .select("id, email, customer_profile_id, full_name, payment_status")
+    .select("id, order_number, email, customer_profile_id, full_name, payment_status, currency, subtotal_usd, shipping_usd, total_usd, tracking_id, order_items(product_name, product_edition, color_name, size, quantity)")
     .eq("stripe_checkout_session_id", checkoutSessionId)
     .maybeSingle();
 
@@ -487,6 +516,35 @@ async function closeUnpaidOrder(checkoutSessionId: string, outcome: "expired" | 
         fullName: order.full_name
       }
     });
+
+    const orderNotificationEmail = getOrderNotificationEmail();
+
+    if (orderNotificationEmail) {
+      await queueOrderNotification({
+        orderId: order.id as string,
+        customerProfileId: order.customer_profile_id as string | null,
+        template: `${orderStatus}_admin`,
+        recipient: orderNotificationEmail,
+        subject: outcome === "expired" ? `Checkout expired · ${order.order_number}` : `Payment failed · ${order.order_number}`,
+        payload: {
+          orderReference: order.order_number,
+          fullName: order.full_name,
+          customerEmail: order.email,
+          currency: isCurrencyCode(order.currency) ? order.currency : "USD",
+          subtotal: operationalUsdAmountInCurrency(Number(order.subtotal_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
+          shipping: operationalUsdAmountInCurrency(Number(order.shipping_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
+          total: operationalUsdAmountInCurrency(Number(order.total_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
+          trackingId: order.tracking_id,
+          purchasedItems: (order.order_items ?? []).map((item) => ({
+            name: item.product_name,
+            edition: item.product_edition ?? undefined,
+            colour: item.color_name ?? undefined,
+            size: item.size,
+            quantity: item.quantity
+          }))
+        }
+      });
+    }
   }
 
   return { ok: true as const };

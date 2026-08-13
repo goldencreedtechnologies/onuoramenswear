@@ -4,6 +4,7 @@ import { getSiteUrl, hasStripeConfig, hasSupabaseConfig, isTestCheckoutVoucherEn
 import { ensureCustomerProfile, getAuthenticatedAccountUser } from "@/lib/backend/account";
 import { getStoreProductBySlug } from "@/lib/backend/catalog";
 import { createSupabaseServiceClient } from "@/lib/backend/supabase-service";
+import { processNotificationQueue } from "@/lib/backend/notifications";
 import {
   PRODUCT_PRICES,
   getCollectionByFamily,
@@ -220,6 +221,10 @@ export async function POST(request: Request) {
     await releasePendingOrderInventory(order.orderId);
     return NextResponse.json({ error: attached.reason }, { status: 500 });
   }
+
+  // Send checkout-started messages immediately; the scheduled worker remains a
+  // recovery path for any notification that could not be delivered now.
+  await processNotificationQueue({ limit: 10 });
 
   return NextResponse.json({ ok: true, orderId: order.orderId, checkoutUrl: session.url });
 }

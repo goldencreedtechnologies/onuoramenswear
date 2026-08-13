@@ -68,7 +68,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unable to process Stripe event." }, { status: 500 });
   }
 
-  if (event.type === "checkout.session.completed" || event.type === "checkout.session.async_payment_succeeded") {
+  if ([
+    "checkout.session.completed",
+    "checkout.session.async_payment_succeeded",
+    "checkout.session.async_payment_failed",
+    "checkout.session.expired"
+  ].includes(event.type)) {
     await processNotificationQueue({ limit: 10 });
   }
 
