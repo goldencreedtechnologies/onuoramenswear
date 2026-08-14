@@ -155,45 +155,12 @@ function MobileArticleContents({ article }: { article: JournalArticle }) {
   );
 }
 
-function ArticleSidebar({ article }: { article: JournalArticle }) {
-  const related = journalArticles.find((candidate) => candidate.slug !== article.slug) ?? journalArticles[0];
-  const toc = article.sections.filter((section) => section.heading);
-
-  return (
-    <aside className="hidden min-w-0 lg:block" aria-label="Article details">
-      <div className="sticky top-[7.5rem] space-y-7 border-l border-copy/10 pl-5 xl:pl-6">
-        <section>
-          <p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-copy">In This Article</p>
-          <nav className="mt-3 border-y border-copy/10 py-2.5" aria-label="Article sections">
-            <ol className="space-y-2.5">
-              {toc.map((section) => {
-                const sectionIndex = article.sections.indexOf(section);
-                return <li key={section.heading}><a href={`#section-${sectionIndex}`} className="gold-focus group flex items-start gap-2 text-[9px] leading-4 text-copy-muted transition hover:text-copy"><span className="mt-[0.34rem] h-1 w-1 shrink-0 rounded-full bg-gold group-hover:scale-125" />{section.heading}</a></li>;
-              })}
-            </ol>
-          </nav>
-        </section>
-        <section>
-          <p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-copy">Related Reading</p>
-          <Link href={`/journal/${related.slug}`} className="gold-focus group mt-3 block border border-copy/12 bg-[#faf5eb] p-2.5 transition hover:border-gold/55">
-            <div className="relative aspect-[16/9] overflow-hidden bg-[#e9dfcf]"><Image src={related.image} alt={related.imageAlt} fill sizes="190px" className="object-cover object-center transition duration-500 group-hover:scale-[1.03]" /></div>
-            <p className="mt-3 text-[7px] font-semibold uppercase tracking-[0.14em] text-gold">{related.category}</p>
-            <h2 className="mt-1 font-display text-lg leading-[0.98] text-copy">{related.title}</h2>
-            <p className="mt-2 text-[9px] leading-4 text-copy-muted">{related.subtitle}</p>
-            <span className="mt-3 inline-flex items-center gap-1 text-[8px] font-semibold uppercase tracking-[0.12em] text-copy">Read article <ArrowRight className="h-3 w-3 text-gold" /></span>
-          </Link>
-        </section>
-      </div>
-    </aside>
-  );
-}
-
 function CompactExplore() {
   return (
-    <section className="border border-gold/25 bg-[#faf3e6] px-4 py-3.5 sm:px-5">
-      <div className="grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center">
-        <div className="flex items-center gap-3"><Image src="/brand/onuora-mark-gold.png" alt="" width={19} height={28} /><div><p className="font-display text-base leading-none text-copy">Explore the Permanent Collections</p><p className="mt-1 text-[8px] text-copy-muted">Timeless staples. Modern expression.</p></div></div>
-        <div className="grid grid-cols-3 gap-2 border-t border-copy/10 pt-3 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
+    <section className="border border-gold/25 bg-[#faf3e6] px-5 py-5 sm:px-6 sm:py-5">
+      <div className="grid gap-4 sm:grid-cols-[minmax(14rem,0.8fr)_minmax(0,1.2fr)] sm:items-center">
+        <div className="flex items-center gap-3"><Image src="/brand/onuora-mark-gold.png" alt="" width={22} height={32} /><div><p className="font-display text-lg leading-none text-copy">Explore the Permanent Collections</p><p className="mt-1.5 text-[9px] text-copy-muted">Timeless staples. Modern expression.</p></div></div>
+        <div className="grid grid-cols-3 gap-2 border-t border-copy/10 pt-4 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
           {exploreCollections.map((collection) => <Link key={collection.href} href={collection.href} className="gold-focus group flex min-w-0 items-center gap-1 text-[9px] font-semibold text-copy transition hover:text-gold sm:gap-2"><span className="relative h-6 w-6 shrink-0 overflow-hidden sm:h-7 sm:w-7"><Image src={collection.image} alt="" fill sizes="28px" className="object-cover object-top" /></span><span className="truncate">{collection.name}</span><ArrowRight className="h-3 w-3 shrink-0" /></Link>)}
         </div>
       </div>
@@ -201,12 +168,14 @@ function CompactExplore() {
   );
 }
 
-function MoreFromJournal() {
+function MoreFromJournal({ currentSlug }: { currentSlug: string }) {
+  const relatedArticles = journalArticles.filter((article) => article.slug !== currentSlug);
+
   return (
     <section className="border-t border-copy/12 pt-6 sm:pt-7">
-      <div className="flex items-end justify-between gap-4"><div><p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-gold">Journal</p><h2 className="mt-2 font-display text-2xl leading-none text-copy sm:text-3xl">More From the Journal</h2></div><Link href="/journal" className="gold-focus inline-flex items-center gap-1.5 text-[8px] font-semibold uppercase tracking-[0.12em] text-copy-muted transition hover:text-copy">View all articles <ArrowRight className="h-3.5 w-3.5" /></Link></div>
-      <div className="mt-4 grid gap-2.5 sm:grid-cols-3 sm:gap-3">
-        {journalArticles.map((related) => <Link key={related.slug} href={`/journal/${related.slug}`} className="gold-focus group grid grid-cols-[4.25rem_1fr] gap-2 border border-copy/10 bg-[#fbf8f1] p-2 transition hover:border-gold/55 sm:grid-cols-[5.25rem_1fr] sm:gap-3 sm:p-2.5"><div className="relative aspect-[4/5] overflow-hidden bg-[#e9dfcf]"><Image src={related.image} alt={related.imageAlt} fill sizes="110px" className="object-cover object-center transition duration-500 group-hover:scale-[1.03]" /></div><div className="min-w-0"><p className="text-[7px] font-semibold uppercase tracking-[0.13em] text-gold">{related.category}</p><h3 className="mt-1 font-display text-[0.92rem] leading-[0.96] text-copy sm:text-base">{related.title}</h3><p className="mt-1.5 line-clamp-2 text-[9px] leading-4 text-copy-muted sm:mt-2">{related.subtitle}</p><span className="mt-1.5 inline-flex items-center gap-1 text-[8px] font-semibold uppercase tracking-[0.12em] text-copy sm:mt-2">Read <ArrowRight className="h-3 w-3 text-gold" /></span></div></Link>)}
+      <div className="flex items-end justify-between gap-4"><h2 className="font-display text-2xl leading-none text-copy sm:text-3xl">More from the Journal</h2><Link href="/journal" className="gold-focus inline-flex items-center gap-1.5 text-[8px] font-semibold uppercase tracking-[0.12em] text-copy-muted transition hover:text-copy">View all articles <ArrowRight className="h-3.5 w-3.5" /></Link></div>
+      <div className="mt-4 grid gap-2.5 sm:grid-cols-2 sm:gap-3">
+        {relatedArticles.map((related) => <Link key={related.slug} href={`/journal/${related.slug}`} className="gold-focus group grid grid-cols-[4.25rem_1fr] gap-2 border border-copy/10 bg-[#fbf8f1] p-2 transition hover:border-gold/55 sm:grid-cols-[5.25rem_1fr] sm:gap-3 sm:p-2.5"><div className="relative aspect-[4/5] overflow-hidden bg-[#e9dfcf]"><Image src={related.image} alt={related.imageAlt} fill sizes="110px" className="object-cover object-center transition duration-500 group-hover:scale-[1.03]" /></div><div className="min-w-0"><p className="text-[7px] font-semibold uppercase tracking-[0.13em] text-gold">{related.category}</p><h3 className="mt-1 font-display text-[0.92rem] leading-[0.96] text-copy sm:text-base">{related.title}</h3><p className="mt-1.5 line-clamp-2 text-[9px] leading-4 text-copy-muted sm:mt-2">{related.subtitle}</p><span className="mt-1.5 inline-flex items-center gap-1 text-[8px] font-semibold uppercase tracking-[0.12em] text-copy sm:mt-2">Read <ArrowRight className="h-3 w-3 text-gold" /></span></div></Link>)}
       </div>
     </section>
   );
@@ -232,15 +201,14 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
       </section>
 
       <article className="border-y border-copy/12 bg-[#fbf8f1]/54 py-5 sm:py-9 lg:py-11">
-        <div className="container-luxe grid gap-5 lg:grid-cols-[minmax(0,1fr)_12rem] lg:gap-8 xl:grid-cols-[minmax(0,1fr)_13rem] xl:gap-10">
+        <div className="container-luxe space-y-5 sm:space-y-7">
           <div className="min-w-0 space-y-5 sm:space-y-7">
             <section className="pb-1"><ArticleCopy section={opening} sectionIndex={0} quote={editorial.quote} lead /></section>
             {article.sections.slice(1).map((section, index) => <ArticleSection key={section.heading ?? index} section={section} sectionIndex={index + 1} editorial={editorial} />)}
             <MobileArticleContents article={article} />
-            <CompactExplore />
           </div>
-          <ArticleSidebar article={article} />
-          <div className="lg:col-span-2"><MoreFromJournal /></div>
+          <MoreFromJournal currentSlug={article.slug} />
+          <CompactExplore />
         </div>
       </article>
 
