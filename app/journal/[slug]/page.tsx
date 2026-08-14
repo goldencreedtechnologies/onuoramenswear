@@ -79,17 +79,15 @@ function ArticleCopy({
   section,
   sectionIndex,
   quote,
-  lead = false,
-  columns = false
+  lead = false
 }: {
   section: JournalArticle["sections"][number];
   sectionIndex: number;
   quote: ArticleEditorial["quote"];
   lead?: boolean;
-  columns?: boolean;
 }) {
   return (
-    <div className={`text-[13px] leading-5 text-copy-muted sm:text-[14px] sm:leading-6 ${columns ? "lg:columns-2 lg:gap-8" : ""}`}>
+    <div className="text-[14px] leading-6 text-copy-muted sm:text-[15px] sm:leading-7">
       {section.paragraphs.map((paragraph, paragraphIndex) => {
         const isQuote = quote.section === sectionIndex && quote.paragraph === paragraphIndex;
         const isOpening = lead && paragraphIndex === 0;
@@ -104,21 +102,49 @@ function ArticleCopy({
   );
 }
 
+function Divider() {
+  return <div aria-hidden="true" className="flex items-center gap-2.5 border-t border-copy/12 pt-0"><span className="-mt-2.5 bg-[#f8f4eb] px-2 font-display text-sm text-gold">O</span></div>;
+}
+
 function MagazineSection({ section, sectionIndex, editorial }: { section: JournalArticle["sections"][number]; sectionIndex: number; editorial: ArticleEditorial }) {
   const image = editorial.sectionImages[sectionIndex - 1] ?? editorial.sectionImages.at(-1);
   const imageFirst = editorial.treatment === "craft" ? sectionIndex % 2 === 1 : sectionIndex % 2 === 0;
-  const isCollections = editorial.treatment === "collections";
 
   return (
-    <section className="border-t border-copy/12 pt-6 sm:pt-8">
-      <div className={`grid grid-cols-[minmax(0,1fr)_7.5rem] items-start gap-4 sm:grid-cols-[minmax(0,1fr)_11rem] sm:gap-6 lg:grid-cols-[minmax(0,1.18fr)_minmax(17rem,0.62fr)] lg:gap-9 ${imageFirst ? "lg:[&>*:first-child]:order-2" : ""}`}>
-        <div className="min-w-0">
-          {section.heading ? <><div className="flex items-center gap-2.5"><span className="text-[8px] font-semibold tracking-[0.16em] text-gold">{String(sectionIndex).padStart(2, "0")}</span><span className="h-px w-8 bg-gold/80" /></div><h2 className={`${isCollections ? "text-3xl sm:text-4xl lg:text-5xl" : "text-2xl sm:text-3xl lg:text-[2.45rem]"} mt-2.5 font-display leading-[0.96] tracking-[-0.02em] text-copy`}>{section.heading}</h2></> : null}
-          <div className={section.heading ? "mt-4" : ""}><ArticleCopy section={section} sectionIndex={sectionIndex} quote={editorial.quote} columns /></div>
-        </div>
-        {image ? <EditorialImageFrame image={image} className={`aspect-[3/4] min-h-36 sm:min-h-52 lg:min-h-[22rem] ${imageFirst ? "lg:order-1" : ""}`} /> : null}
+    <section className="pt-6 sm:pt-7">
+      <Divider />
+      <div className="pt-6 sm:pt-7">
+        {image ? <EditorialImageFrame image={image} className={`${imageFirst ? "float-left mr-4 sm:mr-6" : "float-right ml-4 sm:ml-6"} mb-3 aspect-[3/4] w-[39%] max-w-[13.5rem] sm:max-w-[16rem] lg:max-w-[18rem]`} /> : null}
+        {section.heading ? <><div className="flex items-center gap-2.5"><span className="text-[8px] font-semibold tracking-[0.16em] text-gold">{String(sectionIndex).padStart(2, "0")}</span><span className="h-px w-8 bg-gold/80" /></div><h2 className="mt-2.5 font-display text-3xl leading-[0.96] tracking-[-0.02em] text-copy sm:text-4xl lg:text-[2.65rem]">{section.heading}</h2></> : null}
+        <div className="mt-4"><ArticleCopy section={section} sectionIndex={sectionIndex} quote={editorial.quote} /></div>
+        <div className="clear-both" />
       </div>
     </section>
+  );
+}
+
+function CollectionFeature({ section, sectionIndex, image, quote }: { section: JournalArticle["sections"][number]; sectionIndex: number; image: EditorialImage; quote: ArticleEditorial["quote"] }) {
+  return (
+    <section className="min-w-0">
+      <EditorialImageFrame image={image} className="float-right mb-3 ml-4 aspect-[3/4] w-[42%] max-w-[10rem] sm:max-w-[12rem]" />
+      {section.heading ? <><p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-gold">Collection chapter</p><h2 className="mt-2 font-display text-3xl leading-[0.96] tracking-[-0.02em] text-copy sm:text-4xl">{section.heading}</h2></> : null}
+      <div className="mt-3"><ArticleCopy section={section} sectionIndex={sectionIndex} quote={quote} /></div>
+      <div className="clear-both" />
+    </section>
+  );
+}
+
+function PermanentCollectionsBody({ article, editorial }: { article: JournalArticle; editorial: ArticleEditorial }) {
+  const [opening, heritage, cowrie, resort, philosophy] = article.sections;
+  return (
+    <div className="space-y-6 sm:space-y-7">
+      <section className="grid gap-6 lg:grid-cols-2 lg:gap-9">
+        <div className="min-w-0"><EditorialImageFrame image={editorial.introImage} className="float-right mb-3 ml-4 aspect-[3/4] w-[40%] max-w-[12rem]" /><ArticleCopy section={opening} sectionIndex={0} quote={editorial.quote} lead /><div className="clear-both" /></div>
+        <CollectionFeature section={heritage} sectionIndex={1} image={editorial.sectionImages[0]} quote={editorial.quote} />
+      </section>
+      <section className="pt-6 sm:pt-7"><Divider /><div className="grid gap-6 pt-6 sm:pt-7 lg:grid-cols-2 lg:gap-9"><CollectionFeature section={cowrie} sectionIndex={2} image={editorial.sectionImages[1]} quote={editorial.quote} /><CollectionFeature section={resort} sectionIndex={3} image={editorial.sectionImages[2]} quote={editorial.quote} /></div></section>
+      <section className="pt-6 sm:pt-7"><Divider /><div className="pt-6 sm:pt-7"><EditorialImageFrame image={editorial.sectionImages[3]} className="float-left mb-3 mr-4 aspect-[4/3] w-[42%] max-w-[15rem] sm:mr-6 sm:max-w-[18rem]" /><p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-gold">Closing Note</p><h2 className="mt-2 font-display text-3xl leading-[0.96] tracking-[-0.02em] text-copy sm:text-4xl lg:text-[2.65rem]">{philosophy.heading}</h2><div className="mt-4"><ArticleCopy section={philosophy} sectionIndex={4} quote={editorial.quote} /></div><div className="clear-both" /></div></section>
+    </div>
   );
 }
 
@@ -153,11 +179,7 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
 
       <article className="border-y border-copy/12 bg-[#fbf8f1]/54 py-7 sm:py-9 lg:py-11">
         <div className="container-luxe space-y-7 sm:space-y-9">
-          <section className="grid grid-cols-[minmax(0,1fr)_7.5rem] items-start gap-4 border-b border-copy/12 pb-6 sm:grid-cols-[minmax(0,1fr)_11rem] sm:gap-6 sm:pb-8 lg:grid-cols-[minmax(0,1.18fr)_minmax(17rem,0.62fr)] lg:gap-9">
-            <ArticleCopy section={opening} sectionIndex={0} quote={editorial.quote} lead columns />
-            <EditorialImageFrame image={editorial.introImage} className="aspect-[3/4] min-h-36 sm:min-h-52 lg:min-h-[22rem]" />
-          </section>
-          {article.sections.slice(1).map((section, index) => <MagazineSection key={section.heading ?? index} section={section} sectionIndex={index + 1} editorial={editorial} />)}
+          {editorial.treatment === "collections" ? <PermanentCollectionsBody article={article} editorial={editorial} /> : <><section className="pb-6 sm:pb-7"><EditorialImageFrame image={editorial.introImage} className="float-right mb-3 ml-4 aspect-[3/4] w-[39%] max-w-[13.5rem] sm:ml-6 sm:max-w-[16rem] lg:max-w-[18rem]" /><ArticleCopy section={opening} sectionIndex={0} quote={editorial.quote} lead /><div className="clear-both" /></section>{article.sections.slice(1).map((section, index) => <MagazineSection key={section.heading ?? index} section={section} sectionIndex={index + 1} editorial={editorial} />)}</>}
           <CompactExplore />
         </div>
       </article>
