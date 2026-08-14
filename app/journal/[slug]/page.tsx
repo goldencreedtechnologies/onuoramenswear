@@ -75,7 +75,7 @@ function EditorialDivider() {
   return (
     <div aria-hidden="true" className="flex items-center gap-2.5 py-1">
       <span className="h-px flex-1 bg-gold/45" />
-      <Image src="/brand/onuora-mark-gold.png" alt="" width={18} height={18} />
+      <Image src="/brand/onuora-mark-gold.png" alt="" width={13} height={18} />
       <span className="h-px flex-1 bg-gold/45" />
     </div>
   );
@@ -192,7 +192,7 @@ function CompactExplore() {
   return (
     <section className="border border-gold/25 bg-[#faf3e6] px-4 py-3.5 sm:px-5">
       <div className="grid gap-3 sm:grid-cols-[auto_1fr] sm:items-center">
-        <div className="flex items-center gap-3"><Image src="/brand/onuora-mark-gold.png" alt="" width={28} height={28} /><div><p className="font-display text-base leading-none text-copy">Explore the Permanent Collections</p><p className="mt-1 text-[8px] text-copy-muted">Timeless staples. Modern expression.</p></div></div>
+        <div className="flex items-center gap-3"><Image src="/brand/onuora-mark-gold.png" alt="" width={19} height={28} /><div><p className="font-display text-base leading-none text-copy">Explore the Permanent Collections</p><p className="mt-1 text-[8px] text-copy-muted">Timeless staples. Modern expression.</p></div></div>
         <div className="grid grid-cols-3 gap-2 border-t border-copy/10 pt-3 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0">
           {exploreCollections.map((collection) => <Link key={collection.href} href={collection.href} className="gold-focus group flex min-w-0 items-center gap-1 text-[9px] font-semibold text-copy transition hover:text-gold sm:gap-2"><span className="relative h-6 w-6 shrink-0 overflow-hidden sm:h-7 sm:w-7"><Image src={collection.image} alt="" fill sizes="28px" className="object-cover object-top" /></span><span className="truncate">{collection.name}</span><ArrowRight className="h-3 w-3 shrink-0" /></Link>)}
         </div>
