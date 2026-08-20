@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { getJournalArticle, journalArticles, type JournalArticle } from "@/data/journal-articles";
 
 type EditorialImage = { src: string; alt: string; position?: string };
-type SectionMediaTreatment = "portrait" | "landscape" | "duo" | "duoWide" | "stacked";
+type SectionMediaTreatment = "portrait" | "landscape" | "editorialLandscape" | "duo" | "duoWide" | "stacked";
 
 type ArticleEditorial = {
   sectionImages: EditorialImage[];
@@ -25,7 +25,7 @@ const editorialTreatments: Record<string, ArticleEditorial> = {
     detailImages: {
       2: [{ src: "/brand/products/buttonless/nd1/nd1-lifestyle.png", alt: "ỌNUỌRA in a contemporary setting", position: "object-top" }]
     },
-    sectionMedia: { 1: "landscape", 2: "duo" },
+    sectionMedia: { 1: "editorialLandscape", 2: "duo" },
     quote: { section: 1, paragraph: 2 }
   },
   "inside-making-onuora-outfit": {
@@ -135,7 +135,13 @@ function SectionMedia({ image, details, treatment }: { image?: EditorialImage; d
     return <div className="grid gap-2"><EditorialImageFrame image={image} className="aspect-[16/7]" /><EditorialImageFrame image={companion} className="aspect-[16/7]" /></div>;
   }
 
-  return <EditorialImageFrame image={image} className={treatment === "landscape" ? "aspect-[2/1]" : "aspect-[4/5]"} />;
+  const frameRatio = treatment === "landscape"
+    ? "aspect-[2/1]"
+    : treatment === "editorialLandscape"
+      ? "aspect-[4/3]"
+      : "aspect-[4/5]";
+
+  return <EditorialImageFrame image={image} className={frameRatio} />;
 }
 
 function ArticleSection({ section, sectionIndex, editorial }: { section: JournalArticle["sections"][number]; sectionIndex: number; editorial: ArticleEditorial }) {
