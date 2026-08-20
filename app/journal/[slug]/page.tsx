@@ -9,6 +9,7 @@ type EditorialImage = { src: string; alt: string; position?: string };
 type ArticleEditorial = {
   sectionImages: EditorialImage[];
   detailImages?: Partial<Record<number, EditorialImage[]>>;
+  mediaLayouts?: Partial<Record<number, "single" | "split" | "stacked">>;
   quote: { section: number; paragraph: number };
   treatment: "identity" | "craft" | "collections";
 };
@@ -21,9 +22,9 @@ const editorialTreatments: Record<string, ArticleEditorial> = {
       { src: "/brand/products/original/ndu/ndu-front.png", alt: "ỌNUỌRA Heritage Collection model", position: "object-top" }
     ],
     detailImages: {
-      1: [{ src: "/brand/models/Idris.png", alt: "ỌNUỌRA model portrait", position: "object-top" }],
       2: [{ src: "/brand/products/buttonless/nd1/nd1-lifestyle.png", alt: "ỌNUỌRA in a contemporary setting", position: "object-top" }]
     },
+    mediaLayouts: { 1: "single", 2: "split" },
     quote: { section: 1, paragraph: 2 }
   },
   "inside-making-onuora-outfit": {
@@ -122,7 +123,7 @@ function ArticleSection({ section, sectionIndex, editorial }: { section: Journal
   const image = editorial.sectionImages[sectionIndex - 1] ?? editorial.sectionImages.at(-1);
   const details = editorial.detailImages?.[sectionIndex] ?? [];
   const imageFirst = editorial.treatment === "craft" ? sectionIndex % 2 === 0 : sectionIndex % 2 === 1;
-  const hideMobileImage = editorial.treatment === "identity" && sectionIndex === 1;
+  const mediaLayout = editorial.mediaLayouts?.[sectionIndex] ?? (details.length ? "stacked" : "single");
 
   return (
     <>
@@ -130,7 +131,7 @@ function ArticleSection({ section, sectionIndex, editorial }: { section: Journal
         <EditorialDivider />
         <div className="pt-4">
           {section.heading ? <><p className="text-[7px] font-semibold uppercase tracking-[0.16em] text-gold">{String(sectionIndex).padStart(2, "0")}</p><h2 className="mt-1.5 font-display text-[1.7rem] leading-[0.94] tracking-[-0.02em] text-copy">{section.heading}</h2></> : null}
-          {!hideMobileImage && image ? <EditorialImageFrame image={image} className={`${imageFirst ? "float-left mr-3" : "float-right ml-3"} mt-2.5 mb-2 aspect-[3/4] w-[40%] max-w-[9.5rem]`} /> : null}
+          {image ? <EditorialImageFrame image={image} className={`${imageFirst ? "float-left mr-3" : "float-right ml-3"} mt-2.5 mb-2 aspect-[3/4] w-[40%] max-w-[9.5rem]`} /> : null}
           <div className="mt-3"><ArticleCopy section={section} sectionIndex={sectionIndex} quote={editorial.quote} /></div>
           <div className="clear-both" />
           {details.length ? <div className="mt-3 grid grid-cols-2 gap-2">{details.map((detail) => <EditorialImageFrame key={detail.src} image={detail} className="aspect-[4/3]" />)}</div> : null}
@@ -138,10 +139,11 @@ function ArticleSection({ section, sectionIndex, editorial }: { section: Journal
       </section>
       <section id={`section-${sectionIndex}`} className="hidden scroll-mt-28 pt-5 sm:pt-6 lg:block">
         <EditorialDivider />
-        <div className="pt-5 sm:pt-6 lg:grid lg:grid-cols-[minmax(0,1.16fr)_minmax(13rem,0.78fr)] lg:gap-7 xl:gap-9">
-          <div className={`grid gap-2 ${imageFirst ? "lg:order-2" : ""}`}>
-            {image ? <EditorialImageFrame image={image} className={details.length ? "aspect-[5/4] sm:aspect-[16/11] lg:min-h-[14.5rem] lg:aspect-auto" : "mb-4 aspect-[5/4] sm:aspect-[16/11] lg:mb-0 lg:h-full lg:min-h-[19rem] lg:aspect-auto"} /> : null}
-            {details.length ? <div className="grid grid-cols-2 gap-2">{details.map((detail) => <EditorialImageFrame key={detail.src} image={detail} className="aspect-[4/3]" />)}</div> : null}
+        <div className="pt-5 sm:pt-6 lg:grid lg:grid-cols-[minmax(0,1.18fr)_minmax(15rem,0.82fr)] lg:items-stretch lg:gap-7 xl:gap-9">
+          <div className={`min-h-0 self-stretch ${imageFirst ? "lg:order-2" : ""} ${mediaLayout === "split" ? "grid grid-cols-2 gap-2" : mediaLayout === "stacked" && details.length ? "grid grid-rows-[minmax(0,1fr)_minmax(0,0.72fr)] gap-2" : "block"}`}>
+            {image ? <EditorialImageFrame image={image} className="h-full min-h-0" /> : null}
+            {mediaLayout === "stacked" && details.length ? <div className="grid min-h-0 grid-cols-2 gap-2">{details.map((detail) => <EditorialImageFrame key={detail.src} image={detail} className="h-full min-h-0" />)}</div> : null}
+            {mediaLayout === "split" && details.map((detail) => <EditorialImageFrame key={detail.src} image={detail} className="h-full min-h-0" />)}
           </div>
           <div className={`min-w-0 ${imageFirst ? "lg:order-1" : ""}`}>
             {section.heading ? <><p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-gold">{String(sectionIndex).padStart(2, "0")}</p><h2 className="mt-2 font-display text-[2rem] leading-[0.95] tracking-[-0.025em] text-copy sm:text-[2.35rem]">{section.heading}</h2></> : null}
@@ -224,7 +226,7 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
   return (
     <main className="overflow-x-hidden bg-[linear-gradient(180deg,#f8f4eb_0%,#f3ebde_52%,#faf7ef_100%)] pt-[104px] text-copy">
       <section className="container-luxe py-4 sm:py-9 lg:py-11">
-        <Link href="/journal" className="gold-focus sr-only min-h-9 items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.12em] text-copy-muted transition hover:text-copy lg:inline-flex"><ArrowLeft className="h-3.5 w-3.5" />Back to Journal</Link>
+        <Link href="/journal" className="gold-focus inline-flex min-h-9 items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.12em] text-copy-muted transition hover:text-copy"><ArrowLeft className="h-3.5 w-3.5" />Back to Journal</Link>
         <div className="mb-2.5 flex min-h-8 items-center justify-center bg-obsidian px-4 text-gold lg:hidden"><span className="font-display text-base tracking-[0.18em]">JOURNAL</span></div>
         <div className="overflow-hidden border border-copy/12 bg-[#fbf8f1]/75 shadow-[0_16px_45px_rgba(57,42,24,0.08)] lg:mt-5 lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(24rem,0.8fr)]">
           <div className="flex min-w-0 flex-col justify-between p-4 sm:p-8 lg:p-10 xl:p-12"><div><p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-gold">{article.category}</p><h1 className="mt-2 max-w-3xl font-display text-[1.82rem] leading-[0.91] tracking-[-0.035em] text-copy min-[480px]:text-[2.25rem] sm:mt-3 sm:text-6xl xl:text-[4.65rem]">{article.title}</h1><p className="mt-3 max-w-xl text-[12px] leading-5 text-copy-muted min-[480px]:text-[13px] sm:mt-4 sm:text-[15px] sm:leading-6">{article.subtitle}</p></div><div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-copy/12 pt-2.5 text-[7px] font-semibold uppercase tracking-[0.11em] text-copy-muted sm:mt-6 sm:gap-x-2.5 sm:gap-y-1.5 sm:pt-3 sm:text-[8px] sm:tracking-[0.12em]"><span>ỌNUỌRA Journal</span><span aria-hidden="true">•</span><span>Editorial Feature</span><span aria-hidden="true">•</span><span>By the House of ỌNUỌRA</span></div></div>
