@@ -5,11 +5,12 @@ import { notFound } from "next/navigation";
 import { getJournalArticle, journalArticles, type JournalArticle } from "@/data/journal-articles";
 
 type EditorialImage = { src: string; alt: string; position?: string };
+type SectionMediaTreatment = "portrait" | "landscape" | "duo" | "duoWide" | "stacked";
 
 type ArticleEditorial = {
   sectionImages: EditorialImage[];
   detailImages?: Partial<Record<number, EditorialImage[]>>;
-  mediaLayouts?: Partial<Record<number, "single" | "split" | "stacked">>;
+  sectionMedia?: Partial<Record<number, SectionMediaTreatment>>;
   quote: { section: number; paragraph: number };
   treatment: "identity" | "craft" | "collections";
 };
@@ -24,7 +25,7 @@ const editorialTreatments: Record<string, ArticleEditorial> = {
     detailImages: {
       2: [{ src: "/brand/products/buttonless/nd1/nd1-lifestyle.png", alt: "ỌNUỌRA in a contemporary setting", position: "object-top" }]
     },
-    mediaLayouts: { 1: "single", 2: "split" },
+    sectionMedia: { 1: "landscape", 2: "duo" },
     quote: { section: 1, paragraph: 2 }
   },
   "inside-making-onuora-outfit": {
@@ -39,6 +40,7 @@ const editorialTreatments: Record<string, ArticleEditorial> = {
       2: [{ src: "/brand/products/button/ndb2/nd2-detail.png", alt: "Garment finishing detail", position: "object-center" }],
       3: [{ src: "/brand/campaign/buttonless-front.png", alt: "ỌNUỌRA made in Nigeria", position: "object-top" }]
     },
+    sectionMedia: { 1: "stacked", 2: "landscape", 3: "landscape" },
     quote: { section: 1, paragraph: 2 }
   },
   "permanent-collections": {
@@ -55,6 +57,7 @@ const editorialTreatments: Record<string, ArticleEditorial> = {
       3: [{ src: "/brand/products/buttonless/nd3/nd3-angle.png", alt: "Resort Collection detail", position: "object-top" }],
       4: [{ src: "/brand/campaign/button-front.png", alt: "ỌNUỌRA collection campaign", position: "object-top" }]
     },
+    sectionMedia: { 1: "landscape", 2: "duoWide", 3: "landscape", 4: "portrait" },
     quote: { section: 4, paragraph: 2 }
   }
 };
@@ -107,8 +110,8 @@ function ArticleCopy({ section, sectionIndex, quote, lead = false }: { section: 
 
         if (isQuote) {
           return (
-            <blockquote key={paragraphIndex} className="my-4 border border-gold/35 bg-[#faf3e6] p-4 font-display text-xl leading-[1.12] text-copy sm:float-right sm:mb-3 sm:ml-5 sm:mt-0 sm:w-[14.25rem] sm:text-[1.6rem]">
-              <span className="block text-2xl leading-none text-gold">“</span>{paragraph}<span className="mt-3 block h-px w-6 bg-gold/70" /><span className="mt-2 block font-sans text-[7px] font-semibold uppercase tracking-[0.14em] text-copy-muted">House of ỌNUỌRA</span>
+            <blockquote key={paragraphIndex} className="my-5 border-y border-gold/50 py-4 font-display text-[1.55rem] leading-[1.08] tracking-[-0.015em] text-copy sm:py-5 sm:text-[1.9rem]">
+              <span className="mr-2 inline-block align-top text-3xl leading-[0.7] text-gold">&ldquo;</span>{paragraph}<span className="mt-4 block h-px w-7 bg-gold/70" /><span className="mt-2 block font-sans text-[7px] font-semibold uppercase tracking-[0.14em] text-copy-muted">House of ỌNUỌRA</span>
             </blockquote>
           );
         }
@@ -119,11 +122,27 @@ function ArticleCopy({ section, sectionIndex, quote, lead = false }: { section: 
   );
 }
 
+function SectionMedia({ image, details, treatment }: { image?: EditorialImage; details: EditorialImage[]; treatment: SectionMediaTreatment }) {
+  const companion = details[0];
+  if (!image) return null;
+
+  if ((treatment === "duo" || treatment === "duoWide") && companion) {
+    const duoRatio = treatment === "duo" ? "aspect-[4/5]" : "aspect-[4/3]";
+    return <div className="grid grid-cols-2 gap-2"><EditorialImageFrame image={image} className={duoRatio} /><EditorialImageFrame image={companion} className={duoRatio} /></div>;
+  }
+
+  if (treatment === "stacked" && companion) {
+    return <div className="grid gap-2"><EditorialImageFrame image={image} className="aspect-[16/7]" /><EditorialImageFrame image={companion} className="aspect-[16/7]" /></div>;
+  }
+
+  return <EditorialImageFrame image={image} className={treatment === "landscape" ? "aspect-[2/1]" : "aspect-[4/5]"} />;
+}
+
 function ArticleSection({ section, sectionIndex, editorial }: { section: JournalArticle["sections"][number]; sectionIndex: number; editorial: ArticleEditorial }) {
   const image = editorial.sectionImages[sectionIndex - 1] ?? editorial.sectionImages.at(-1);
   const details = editorial.detailImages?.[sectionIndex] ?? [];
   const imageFirst = editorial.treatment === "craft" ? sectionIndex % 2 === 0 : sectionIndex % 2 === 1;
-  const mediaLayout = editorial.mediaLayouts?.[sectionIndex] ?? (details.length ? "stacked" : "single");
+  const mediaTreatment = editorial.sectionMedia?.[sectionIndex] ?? (details.length ? "stacked" : "portrait");
 
   return (
     <>
@@ -139,12 +158,8 @@ function ArticleSection({ section, sectionIndex, editorial }: { section: Journal
       </section>
       <section id={`section-${sectionIndex}`} className="hidden scroll-mt-28 pt-5 sm:pt-6 lg:block">
         <EditorialDivider />
-        <div className="pt-5 sm:pt-6 lg:grid lg:grid-cols-[minmax(0,1.18fr)_minmax(15rem,0.82fr)] lg:items-stretch lg:gap-7 xl:gap-9">
-          <div className={`min-h-0 self-stretch ${imageFirst ? "lg:order-2" : ""} ${mediaLayout === "split" ? "grid grid-cols-2 gap-2" : mediaLayout === "stacked" && details.length ? "grid grid-rows-[minmax(0,1fr)_minmax(0,0.72fr)] gap-2" : "block"}`}>
-            {image ? <EditorialImageFrame image={image} className="h-full min-h-0" /> : null}
-            {mediaLayout === "stacked" && details.length ? <div className="grid min-h-0 grid-cols-2 gap-2">{details.map((detail) => <EditorialImageFrame key={detail.src} image={detail} className="h-full min-h-0" />)}</div> : null}
-            {mediaLayout === "split" && details.map((detail) => <EditorialImageFrame key={detail.src} image={detail} className="h-full min-h-0" />)}
-          </div>
+        <div className="pt-5 sm:pt-6 lg:grid lg:grid-cols-[minmax(0,1.18fr)_minmax(15rem,0.82fr)] lg:items-start lg:gap-7 xl:gap-9">
+          <div className={`min-w-0 ${imageFirst ? "lg:order-2" : ""}`}><SectionMedia image={image} details={details} treatment={mediaTreatment} /></div>
           <div className={`min-w-0 ${imageFirst ? "lg:order-1" : ""}`}>
             {section.heading ? <><p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-gold">{String(sectionIndex).padStart(2, "0")}</p><h2 className="mt-2 font-display text-[2rem] leading-[0.95] tracking-[-0.025em] text-copy sm:text-[2.35rem]">{section.heading}</h2></> : null}
             <div className="mt-4"><ArticleCopy section={section} sectionIndex={sectionIndex} quote={editorial.quote} /></div>
