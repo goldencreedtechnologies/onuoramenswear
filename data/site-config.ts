@@ -110,22 +110,6 @@ export function operationalUsdAmountInCurrency(amountUsd: number, currency: Curr
   return Math.round((amountUsd * PRODUCT_PRICES[currency]) / PRODUCT_PRICES.USD);
 }
 
-const euroLanguagePrefixes = new Set([
-  "de", "fr", "it", "es", "pt", "nl", "be", "at", "ie", "fi", "el", "sk", "sl", "et", "lv", "lt", "mt", "cy", "hr", "lu"
-]);
-
-export function detectSuggestedCurrency(languages: readonly string[], timeZone?: string) {
-  const normalized = languages.map((language) => language.toLowerCase());
-  if (normalized.some((language) => language === "en-ng" || language.endsWith("-ng"))) return "NGN" as const;
-  if (normalized.some((language) => language === "en-gb" || language.endsWith("-gb"))) return "GBP" as const;
-  if (normalized.some((language) => language === "en-us" || language.endsWith("-us"))) return "USD" as const;
-  if (normalized.some((language) => euroLanguagePrefixes.has(language.split("-")[0])) || timeZone?.startsWith("Europe/")) {
-    return timeZone === "Europe/London" ? ("GBP" as const) : ("EUR" as const);
-  }
-  if (timeZone === "Africa/Lagos") return "NGN" as const;
-  return "USD" as const;
-}
-
 export const PRODUCT_TYPE_LABEL = "Complete Two-Piece Outfit";
 export const PRODUCT_INCLUSION_LABEL = "Top And Trousers Included";
 

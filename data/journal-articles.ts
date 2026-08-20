@@ -19,43 +19,27 @@ export const journalArticles: JournalArticle[] = [
     sections: [
       {
         paragraphs: [
-          "I grew up in Nigeria in the 1990s, at a time when so much of what we considered fashionable came from somewhere else.",
-          "Hip-hop culture was everywhere. America was in our music, our television, our films and increasingly in the way we dressed. African clothing, by contrast, often belonged to particular occasions. You wore it to a wedding. You might wear it to church. At school, there would be a cultural day when everyone was suddenly expected to arrive dressed traditionally.",
-          "And then the following day, we returned to Western clothes.",
-          "It was an interesting contradiction. These were clothes that represented where we came from, yet we had somehow learned to regard them as something we dressed up in rather than simply how we dressed.",
-          "It was only after leaving the continent that my relationship with African clothing began to change.",
-          "Distance has a way of making you interrogate identity. As I began the process of what Dr. Kamau Kambon describes as re-Afrikanisation, I started thinking much more deliberately about what it meant to be African—not simply geographically or ancestrally, but in the choices we make every day.",
-          "Clothing became part of that conversation."
+          "I grew up in Nigeria in the 1990s, when much of what we considered fashionable seemed to come from somewhere else.",
+          "Hip-hop culture shaped our music, television and dress. African clothing, by contrast, was often reserved for weddings, church or a school cultural day—then the next morning we returned to Western clothes.",
+          "That was the contradiction: these garments represented where we came from, yet we treated them as something to dress up in rather than simply how we dressed.",
+          "After leaving the continent, distance made me interrogate identity more deliberately. As I began the process Dr. Kamau Kambon calls re-Afrikanisation, clothing became part of that conversation."
         ]
       },
       {
         heading: "What We Wear Matters",
         paragraphs: [
-          "There is an economic dimension to this that is sometimes overlooked.",
-          "Every time we purchase something, we make a decision about whose creativity, labour and economy our money supports.",
-          "If Africans consume almost exclusively what others design and manufacture for us, then we participate in strengthening economies elsewhere while weakening the possibilities within our own.",
-          "For me, therefore, wearing African clothing became about more than aesthetics.",
-          "It became an expression of identity, but also an economic choice.",
-          "That does not mean African clothing should remain frozen in some imagined past. Culture has never worked that way. It evolves.",
-          "The question that interested me was different:",
-          "What does African menswear look like when it is designed for the way we actually live now?"
+          "There is an economic dimension to clothing that is easy to overlook. Every purchase decides whose creativity, labour and economy our money supports.",
+          "If Africans consume only what others design and manufacture, we strengthen economies elsewhere while narrowing the possibilities within our own. Wearing African fashion therefore became more than an aesthetic choice for me; it became an expression of identity and an economic choice.",
+          "That does not mean African design should be frozen in an imagined past. Culture evolves. The question is what contemporary African menswear looks like when it is made for the way we live now."
         ]
       },
       {
         heading: "Rooted, Without Being Restricted",
         paragraphs: [
-          "ỌNUỌRA grew from that question.",
-          "I wanted garments that could carry a recognisably African sensibility without requiring a wedding, ceremony or cultural occasion to justify wearing them.",
-          "Something you could wear in Lagos.",
-          "Something you could wear in London.",
-          "Something you could wear during a New York summer.",
-          "The garment should not feel like costume when it leaves the continent. Nor should it need to become European in order to feel contemporary.",
-          "That distinction matters.",
-          "Our objective is not to make African versions of European clothing.",
-          "It is to participate in developing a contemporary African design language of our own.",
-          "One that is refined, cultured and rooted.",
-          "For me, that is the new language of African menswear.",
-          "And ỌNUỌRA is our contribution to it."
+          "ỌNUỌRA grew from that question. I wanted modern African clothing with a recognisable sensibility, without a wedding, ceremony or cultural occasion being required to justify it.",
+          "It should work in Lagos, London or a New York summer. It should not become costume when it leaves the continent, nor become European in order to feel contemporary.",
+          "Our objective is not to make African versions of European clothing. It is to develop a contemporary African design language of our own—refined, cultured and rooted.",
+          "For me, that is the new language of African menswear. ỌNUỌRA is our contribution to it."
         ]
       }
     ]
@@ -70,55 +54,32 @@ export const journalArticles: JournalArticle[] = [
     sections: [
       {
         paragraphs: [
-          "Anyone who has regularly commissioned clothing from a tailor understands the ritual.",
-          "Measurements are taken. You return for a fitting. Something needs adjusting. You return again.",
-          "When the relationship between tailor and client is established, the results can be extraordinary. But when a tailor does not yet understand your body, the process can become unpredictable.",
-          "That experience helped shape the way I thought about ỌNUỌRA.",
-          "I wanted to retain what I love about African tailoring while solving one of its greatest barriers to scale:",
-          "fit."
+          "Anyone who has commissioned clothing from a tailor understands the ritual: measurements, a fitting, an adjustment, then another return. With an established tailor the results can be extraordinary; without that understanding of the body, the process can be unpredictable.",
+          "That experience shaped the way I thought about ỌNUỌRA. I wanted to retain what I love about African tailoring while solving one of its greatest barriers to scale: fit."
         ]
       },
       {
         heading: "Designing for Movement",
         paragraphs: [
-          "Our approach begins with the fabric.",
-          "We deliberately seek materials with an element of stretch because I want an ỌNUỌRA garment to breathe and move with the person wearing it.",
-          "Rather than requiring every customer to undergo an individual tailoring process, we have developed ready-to-wear sizing that accommodates natural variations in the body.",
-          "That philosophy carries into the trousers as well.",
-          "There needs to be room to sit, walk and move comfortably without losing the clean silhouette of the garment.",
-          "The objective is simple:",
-          "the precision of tailoring without the inconvenience traditionally associated with having something individually made."
+          "Our approach begins with fabric. We deliberately seek materials with an element of stretch so an ỌNUỌRA garment can breathe and move with the person wearing it.",
+          "Ready-to-wear African menswear should accommodate natural variation without requiring every customer to undergo an individual tailoring process. The trousers are cut with room to sit, walk and move while retaining a clean silhouette.",
+          "The objective is simple: the precision of tailoring without the inconvenience traditionally associated with having something individually made."
         ]
       },
       {
         heading: "The Inside Matters Too",
         paragraphs: [
-          "One of the standards we have become increasingly uncompromising about is finishing.",
-          "A garment cannot simply photograph beautifully.",
-          "Turn it inside out.",
-          "Look at the seams.",
-          "Look at the stitching.",
-          "Look at how the edges have been finished.",
-          "Look at the details the customer may never show anyone else.",
-          "Those things matter because quality is often found precisely where nobody expects you to look.",
-          "Our ambition is therefore for the inside of an ỌNUỌRA garment to meet the same standard we demand of the outside."
+          "We have become increasingly uncompromising about finishing. A garment cannot simply photograph beautifully—turn it inside out, look at the seams, stitching, edges and the details the customer may never show anyone else.",
+          "Quality is often found where nobody expects you to look. The inside of an ỌNUỌRA garment should meet the same standard we demand of the outside."
         ]
       },
       {
         heading: "Made Here",
         paragraphs: [
-          "There is another principle at the centre of the house.",
-          "We make in Africa.",
-          "Our fabrics and components are sourced on the continent, and our garments are produced in Nigeria by African hands. Even details as small as our labels are being developed with the intention of sourcing and producing locally wherever possible.",
-          "This is not always the easiest approach.",
-          "There are places in the world where manufacturing can be faster, cheaper and easier to scale. Moving production elsewhere would solve certain problems.",
-          "But it would create another one.",
-          "ỌNUỌRA exists partly because I believe Africans must demonstrate our capacity to do for self.",
-          "If the brand succeeds, that success should create work here. It should develop skills here. It should circulate money here. And, eventually, it should demonstrate what African manufacturing can become when we demand increasingly high standards from ourselves.",
-          "Every garment therefore carries something beyond its design.",
-          "It carries its place of origin.",
-          "Designed in Africa. Sourced in Africa. Made in Nigeria.",
-          "And made with the intention of showing what is possible."
+          "There is another principle at the centre of the house: we make in Africa. Our fabrics and components are sourced on the continent, and our garments are produced in Nigeria by African hands.",
+          "This is not always the easiest approach. Manufacturing elsewhere can be faster, cheaper and easier to scale, but ỌNUỌRA exists partly because I believe Africans must demonstrate our capacity to do for self.",
+          "If the house succeeds, it should create work, develop skills and circulate money here. It should show what Nigerian craftsmanship and African manufacturing can become when we demand increasingly high standards from ourselves.",
+          "Every garment carries its place of origin: designed in Africa, sourced in Africa and made in Nigeria—with the intention of showing what is possible."
         ]
       }
     ]
@@ -133,73 +94,39 @@ export const journalArticles: JournalArticle[] = [
     sections: [
       {
         paragraphs: [
-          "ỌNUỌRA began with a silhouette I had been wearing for years.",
-          "A V-neck.",
-          "A clean line through the body.",
-          "A three-quarter-length sleeve.",
-          "It was influenced by the Nigerian menswear tradition sometimes described as Senator wear, but interpreted according to the way I wanted to dress.",
-          "That silhouette became the foundation of what is now our Heritage Collection."
+          "ỌNUỌRA began with a silhouette I had been wearing for years: a V-neck, a clean line through the body and a three-quarter-length sleeve.",
+          "It was influenced by the Nigerian menswear tradition sometimes described as Senator wear, but interpreted according to the way I wanted to dress. That silhouette became the foundation of the Heritage Collection."
         ]
       },
       {
         heading: "Heritage",
         paragraphs: [
-          "Heritage remains perhaps the closest of the three collections to my personal style.",
-          "The V-neck opens and accentuates the neckline. The cut follows the shape of the body without restricting it. The three-quarter sleeve gives the garment its distinctive proportion.",
-          "The trousers are similarly designed to retain a tailored appearance while providing enough room for movement.",
-          "It was the beginning.",
-          "But as ỌNUỌRA developed, I became interested in another question.",
-          "Could the garment itself communicate more about Africa?"
+          "Heritage remains perhaps the closest of the three collections to my personal style. Its V-neck and three-quarter sleeve create a distinctive proportion, while the cut follows the body without restricting it.",
+          "The trousers retain a tailored appearance with room for movement. It was the beginning—and it led to another question: could the garment itself communicate more about Africa?"
         ]
       },
       {
         heading: "Cowrie",
         paragraphs: [
-          "That question eventually produced the Cowrie Collection.",
-          "The cowrie has a long history on the African continent. Across different societies it has been used as currency, ornamentation and an object carrying cultural meaning.",
-          "It also has a personal significance for me. I have worn cowries in my hair for years.",
-          "So rather than simply importing another conventional button, we began incorporating cowries into the garments themselves.",
-          "The detail is subtle.",
-          "Three cowries.",
-          "A clean silhouette.",
-          "But suddenly the garment carries a conversation with it.",
-          "Someone in Lagos may immediately understand the reference. Someone walking past you in London or New York may simply ask:",
-          "What are those?",
-          "And that question creates an opportunity.",
-          "Culture travels."
+          "That question produced the Cowrie Collection. Across the African continent, cowries have served as currency, ornamentation and objects of cultural meaning; they also have a personal significance for me.",
+          "Rather than importing another conventional button, we began incorporating three cowries into the garments themselves. The detail is subtle, but it gives a clean silhouette a conversation with it.",
+          "Someone in Lagos may immediately understand the reference. Someone in London or New York may ask what they are. Culture travels."
         ]
       },
       {
         heading: "Resort",
         paragraphs: [
-          "The Resort Collection takes the philosophy somewhere slightly different.",
-          "It is lighter in attitude and deliberately versatile.",
-          "I wanted something that could be worn comfortably on the continent but that would feel equally natural during summer in Europe or America.",
-          "African clothing should not require an African setting.",
-          "Our brothers and sisters across the diaspora should be able to wear garments rooted in the continent without feeling as though they are dressing for a special occasion.",
-          "You should simply be able to put it on."
+          "The Resort Collection takes the philosophy somewhere lighter and deliberately versatile. It is comfortable on the continent and equally natural during summer in Europe or America.",
+          "African clothing should not require an African setting or a special occasion. People across the diaspora should simply be able to put it on."
         ]
       },
       {
         heading: "Three Collections. One Philosophy.",
         paragraphs: [
-          "Heritage, Cowrie and Resort each approach the wardrobe differently.",
-          "But the philosophy underneath them is the same.",
-          "African design does not need permission to be contemporary.",
-          "African craftsmanship does not need to be exported somewhere else before it can become excellent.",
-          "And African culture does not need to exist only in museums, ceremonies or designated cultural days.",
-          "We can wear it.",
-          "We can manufacture it.",
-          "We can develop it.",
-          "And we can build economies around it.",
-          "It would undoubtedly be easier in certain respects to manufacture ỌNUỌRA elsewhere. But if the answer to every challenge in African production is to move production away from Africa, we never develop the capacity we say the continent needs.",
-          "So we have chosen another path.",
-          "To design here.",
-          "To make here.",
-          "To improve here.",
-          "And to create garments capable of travelling anywhere in the world.",
-          "Three collections. One philosophy.",
-          "Refined. Cultured. Rooted."
+          "Heritage, Cowrie and Resort approach the wardrobe differently, but the philosophy underneath them is the same: African design does not need permission to be contemporary, and African craftsmanship does not need to be exported elsewhere before it can become excellent.",
+          "African culture need not live only in museums, ceremonies or designated cultural days. We can wear it, manufacture it, develop it and build economies around it.",
+          "It would be easier in some respects to manufacture ỌNUỌRA elsewhere, but moving production away from Africa whenever challenges arise never develops the capacity the continent needs. So we have chosen another path: to design here, make here, improve here and create garments capable of travelling anywhere in the world.",
+          "Three collections. One philosophy. Refined. Cultured. Rooted."
         ]
       }
     ]

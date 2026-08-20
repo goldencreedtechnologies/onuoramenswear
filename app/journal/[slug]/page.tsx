@@ -8,6 +8,7 @@ type EditorialImage = { src: string; alt: string; position?: string };
 
 type ArticleEditorial = {
   sectionImages: EditorialImage[];
+  detailImages?: Partial<Record<number, EditorialImage[]>>;
   quote: { section: number; paragraph: number };
   treatment: "identity" | "craft" | "collections";
 };
@@ -19,7 +20,11 @@ const editorialTreatments: Record<string, ArticleEditorial> = {
       { src: "/brand/products/buttonless/nd3/nd3-front.png", alt: "ỌNUỌRA Resort Collection model", position: "object-top" },
       { src: "/brand/products/original/ndu/ndu-front.png", alt: "ỌNUỌRA Heritage Collection model", position: "object-top" }
     ],
-    quote: { section: 1, paragraph: 7 }
+    detailImages: {
+      1: [{ src: "/brand/models/Idris.png", alt: "ỌNUỌRA model portrait", position: "object-top" }],
+      2: [{ src: "/brand/products/buttonless/nd1/nd1-lifestyle.png", alt: "ỌNUỌRA in a contemporary setting", position: "object-top" }]
+    },
+    quote: { section: 1, paragraph: 2 }
   },
   "inside-making-onuora-outfit": {
     treatment: "craft",
@@ -28,7 +33,12 @@ const editorialTreatments: Record<string, ArticleEditorial> = {
       { src: "/brand/products/buttonless/nd3/nd3-detail.png", alt: "Detail of an ỌNUỌRA garment", position: "object-center" },
       { src: "/brand/new-product-b.png", alt: "ỌNUỌRA garment in an editorial setting", position: "object-top" }
     ],
-    quote: { section: 1, paragraph: 5 }
+    detailImages: {
+      1: [{ src: "/brand/tailor 2.PNG", alt: "Tailoring materials and tools", position: "object-center" }],
+      2: [{ src: "/brand/products/button/ndb2/nd2-detail.png", alt: "Garment finishing detail", position: "object-center" }],
+      3: [{ src: "/brand/campaign/buttonless-front.png", alt: "ỌNUỌRA made in Nigeria", position: "object-top" }]
+    },
+    quote: { section: 1, paragraph: 2 }
   },
   "permanent-collections": {
     treatment: "collections",
@@ -38,6 +48,12 @@ const editorialTreatments: Record<string, ArticleEditorial> = {
       { src: "/brand/products/buttonless/nd3/nd3-front.png", alt: "Resort Collection", position: "object-top" },
       { src: "/brand/new-product-b.png", alt: "ỌNUỌRA collection editorial", position: "object-top" }
     ],
+    detailImages: {
+      1: [{ src: "/brand/products/original/aja/aja-mid.png", alt: "Heritage Collection detail", position: "object-top" }],
+      2: [{ src: "/brand/products/button/ndb4/ndb4-angle.png", alt: "Cowrie Collection detail", position: "object-top" }],
+      3: [{ src: "/brand/products/buttonless/nd3/nd3-angle.png", alt: "Resort Collection detail", position: "object-top" }],
+      4: [{ src: "/brand/campaign/button-front.png", alt: "ỌNUỌRA collection campaign", position: "object-top" }]
+    },
     quote: { section: 4, paragraph: 2 }
   }
 };
@@ -104,6 +120,7 @@ function ArticleCopy({ section, sectionIndex, quote, lead = false }: { section: 
 
 function ArticleSection({ section, sectionIndex, editorial }: { section: JournalArticle["sections"][number]; sectionIndex: number; editorial: ArticleEditorial }) {
   const image = editorial.sectionImages[sectionIndex - 1] ?? editorial.sectionImages.at(-1);
+  const details = editorial.detailImages?.[sectionIndex] ?? [];
   const imageFirst = editorial.treatment === "craft" ? sectionIndex % 2 === 0 : sectionIndex % 2 === 1;
   const hideMobileImage = editorial.treatment === "identity" && sectionIndex === 1;
 
@@ -116,13 +133,15 @@ function ArticleSection({ section, sectionIndex, editorial }: { section: Journal
           {!hideMobileImage && image ? <EditorialImageFrame image={image} className={`${imageFirst ? "float-left mr-3" : "float-right ml-3"} mt-2.5 mb-2 aspect-[3/4] w-[40%] max-w-[9.5rem]`} /> : null}
           <div className="mt-3"><ArticleCopy section={section} sectionIndex={sectionIndex} quote={editorial.quote} /></div>
           <div className="clear-both" />
+          {details.length ? <div className="mt-3 grid grid-cols-2 gap-2">{details.map((detail) => <EditorialImageFrame key={detail.src} image={detail} className="aspect-[4/3]" />)}</div> : null}
         </div>
       </section>
       <section id={`section-${sectionIndex}`} className="hidden scroll-mt-28 pt-5 sm:pt-6 lg:block">
         <EditorialDivider />
         <div className="pt-5 sm:pt-6 lg:grid lg:grid-cols-[minmax(0,1.16fr)_minmax(13rem,0.78fr)] lg:gap-7 xl:gap-9">
-          <div className={imageFirst ? "lg:order-2" : ""}>
-            {image ? <EditorialImageFrame image={image} className="mb-4 aspect-[5/4] sm:aspect-[16/11] lg:mb-0 lg:h-full lg:min-h-[19rem] lg:aspect-auto" /> : null}
+          <div className={`grid gap-2 ${imageFirst ? "lg:order-2" : ""}`}>
+            {image ? <EditorialImageFrame image={image} className={details.length ? "aspect-[5/4] sm:aspect-[16/11] lg:min-h-[14.5rem] lg:aspect-auto" : "mb-4 aspect-[5/4] sm:aspect-[16/11] lg:mb-0 lg:h-full lg:min-h-[19rem] lg:aspect-auto"} /> : null}
+            {details.length ? <div className="grid grid-cols-2 gap-2">{details.map((detail) => <EditorialImageFrame key={detail.src} image={detail} className="aspect-[4/3]" />)}</div> : null}
           </div>
           <div className={`min-w-0 ${imageFirst ? "lg:order-1" : ""}`}>
             {section.heading ? <><p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-gold">{String(sectionIndex).padStart(2, "0")}</p><h2 className="mt-2 font-display text-[2rem] leading-[0.95] tracking-[-0.025em] text-copy sm:text-[2.35rem]">{section.heading}</h2></> : null}
@@ -157,12 +176,25 @@ function MobileArticleContents({ article }: { article: JournalArticle }) {
 
 function CompactExplore() {
   return (
-    <section className="border border-gold/25 bg-[#faf3e6] px-5 py-5 sm:px-6 sm:py-5">
-      <div className="grid gap-4 sm:grid-cols-[minmax(14rem,0.8fr)_minmax(0,1.2fr)] sm:items-center">
-        <div className="flex items-center gap-3"><Image src="/brand/onuora-mark-gold.png" alt="" width={22} height={32} /><div><p className="font-display text-lg leading-none text-copy">Explore the Permanent Collections</p><p className="mt-1.5 text-[9px] text-copy-muted">Timeless staples. Modern expression.</p></div></div>
-        <div className="grid grid-cols-3 gap-2 border-t border-copy/10 pt-4 sm:border-l sm:border-t-0 sm:pl-5 sm:pt-0">
-          {exploreCollections.map((collection) => <Link key={collection.href} href={collection.href} className="gold-focus group flex min-w-0 items-center gap-1 text-[9px] font-semibold text-copy transition hover:text-gold sm:gap-2"><span className="relative h-6 w-6 shrink-0 overflow-hidden sm:h-7 sm:w-7"><Image src={collection.image} alt="" fill sizes="28px" className="object-cover object-top" /></span><span className="truncate">{collection.name}</span><ArrowRight className="h-3 w-3 shrink-0" /></Link>)}
+    <section className="border border-gold/25 bg-[#faf3e6] px-4 py-5 sm:px-6 sm:py-6">
+      <div className="flex items-start gap-3 border-b border-copy/10 pb-4 sm:items-center">
+        <Image src="/brand/onuora-mark-gold.png" alt="" width={22} height={32} />
+        <div>
+          <p className="font-display text-xl leading-none text-copy sm:text-2xl">Explore the Permanent Collections</p>
+          <p className="mt-1.5 text-[10px] leading-4 text-copy-muted">Three silhouettes. One considered wardrobe.</p>
         </div>
+      </div>
+      <div className="mt-4 grid grid-cols-3 gap-2.5 sm:gap-3">
+        {exploreCollections.map((collection) => (
+          <Link key={collection.href} href={collection.href} className="gold-focus group min-w-0 border border-copy/10 bg-[#fbf8f1] p-1.5 transition hover:border-gold/60 sm:p-2">
+            <span className="relative block aspect-[4/5] overflow-hidden bg-[#e9dfcf]">
+              <Image src={collection.image} alt={collection.alt} fill sizes="(min-width: 640px) 20vw, 29vw" className="object-cover object-top transition duration-500 group-hover:scale-[1.035]" />
+            </span>
+            <span className="mt-2 flex items-center justify-between gap-1 text-[9px] font-semibold uppercase tracking-[0.08em] text-copy sm:text-[10px]">
+              <span className="truncate">{collection.name}</span><ArrowRight className="h-3 w-3 shrink-0 text-gold" />
+            </span>
+          </Link>
+        ))}
       </div>
     </section>
   );

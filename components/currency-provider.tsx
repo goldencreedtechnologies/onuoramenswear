@@ -5,7 +5,6 @@ import { ChevronDown } from "lucide-react";
 import {
   CURRENCY_PREFERENCE_KEY,
   SUPPORTED_CURRENCIES,
-  detectSuggestedCurrency,
   fixedProductPriceLabel,
   formatCurrency,
   isCurrencyCode,
@@ -28,6 +27,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const [currency, setCurrencyState] = useState<CurrencyCode>("USD");
 
   useEffect(() => {
+    const controller = new AbortController();
     const timer = window.setTimeout(() => {
       const saved = window.localStorage.getItem(CURRENCY_PREFERENCE_KEY);
       if (isCurrencyCode(saved)) {
@@ -35,14 +35,23 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      const suggested = detectSuggestedCurrency(
-        navigator.languages?.length ? navigator.languages : [navigator.language],
-        Intl.DateTimeFormat().resolvedOptions().timeZone
-      );
-      setCurrencyState(suggested);
+      fetch("/api/geo/currency", { cache: "no-store", signal: controller.signal })
+        .then(async (response) => {
+          if (!response.ok) return null;
+          return response.json() as Promise<{ currency?: unknown }>;
+        })
+        .then((result) => {
+          if (isCurrencyCode(result?.currency)) {
+            setCurrencyState(result.currency);
+          }
+        })
+        .catch(() => undefined);
     }, 0);
 
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
   }, []);
 
   function setCurrency(nextCurrency: CurrencyCode) {
