@@ -417,7 +417,7 @@ export async function markOrderPaid({
         estimatedDispatchTiming: "Prepared for dispatch within three working days",
         estimatedDeliveryWindow: deliveryEstimate?.estimated_min_days && deliveryEstimate?.estimated_max_days ? `${deliveryEstimate.estimated_min_days}-${deliveryEstimate.estimated_max_days} business days after dispatch` : "Confirmed with your dispatch notification",
         paymentStatus: order.payment_provider === "stripe_testing_voucher" ? "Paid with authorised 100% testing voucher" : "Paid",
-        contactInformation: "menswear@onuoraenterprises.com",
+        contactInformation: "menswear@onuoramenswear.com",
         subtotal: operationalUsdAmountInCurrency(Number(order.subtotal_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
         shipping: operationalUsdAmountInCurrency(Number(order.shipping_usd), isCurrencyCode(order.currency) ? order.currency : "USD"),
         discount: operationalUsdAmountInCurrency(

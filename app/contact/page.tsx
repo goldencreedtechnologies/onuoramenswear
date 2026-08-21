@@ -25,8 +25,8 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
           <h1 className="mt-3 max-w-md text-3xl font-semibold leading-tight md:text-4xl">Helping You Arrive Well</h1>
           <p className="mt-5 max-w-md text-sm leading-7 text-copy-muted">Speak with the house about sizing, shipping and delivery, styling, existing orders, or ỌNUỌRA Circle access.</p>
           <div className="mt-8 min-w-0 border-t border-line">
-            <a href="mailto:menswear@onuoraenterprises.com" className="gold-focus flex min-w-0 items-center gap-3 break-all border-b border-line py-4 text-sm hover:text-gold"><Mail className="h-4 w-4 shrink-0" />menswear@onuoraenterprises.com</a>
-            <a href="mailto:menswear@onuoraenterprises.com?subject=Styling%20consultation" className="gold-focus flex min-w-0 items-center gap-3 border-b border-line py-4 text-sm hover:text-gold"><MessageCircle className="h-4 w-4 shrink-0" />Request a styling consultation</a>
+            <a href="mailto:menswear@onuoramenswear.com" className="gold-focus flex min-w-0 items-center gap-3 break-all border-b border-line py-4 text-sm hover:text-gold"><Mail className="h-4 w-4 shrink-0" />menswear@onuoramenswear.com</a>
+            <a href="mailto:menswear@onuoramenswear.com?subject=Styling%20consultation" className="gold-focus flex min-w-0 items-center gap-3 border-b border-line py-4 text-sm hover:text-gold"><MessageCircle className="h-4 w-4 shrink-0" />Request a styling consultation</a>
           </div>
         </div>
 

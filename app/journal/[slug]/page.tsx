@@ -22,42 +22,37 @@ const editorialTreatments: Record<string, ArticleEditorial> = {
       { src: "/brand/products/buttonless/nd3/nd3-front.png", alt: "ỌNUỌRA Resort Collection model", position: "object-top" },
       { src: "/brand/products/original/ndu/ndu-front.png", alt: "ỌNUỌRA Heritage Collection model", position: "object-top" }
     ],
-    detailImages: {
-      2: [{ src: "/brand/products/buttonless/nd1/nd1-lifestyle.png", alt: "ỌNUỌRA in a contemporary setting", position: "object-top" }]
-    },
-    sectionMedia: { 1: "editorialLandscape", 2: "duo" },
+    sectionMedia: { 1: "editorialLandscape", 2: "editorialLandscape" },
     quote: { section: 1, paragraph: 2 }
   },
   "inside-making-onuora-outfit": {
     treatment: "craft",
     sectionImages: [
       { src: "/brand/tailor.png", alt: "Hand finishing an ỌNUỌRA garment", position: "object-center" },
-      { src: "/brand/products/buttonless/nd3/nd3-detail.png", alt: "Detail of an ỌNUỌRA garment", position: "object-center" },
-      { src: "/brand/new-product-b.png", alt: "ỌNUỌRA garment in an editorial setting", position: "object-top" }
+      { src: "/brand/products/button/ndb2/nd2-detail.png", alt: "ỌNUỌRA garment finishing detail", position: "object-center" },
+      { src: "/brand/tailor 2.PNG", alt: "Tailor cutting fabric for an ỌNUỌRA garment", position: "object-center" }
     ],
     detailImages: {
-      1: [{ src: "/brand/tailor 2.PNG", alt: "Tailoring materials and tools", position: "object-center" }],
-      2: [{ src: "/brand/products/button/ndb2/nd2-detail.png", alt: "Garment finishing detail", position: "object-center" }],
-      3: [{ src: "/brand/campaign/buttonless-front.png", alt: "ỌNUỌRA made in Nigeria", position: "object-top" }]
+      1: [{ src: "/brand/tailor 2.PNG", alt: "Tailoring materials and tools", position: "object-center" }]
     },
-    sectionMedia: { 1: "stacked", 2: "landscape", 3: "landscape" },
+    sectionMedia: { 1: "duo", 2: "landscape", 3: "editorialLandscape" },
     quote: { section: 1, paragraph: 2 }
   },
   "permanent-collections": {
     treatment: "collections",
     sectionImages: [
-      { src: "/brand/products/original/aja/aja-front.png", alt: "Heritage Collection", position: "object-top" },
-      { src: "/brand/products/button/ndb4/ndb4-front.png", alt: "Cowrie Collection", position: "object-top" },
-      { src: "/brand/products/buttonless/nd3/nd3-front.png", alt: "Resort Collection", position: "object-top" },
+      { src: "/brand/products/original/ebube/ebube-front.png", alt: "Heritage Collection model", position: "object-top" },
+      { src: "/brand/products/button/ndb5/ndb5-front.png", alt: "Cowrie Collection model", position: "object-top" },
+      { src: "/brand/products/buttonless/nd7/nd7-front.png", alt: "Resort Collection model", position: "object-top" },
       { src: "/brand/new-product-b.png", alt: "ỌNUỌRA collection editorial", position: "object-top" }
     ],
     detailImages: {
-      1: [{ src: "/brand/products/original/aja/aja-mid.png", alt: "Heritage Collection detail", position: "object-top" }],
-      2: [{ src: "/brand/products/button/ndb4/ndb4-angle.png", alt: "Cowrie Collection detail", position: "object-top" }],
-      3: [{ src: "/brand/products/buttonless/nd3/nd3-angle.png", alt: "Resort Collection detail", position: "object-top" }],
+      1: [{ src: "/brand/products/original/ohuru/ohuru-detail.png", alt: "Heritage Collection tailoring detail", position: "object-center" }],
+      2: [{ src: "/brand/products/button/ndb6/ndb6-side.png", alt: "Cowrie Collection side profile", position: "object-top" }],
+      3: [{ src: "/brand/products/buttonless/nd7/nd7-back.png", alt: "Resort Collection back detail", position: "object-top" }],
       4: [{ src: "/brand/campaign/button-front.png", alt: "ỌNUỌRA collection campaign", position: "object-top" }]
     },
-    sectionMedia: { 1: "landscape", 2: "duoWide", 3: "landscape", 4: "portrait" },
+    sectionMedia: { 1: "landscape", 2: "duoWide", 3: "landscape", 4: "editorialLandscape" },
     quote: { section: 4, paragraph: 2 }
   }
 };
@@ -128,11 +123,11 @@ function SectionMedia({ image, details, treatment }: { image?: EditorialImage; d
 
   if ((treatment === "duo" || treatment === "duoWide") && companion) {
     const duoRatio = treatment === "duo" ? "aspect-[4/5]" : "aspect-[4/3]";
-    return <div className="grid grid-cols-2 gap-2"><EditorialImageFrame image={image} className={duoRatio} /><EditorialImageFrame image={companion} className={duoRatio} /></div>;
+    return <div className="grid grid-cols-2 gap-2 lg:h-full lg:grid-rows-1"><EditorialImageFrame image={image} className={`${duoRatio} lg:h-full lg:aspect-auto`} /><EditorialImageFrame image={companion} className={`${duoRatio} lg:h-full lg:aspect-auto`} /></div>;
   }
 
   if (treatment === "stacked" && companion) {
-    return <div className="grid gap-2"><EditorialImageFrame image={image} className="aspect-[16/7]" /><EditorialImageFrame image={companion} className="aspect-[16/7]" /></div>;
+    return <div className="grid gap-2 lg:h-full lg:grid-rows-2"><EditorialImageFrame image={image} className="aspect-[16/7] lg:h-full lg:aspect-auto" /><EditorialImageFrame image={companion} className="aspect-[16/7] lg:h-full lg:aspect-auto" /></div>;
   }
 
   const frameRatio = treatment === "landscape"
@@ -141,7 +136,7 @@ function SectionMedia({ image, details, treatment }: { image?: EditorialImage; d
       ? "aspect-[4/3]"
       : "aspect-[4/5]";
 
-  return <EditorialImageFrame image={image} className={frameRatio} />;
+  return <EditorialImageFrame image={image} className={`${frameRatio} lg:h-full lg:aspect-auto`} />;
 }
 
 function ArticleSection({ section, sectionIndex, editorial }: { section: JournalArticle["sections"][number]; sectionIndex: number; editorial: ArticleEditorial }) {
@@ -149,6 +144,7 @@ function ArticleSection({ section, sectionIndex, editorial }: { section: Journal
   const details = editorial.detailImages?.[sectionIndex] ?? [];
   const imageFirst = editorial.treatment === "craft" ? sectionIndex % 2 === 0 : sectionIndex % 2 === 1;
   const mediaTreatment = editorial.sectionMedia?.[sectionIndex] ?? (details.length ? "stacked" : "portrait");
+  const mobileDetails = mediaTreatment === "duoWide" ? details : [];
 
   return (
     <>
@@ -159,12 +155,12 @@ function ArticleSection({ section, sectionIndex, editorial }: { section: Journal
           {image ? <EditorialImageFrame image={image} className={`${imageFirst ? "float-left mr-3" : "float-right ml-3"} mt-2.5 mb-2 aspect-[3/4] w-[40%] max-w-[9.5rem]`} /> : null}
           <div className="mt-3"><ArticleCopy section={section} sectionIndex={sectionIndex} quote={editorial.quote} /></div>
           <div className="clear-both" />
-          {details.length ? <div className="mt-3 grid grid-cols-2 gap-2">{details.map((detail) => <EditorialImageFrame key={detail.src} image={detail} className="aspect-[4/3]" />)}</div> : null}
+          {mobileDetails.length ? <div className="mt-3 grid grid-cols-2 gap-2">{mobileDetails.map((detail) => <EditorialImageFrame key={detail.src} image={detail} className="aspect-[4/3]" />)}</div> : null}
         </div>
       </section>
       <section id={`section-${sectionIndex}`} className="hidden scroll-mt-28 pt-5 sm:pt-6 lg:block">
         <EditorialDivider />
-        <div className="pt-5 sm:pt-6 lg:grid lg:grid-cols-[minmax(0,1.18fr)_minmax(15rem,0.82fr)] lg:items-start lg:gap-7 xl:gap-9">
+        <div className="pt-5 sm:pt-6 lg:grid lg:grid-cols-[minmax(0,1.18fr)_minmax(15rem,0.82fr)] lg:items-stretch lg:gap-7 xl:gap-9">
           <div className={`min-w-0 ${imageFirst ? "lg:order-2" : ""}`}><SectionMedia image={image} details={details} treatment={mediaTreatment} /></div>
           <div className={`min-w-0 ${imageFirst ? "lg:order-1" : ""}`}>
             {section.heading ? <><p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-gold">{String(sectionIndex).padStart(2, "0")}</p><h2 className="mt-2 font-display text-[2rem] leading-[0.95] tracking-[-0.025em] text-copy sm:text-[2.35rem]">{section.heading}</h2></> : null}
@@ -244,13 +240,15 @@ export default async function JournalArticlePage({ params }: JournalArticlePageP
   const editorial = editorialTreatments[article.slug] ?? editorialTreatments["new-language-contemporary-african-menswear"];
   const opening = article.sections[0];
 
+  const isCraftArticle = article.slug === "inside-making-onuora-outfit";
+
   return (
     <main className="overflow-x-hidden bg-[linear-gradient(180deg,#f8f4eb_0%,#f3ebde_52%,#faf7ef_100%)] pt-[104px] text-copy">
       <section className="container-luxe py-4 sm:py-9 lg:py-11">
         <Link href="/journal" className="gold-focus inline-flex min-h-9 items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.12em] text-copy-muted transition hover:text-copy"><ArrowLeft className="h-3.5 w-3.5" />Back to Journal</Link>
         <div className="mb-2.5 flex min-h-8 items-center justify-center bg-obsidian px-4 text-gold lg:hidden"><span className="font-display text-base tracking-[0.18em]">JOURNAL</span></div>
         <div className="overflow-hidden border border-copy/12 bg-[#fbf8f1]/75 shadow-[0_16px_45px_rgba(57,42,24,0.08)] lg:mt-5 lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(24rem,0.8fr)]">
-          <div className="flex min-w-0 flex-col justify-between p-4 sm:p-8 lg:p-10 xl:p-12"><div><p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-gold">{article.category}</p><h1 className="mt-2 max-w-3xl font-display text-[1.82rem] leading-[0.91] tracking-[-0.035em] text-copy min-[480px]:text-[2.25rem] sm:mt-3 sm:text-6xl xl:text-[4.65rem]">{article.title}</h1><p className="mt-3 max-w-xl text-[12px] leading-5 text-copy-muted min-[480px]:text-[13px] sm:mt-4 sm:text-[15px] sm:leading-6">{article.subtitle}</p></div><div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-copy/12 pt-2.5 text-[7px] font-semibold uppercase tracking-[0.11em] text-copy-muted sm:mt-6 sm:gap-x-2.5 sm:gap-y-1.5 sm:pt-3 sm:text-[8px] sm:tracking-[0.12em]"><span>ỌNUỌRA Journal</span><span aria-hidden="true">•</span><span>Editorial Feature</span><span aria-hidden="true">•</span><span>By the House of ỌNUỌRA</span></div></div>
+          <div className="flex min-w-0 flex-col justify-between p-4 sm:p-8 lg:p-10 xl:p-12"><div><p className="text-[8px] font-semibold uppercase tracking-[0.16em] text-gold">{article.category}</p><h1 className={`mt-2 max-w-3xl font-display text-[1.82rem] leading-[0.94] tracking-[-0.025em] text-copy min-[480px]:text-[2.25rem] sm:mt-3 sm:text-6xl xl:text-[4.65rem] ${isCraftArticle ? "lg:max-w-[10ch] lg:text-[4.15rem] lg:leading-[0.98] lg:tracking-[-0.018em] xl:text-[4.35rem]" : ""}`}>{article.title}</h1><p className="mt-3 max-w-xl text-[12px] leading-5 text-copy-muted min-[480px]:text-[13px] sm:mt-4 sm:text-[15px] sm:leading-6">{article.subtitle}</p></div><div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-copy/12 pt-2.5 text-[7px] font-semibold uppercase tracking-[0.11em] text-copy-muted sm:mt-6 sm:gap-x-2.5 sm:gap-y-1.5 sm:pt-3 sm:text-[8px] sm:tracking-[0.12em]"><span>ỌNUỌRA Journal</span><span aria-hidden="true">•</span><span>Editorial Feature</span><span aria-hidden="true">•</span><span>By the House of ỌNUỌRA</span></div></div>
           <EditorialImageFrame image={{ src: article.image, alt: article.imageAlt, position: "object-top" }} priority className="aspect-[2/1] min-h-[10.5rem] border-t border-copy/12 sm:aspect-[16/9] sm:min-h-[13rem] lg:min-h-[29rem] lg:aspect-[4/3] lg:border-l lg:border-t-0" />
         </div>
       </section>

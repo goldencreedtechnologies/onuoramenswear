@@ -113,7 +113,7 @@ export function getTransactionalEmailFrom() {
 }
 
 export function getOrderNotificationEmail() {
-  return getOptionalEnv("ORDER_NOTIFICATION_EMAIL").trim() || "menswear@onuoraenterprises.com";
+  return getOptionalEnv("ORDER_NOTIFICATION_EMAIL").trim() || "menswear@onuoramenswear.com";
 }
 
 export function getAbandonedCheckoutDelayMinutes() {

@@ -89,7 +89,7 @@ export const journalArticles: JournalArticle[] = [
     title: "The Permanent Collections",
     category: "Campaigns",
     subtitle: "Three collections. One philosophy. A wardrobe designed for different occasions.",
-    image: "/brand/products/original/aja/ajah-grid.png",
+    image: "/brand/products/button/ndb5/ndb5-studio-registered-source.png",
     imageAlt: "The ỌNUỌRA Permanent Collections",
     sections: [
       {

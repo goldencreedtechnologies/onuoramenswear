@@ -148,7 +148,7 @@ export function renderNotificationEmail(row: NotificationRow): RenderedEmail {
     const estimatedDispatchTiming = getString(row.payload, "estimatedDispatchTiming", "Prepared for dispatch within three working days");
     const estimatedDeliveryWindow = getString(row.payload, "estimatedDeliveryWindow", "Confirmed with your dispatch notification");
     const paymentStatus = getString(row.payload, "paymentStatus", "Paid");
-    const contactInformation = getString(row.payload, "contactInformation", "menswear@onuoraenterprises.com");
+    const contactInformation = getString(row.payload, "contactInformation", "menswear@onuoramenswear.com");
     const orderDate = getString(row.payload, "orderDate");
     const trackingId = getString(row.payload, "trackingId");
     const subtotal = getNumber(row.payload, "subtotal");

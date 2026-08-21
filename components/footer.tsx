@@ -57,7 +57,7 @@ export function Footer() {
           <NewsletterForm />
           <div className="mt-5 flex items-center gap-6 text-white/58">
             <Link href="https://instagram.com/onuoramenswear" target="_blank" rel="noreferrer" aria-label="Instagram" className="transition hover:text-white"><Instagram className="h-5 w-5" /></Link>
-            <Link href="mailto:menswear@onuoraenterprises.com" aria-label="Email Client Care" className="transition hover:text-white"><Mail className="h-5 w-5" /></Link>
+            <Link href="mailto:menswear@onuoramenswear.com" aria-label="Email Client Care" className="transition hover:text-white"><Mail className="h-5 w-5" /></Link>
             <Link href="/contact" aria-label="Client Services" className="transition hover:text-white"><MessageCircle className="h-5 w-5" /></Link>
           </div>
         </div>
